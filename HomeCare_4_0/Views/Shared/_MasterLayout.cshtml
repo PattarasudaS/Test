@@ -1,0 +1,1963 @@
+﻿@using HomeCare_4_0.Common
+@using HomeCare_4_0.ClassLib
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>@ViewBag.Title - Home Care</title>
+    <link href="https://www.sansiri.com/favicon.ico" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Sarabun:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" rel="stylesheet">
+    @*
+        @Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+    *@
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="~/assets/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/assets/lib/font-awesome/v5.13.1/all.min.css" />
+    <link rel="stylesheet" href="~/assets/lib/font-awesome/v5.13.1/font-awesome.min.css" />
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="~/assets/lib/ionicons/ionicons.min.css" />
+
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/assets/dist/css/AdminLTE.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/assets/dist/css/skins/_all-skins.min.css">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="~/assets/plugins/bootstrap/css/v3.3.7/bootstrap.min.css" />
+
+    <!-- iCheck -->
+    <link rel="stylesheet" href="~/assets/plugins/iCheck/flat/blue.css">
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link href="~/assets/plugins/iCheck/all.css" rel="stylesheet" />
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="~/assets/plugins/morris/morris.css">
+    <!-- jvectormap -->
+    <link rel="stylesheet" href="~/assets/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+    <!-- Date Picker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" />
+    <link rel="stylesheet" href="~/assets/plugins/datepicker/datepicker3.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="~/assets/plugins/daterangepicker/daterangepicker.css">
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link rel="stylesheet" href="~/assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/assets/plugins/select2/select2.min.css">
+    <!-- Bootstrap time Picker -->
+    <link rel="stylesheet" href="~/assets/plugins/timepicker/bootstrap-timepicker.min.css">
+    <!-- Image picker -->
+    <link href="~/assets/image-picker/image-picker.css" rel="stylesheet" />
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/assets/plugins/datatables/dataTables.bootstrap.css">
+    <!-- File input -->
+    <link href="~/bootstrap-fileinput-master/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+
+    <!-- jQuery -->
+    <script src="~/assets/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/assets/plugins/jQuery/jquery-3.4.1.min.js"></script>
+
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/assets/plugins/jQueryUI/jquery-ui.min.js"></script>
+    @*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>*@
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>$.widget.bridge('uibutton', $.ui.button);</script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="~/assets/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script type="text/javascript" src="~/assets/plugins/bootstrap/js/v3.3.7/bootstrap.min.js"></script>
+    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>*@
+    <!-- Morris.js charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <!-- Sparkline -->
+    <script src="~/assets/plugins/sparkline/jquery.sparkline.min.js"></script>
+    <!-- jvectormap -->
+    <script src="~/assets/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="~/assets/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="~/assets/plugins/knob/jquery.knob.js"></script>
+    <!-- daterangepicker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="~/assets/plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- datepicker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
+    <script src="~/assets/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <!-- bootstrap time picker -->
+    <script src="~/assets/plugins/timepicker/bootstrap-timepicker.min.js"></script>
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="~/assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+    <!-- Slimscroll -->
+    <script src="~/assets/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="~/assets/plugins/fastclick/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/assets/dist/js/app.min.js"></script>
+    <!-- icheck -->
+    <script src="~/assets/plugins/iCheck/icheck.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/assets/dist/js/demo.js"></script>
+    <!-- DataTables -->
+    <script src="~/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/assets/plugins/select2/select2.full.min.js"></script>
+    <!-- canvas-to-blob.min.js is only needed if you wish to resize images before upload. This must be loaded before fileinput.min.js -->
+    <script src="~/bootstrap-fileinput-master/js/plugins/canvas-to-blob.min.js"></script>
+    <!-- sortable.min.js is only needed if you wish to sort / rearrange files in initial preview. This must be loaded before fileinput.min.js -->
+    <script src="~/bootstrap-fileinput-master/js/plugins/sortable.min.js"></script>
+    <!-- purify.min.js is only needed if you wish to purify HTML content in your preview for HTML files. This must be loaded before fileinput.min.js -->
+    <script src="~/bootstrap-fileinput-master/js/plugins/purify.min.js"></script>
+    <!-- the main fileinput plugin file -->
+    <script src="~/bootstrap-fileinput-master/js/fileinput.min.js"></script>
+    <!-- bootstrap.js below is needed if you wish to zoom and view file content in a larger detailed modal dialog -->
+    <!-- optionally if you need a theme like font awesome theme you can include it as mentioned below -->
+    <script src="~/bootstrap-fileinput-master/themes/fa/theme.js"></script>
+    <!-- optionally if you need translation for your language then include locale file as mentioned below -->
+    <script src="~/assets/image-picker/image-picker.js"></script>
+    @*<script src="~/assets/image-picker/image-picker.min.js"></script>*@
+    <script src="~/bootstrap-fileinput-master/js/locales/th.js"></script>
+    <!-- api for call gettoken -->
+    <script src="~/scripts/api.caller.js?random=@DateTime.UtcNow.ToString("ayyEMMihhOMudd")"></script>
+    <!-- embed javascript, these function should be global (use frequently in many files) -->
+    <script type="text/javascript">
+        // modal loading
+        var page = {
+            loading: function () {
+                return new Promise(function (r) {
+                    var h = document.querySelector('html');
+                    var d = document.createElement('div');
+                    d.id = 'page-loader'
+                    d.style.position = 'fixed';
+                    d.style.top = 0;
+                    d.style.bottom = 0;
+                    d.style.left = 0;
+                    d.style.right = 0;
+                    d.style.zIndex = 9999;
+                    d.style.opacity = 0;
+                    d.style.background = 'rgba(35, 35, 35) url("https://s3-ap-southeast-1.amazonaws.com/sansiri-conss-ro77/www/public/images/loading_sansiri.gif") no-repeat fixed center';
+                    h.appendChild(d);
+                    for (let i = 1; i <= 80; i++) {
+                        setTimeout(function () {
+                            d.style.opacity = i / 100;
+                        }, 2 * i);
+                        if (i === 80) {
+                            setTimeout(function () {
+                                r();
+                            }, 2 * i);
+                        }
+                    }
+                });
+            },
+            loaded: function () {
+                return new Promise(function (r) {
+                    var l = document.querySelector('#page-loader');
+                    if (l) {
+                        for (let i = 1; i <= 80; i++) {
+                            if (i === 80) {
+                                setTimeout(function () {
+                                    l.remove();
+                                    r();
+                                }, 2 * i);
+                            } else {
+                                setTimeout(function () {
+                                    l.style.opacity = (80 - i) / 100;
+                                }, 2 * i);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function pleaseWaitDialog() {
+            waitingDialog.show();
+        }
+
+        function pleaseWaitDialogClose() {
+            waitingDialog.hide();
+        }
+        function modalWaring(msg) {
+            $('#warningModal').appendTo("body").modal('show');
+            $("#contentwarningModal").text(msg);
+        };
+        function modalWarning(msg) {
+            $('#warningModal').appendTo("body").modal('show');
+            $("#contentwarningModal").text(msg);
+        };
+        function modalSuccess(msg) {
+            $('#notificationModal').appendTo("body").modal('show');
+            if (msg) {
+                $("#contentModal").text(msg);
+            } else {
+                $("#contentModal").text('ระบบบันทึกข้อมูลสำเร็จ');
+            }
+        }
+
+        $(document).ready(async function () {
+            // เช็คสิทธิ์ User ถ้ามีสิทธิ์ให้สร้างเมนู
+            const apiUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+               await ajaxGet(apiUrl + '/homecare/api/v1/User/@UserDetail.UserID/Permission', response => {
+                if (response) {
+                    let result = response.data;
+                    var permissions = result.filter(a => a.permissionDescription === 'SearchProject');
+                    if (permissions.length > 0) {
+                        $('.sidebar-menu').first().append(`<li class="treeview">
+                            <a href="#" id="searchRW-Menu">
+                                <i class="fa  fa-search"></i>
+                                <span>ค้นหา</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <p style="color: white; margin-top: 10px; text-align: center;">
+                                                <select class="col-lg-12 form-control select2" id="searchProject" data-placeholder="-- เลือกโครงการ --">
+                                                    <option selected>Please select</option>
+                                                </select>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <p style="color:white; text-align: center;">
+                                                <select class="col-lg-12 form-control select2" id="searchUnit" data-placeholder="-- เลือกยูนิต --">
+                                                </select>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    @if (UserDetail.Role != EnumConfiguration.Role.CallCentre.ToString())
+                                    {
+                                        <div class="row">
+                                            <div class="col-lg-12 text-center">
+                                                <button type="button" name="search" id="searchRW-btn" class="btn btn-default" style="margin-bottom: 10px; width: 100%;">
+                                                    <i class="fa fa-search"></i> ค้นหา
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                </li>
+                            </ul>
+                        </li>`);
+                    }
+                    let i = 0;
+                    const group = result.reduce((groups, item) => {
+                        const group = (groups[item.mainMenu] || []);
+                        if (item.mainMenu !== null) {
+
+                            group.push(item.mainMenu);
+                            groups[`${item.mainMenu},${item.icon_display}`] = group;
+
+                        }
+                        return groups;
+                    }, {});
+
+                    for (var main in group) {
+                        var item = main.split(',');
+
+                        var subMenu = '';
+                        var subMenuList = response.data.filter(e => e.mainMenu === item[0]);
+
+                        for (var p of subMenuList) {
+
+                            subMenu += `
+                                 <li>
+					              <a href="@Url.Content("~/${p.modulePath}/")${p.submenu}">
+					               <span>${p.submenuDescription}</span>
+					              </a>
+					             </li>
+                                 `;
+
+                        }
+                        $('.sidebar-menu').first().append(`
+                             <li class="treeview" id="admin-config">
+                                 <a style="cursor: pointer;">
+                                     <i class="${item[1] === null ? 'fa fa-cogs' : item[1]}"></i>
+                                     <span>${item[0].replace('#role','@UserDetail.Role')}</span>
+                                     <span class="pull-right-container">
+                                         <i class="fa fa-angle-left pull-right"></i>
+                                     </span>
+                                 </a>
+                                 <ul class="treeview-menu">
+                                     ${subMenu}
+                                 </ul>
+                             </li>
+                         `);
+
+                    }
+
+
+                }
+            });
+
+            ajaxPost('@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]/homecare/api/v1/DropDown/Project', { userId: @UserDetail.UserID }, function (response) {
+                var ddlsearchProject = $("[id=searchProject]");
+                ddlsearchProject.empty().append('<option selected="selected" value="">-- เลือกโครงการ --</option>');
+                $.each(response.data, function (_i, d) {
+                    ddlsearchProject.append($("<option></option>").val(d.id).html(d.name));
+                });
+            });
+
+            $('.select2').css('width', '100%').select2();
+
+            $(document).one('ajaxloadstart.page', function (e) {
+                // in ajax mode, remove remaining elements before leaving page
+                $('[class*=select2]').remove();
+            });
+
+            $('#searchRW-Menu').on("click", function () {
+                setTimeout(function () {
+                    if (!$("#searchProject").closest('.menu-open')[0]) {
+                        $("#searchProject").select2('open');
+                    }
+                }, 220);
+            });
+
+            $('#searchRW-btn').on("click", function () {
+                var ProjectID = $("#searchProject option:selected").val();
+                var UnitID = $("#searchUnit option:selected").val();
+                if (ProjectID == "" & "@UserDetail.Role" != "CallCentre") {
+                    modalWaring("กรุณาระบุ รหัสโครงการ");
+                } else if ((ProjectID == "" || UnitID == 0) & "@UserDetail.Role" == "CallCentre") {
+                    modalWaring("กรุณาระบุ รหัสโครงการ และ รหัสยูนิตให้ครบถ้วน");
+                } else {
+                    window.location = '@Url.Action("SearchInformation","Home")' + "/" + ProjectID + "/" + UnitID;
+                }
+            });
+
+            $('#searchProject').change(function (e) {
+                var ddlProject = $("[id*=searchProject]");
+                var jsonObject = {
+                    "ID": ddlProject.val()
+                };
+
+                $.ajax({
+                    url: "@Url.Action("GetUnitData", "Home")",
+                    type: "POST",
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    error: function (response) { },
+                    success: function (response) {
+                        var Jdata = JSON.stringify(response);
+                        obj = JSON.parse(Jdata);
+                        var ddlUnitID = $("[id*=searchUnit]");
+                        ddlUnitID.empty().append('<option selected="selected" value="0">-- เลือกยูนิต --</option>');
+                        $.each(obj.data, function (Index, Value) {
+                            ddlUnitID.append($("<option value=" + Value.Unit_ID + ">" + Value.Unit_Code + "</option>"))
+                        });
+
+                        $('#searchProject').select2('close');
+                        if ('@UserDetail.Role' === 'CallCentre') {
+                            $('#searchUnit').select2('open');
+                        }
+                        ddlUnitID.on('select2:select', function (e) {
+                            if (+$("#searchProject option:selected").val() && +$("#searchUnit option:selected").val()) {
+                                window.location = '@Url.Action("SearchInformation","Home")' + "/" + $("#searchProject option:selected").val() + "/" + $("#searchUnit option:selected").val();
+                            }
+                        });
+                    }
+                });
+            });
+            // END Search RW
+
+            // START Vendor Modal
+            $("#btnClearSearchVendor").on("click", function () {
+                clearVendorSearch();
+            });
+            // END Vendor Modal
+
+            // START Change WorksheetStatus
+            $('#ReWorksheetStatus-btn').on("click", function () {
+                var WorkSheetJobNo = $("#WorkSheetJobNo").val();
+                $.ajax({
+                    url: '@Url.Action("checkChangeWorksheetStatus", "Worksheet")',
+                    type: "POST",
+                    data: '{"WorkSheetJobNo": "' + WorkSheetJobNo + '"}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: false,
+                    error: function (response) { },
+                    success: function (response) {
+                        if (response != "") {
+                            modalWaring(response);
+                        } else {
+                            $.ajax({
+                                url: "@Url.Action("ChangeWorksheetStatus", "Worksheet")",
+                                type: "POST",
+                                data: { WorkSheetJobNo: WorkSheetJobNo },
+                                traditional: true,
+                                error: function (response) {
+                                    console.log("error");
+                                },
+                                success: function (response) {
+                                    console.log("success");
+                                    modalSuccess();
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+            // END Change RW Status
+
+            // START Change ApproveStatus
+            $('#ReApproveStatus-btn').on("click", function () {
+                var WorkSheetJobNo = $("#WorkSheetJobNo").val();
+                $.ajax({
+                    url: '@Url.Action("checkChangeWorksheetApproveStatus", "Worksheet")',
+                    type: "POST",
+                    data: '{"WorkSheetJobNo": "' + WorkSheetJobNo + '"}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: false,
+                    error: function (response) { },
+                    success: function (response) {
+                        if (response != "") {
+                            modalWaring(response);
+                        } else {
+                            $.ajax({
+                                url: "@Url.Action("ChangeWorksheetApproveStatus", "Worksheet")",
+                                type: "POST",
+                                data: { WorkSheetJobNo: WorkSheetJobNo },
+                                traditional: true,
+                                error: function (response) {
+                                    console.log("error");
+                                },
+                                success: function (response) {
+                                    console.log("success");
+                                    modalSuccess();
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+            // END Change ApproveStatus
+
+            // START Search Guarantee
+            $('#searchGuarantee-btn').on("click", function () {
+                var ProjectID = $("#searchProjectGuarantee option:selected").val();
+                if (ProjectID == "") {
+                    modalWaring("กรุณาระบุ รหัสโครงการ");
+                } else {
+                    var url = '/Guarantee/SearchGuarantee/' + ProjectID;
+                    window.location.href = url;
+                }
+            });
+
+            $('#searchGuarantee-Menu').on("click", function () {
+                $.ajax({
+                    url: "@Url.Action("GetProejctMaster", "Home")",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    error: function (response) { },
+                    success: function (response) {
+                        var ddlsearchProject = $("[id=searchProjectGuarantee]");
+                        ddlsearchProject.empty().append('<option selected="selected" value="">Please select</option>');
+                        $.each(response, function (Index, Value) {
+                            ddlsearchProject.append($("<option></option>").val(Value.Value).html(Value.Text));
+                        });
+                    }
+                });
+            });
+            // END Search Guarantee
+            // Focus vendor name input
+            $('#modalAddVendor').on('shown.bs.modal', function () {
+                $('#textCrivendorName').focus();
+            });
+
+            // Search vendor by press enter
+            $(document).keyup(function (e) {
+                if ($('#modalAddVendor').hasClass('in')) {
+                    if (event.keyCode === 13) {
+                        $('#btnSearchVendor').click();
+                    }
+                }
+            });
+
+
+            // START employee modal
+            $("#btnClearSearchEmpl").on("click", function () {
+                clearEmplSearch();
+            });
+
+            // Search employee by press enter
+            $(document).keyup(function (e) {
+                if ($('#modalSearchEmployee').hasClass('in')) {
+                    if (event.keyCode === 13) {
+                        $('#btnSearchEmpl').click();
+                    }
+                }
+            });
+        });
+        // End $(document).ready
+
+        function clearVendorSearch() {
+            $("#textCrivendorCode").val("");
+            $("#textCrivendorName").val("");
+            $("#textCrivendorName2").val("");
+            $("#textCriIDCard").val("");
+            $("#textCrivendorTax").val("");
+
+            $("#tbAddvendor tbody tr").remove();
+            $("#tbAddvendor tbody").append("<tr></tr>");
+            $("#tbAddvendor tbody tr").append("<td class='text-center Bold text-danger' colspan='6'>ไม่มีข้อมูล</td>");
+        }
+
+        function clearEmplSearch() {
+            $("#textEmpCode").val("");
+            $("#textEmpName").val("");
+
+            $("#tbEmployee tbody tr").remove();
+            $("#tbEmployee tbody").append("<tr></tr>");
+            $("#tbEmployee tbody tr").append("<td class='text-center Bold text-danger' colspan='6'>ไม่มีข้อมูล</td>");
+        }
+
+        function addCommas(nStr) {
+            //nStr += '';
+            //x = nStr.split('.');
+            //x1 = x[0];
+            //x2 = x.length > 1 ? '.' + x[1] : '';
+            //var rgx = /(\d+)(\d{3})/;
+            //while (rgx.test(x1)) {
+            //    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            //}
+            //return x1 + x2;
+            return nStr;
+        }
+
+        var waitingDialog = waitingDialog || (function ($) {
+            'use strict';
+
+            // Creating modal dialog's DOM
+            var $dialog = $(
+                '<div class="modal fade" id="please-wait-dialog" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">' +
+                '<div class="modal-dialog modal-m">' +
+                '<div class="modal-content">' +
+                    '<div class="modal-header"><h3 style="margin:0;"></h3></div>' +
+                    '<div class="modal-body">' +
+                        '<div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>' +
+                    '</div>' +
+                '</div></div></div>');
+
+            return {
+                show: function (message, options) {
+                    // Assigning defaults
+                    if (typeof options === 'undefined') {
+                        options = {};
+                    }
+                    if (typeof message === 'undefined') {
+                        message = 'Loading';
+                    }
+                    var settings = $.extend({
+                        dialogSize: 'm',
+                        progressType: '',
+                        onHide: null // This callback runs after the dialog was hidden
+                    }, options);
+                    // Configuring dialog
+                    $dialog.find('.modal-dialog').attr('class', 'modal-dialog').addClass('modal-' + settings.dialogSize);
+                    $dialog.find('.progress-bar').attr('class', 'progress-bar');
+                    if (settings.progressType) {
+                        $dialog.find('.progress-bar').addClass('progress-bar-' + settings.progressType);
+                    }
+                    $dialog.find('h3').text(message);
+                    // Adding callbacks
+                    if (typeof settings.onHide === 'function') {
+                        $dialog.off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+                            settings.onHide.call($dialog);
+                        });
+                    }
+                    // Opening dialog
+                    $dialog.appendTo("body").modal('show');
+                },
+                // Closes dialog
+                hide: function () {
+                    $dialog.appendTo("body").modal('hide');
+                }
+            };
+        })(jQuery);
+
+        function CallController_Ajax(RequestParam, RequestURL) {
+            var response;
+            $.ajax({
+                url: RequestURL,
+                type: 'POST',
+                data: JSON.stringify(RequestParam),
+                contentType: "application/json; charset=utf-8",
+                async: false,
+                success: function (data) {
+                    response = data;
+                },
+                error: function (data) {
+                    response = null;
+                }
+            });
+            return response;
+        }
+
+        function randomString(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        var box = function (selector) {
+            var e = $(selector);
+            return {
+                loading: function () {
+                    if (selector.includes('.box'))
+                        e.append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+                    else
+                        e.find('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+                },
+                loaded: function () {
+                    e.find('div.overlay').remove();
+                }
+            }
+        }
+
+        @* modal confirm *@
+        var modal = {
+            confirm: function (message = 'ยืนยันการทำรายการ', fn, title = 'แจ้งเตือน') {
+                $('body').append(`
+                    <div class="modal fade" tabindex="-1" role="dialog" id="confirm-modal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header bg-blue">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">${title}</h4>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <i class="fa fa-question text-blue" style="font-size: 100px;"></i>
+                                    <p class="text-bold">${message}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" style="width: 65px;">ยืนยัน</button>
+                                    <button type="button" class="btn btn-default" style="width: 65px;" data-dismiss="modal">ยกเลิก</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                $('#confirm-modal')
+                    .modal('show')
+                    .on('hidden.bs.modal', function () { $(this).remove() })
+                    .on('shown.bs.modal', function () { $('#confirm-modal button.btn-primary').focus() });
+                $('#confirm-modal button.btn-primary').on('click', function () { $('#confirm-modal').modal('hide'); fn(); });
+            },
+                warning: function (msg) {
+                    $('#warningModal').appendTo("body").modal('show');
+                    $("#contentwarningModal").text(msg);
+                },
+                success: function (msg) {
+                    $('#notificationModal').appendTo("body").modal('show');
+                    if (msg) {
+                        $("#contentModal").text(msg);
+                    } else {
+                        $("#contentModal").text('ระบบบันทึกข้อมูลสำเร็จ');
+                    }
+                }
+        }
+
+        @* modal confirm Delete*@
+        var modalDelete = {
+            confirm: function (fn) {
+                $('body').append(`
+                    <div id="confirm-modalDelete" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">ยืนยันการ ลบ</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="formConfimDelete">
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">
+                                                <i class="far fa-comment-alt fa-2x" aria-hidden="true" style="color: green;"> </i>
+                                                กรุณากรอกเหตุผล
+                                            </label>
+                                            <textarea class="form-control" id="txtAreaMessageText"></textarea>
+                                        </div>
+                                    </form>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" style="width: 65px;" >ยืนยัน</button>
+                                    <button type="button" class="btn btn-default" style="width: 65px;" data-dismiss="modal">ยกเลิก</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                $('#confirm-modalDelete')
+                    .modal('show')
+                    .on('hidden.bs.modal', function () { $(this).remove() })
+                    .on('shown.bs.modal', function () { $('#confirm-modalDelete button.btn-success').focus() });
+                $('#confirm-modalDelete button.btn-success').on('click', function () {
+                    $('#confirm-modalDelete').modal('hide');
+                    const txtAreaMessageText = $('#txtAreaMessageText').val();
+                    alert(txtAreaMessageText);
+                    console.log(txtAreaMessageText);
+                    fn(txtAreaMessageText);
+                });
+            },
+            warning: function (msg) {
+                $('#warningModal').appendTo("body").modal('show');
+                $("#contentwarningModal").text(msg);
+            },
+            success: function (msg) {
+                $('#notificationModal').appendTo("body").modal('show');
+                if (msg) {
+                    $("#contentModal").text(msg);
+                } else {
+                    $("#contentModal").text('ระบบบันทึกข้อมูลสำเร็จ');
+                }
+            }
+        }
+
+        @*modal confirm Retention*@
+
+        async function openModalPO_History(worksheetId,systemType) {
+            $("#modalPO_History").appendTo("body").modal('show');
+            $("#modalPO_History tbody tr").remove();
+            var tr = "";
+            //$("#tbAddvendor tbody tr").append("<td class='text-center Bold text-danger' colspan='6'>ไม่มีข้อมูล</td>");
+            await ajaxGet(`${baseUrl}/homecare/api/v1/PurchaseOrder/GetPurchaseOrderHistory?worksheetId=${worksheetId}`, response => {
+                if (response.data.length > 0) {
+
+                    $.each(response.data, function (Index, Value) {
+                        if (systemType != '2') {
+                          tr += `
+                         <tr id=datarow_${Index + 1}>;
+                               <td class="text-right" style="vertical-align: middle;">
+                                   ${Index + 1}
+                               </td>
+                               <td class="text-left" style="vertical-align: middle;">
+                                   ${Value.ponumber}
+                               </td>
+                               <td class="text-center" style="vertical-align: middle;">
+                                    ${Value.approveDesc}
+                               </td>
+
+                               <td class="text-center" style="vertical-align: middle;">
+                                   ${Value.createDate}
+                               </td>
+
+                               <td class="text-center" style="vertical-align: left;">
+                                   ${Value.reasonDesc}
+                               </td>
+
+                               <td class="text-center" style="vertical-align: middle;">
+                                   ${Value.cancelBy}
+                               </td>
+
+                               <td class="text-center" style="vertical-align: middle;">
+                                    ${Value.cancelDate}
+                               </td>
+
+                               <td class="text-center" style="vertical-align: middle;">
+                                    ${Value.jobDesc}
+                               </td>
+                           </tr>
+                         `;
+
+                        } else {
+                            tr += `
+                                 <tr id=datarow_${Index + 1}>;
+                                       <td class="text-right" style="vertical-align: middle;">
+                                           ${Index + 1}
+                                       </td>
+                                       <td class="text-left" style="vertical-align: middle;">
+                                           ${Value.ponumber}
+                                       </td>
+                                       <td class="text-center" style="vertical-align: middle;">
+                                            ${Value.approveDesc}
+                                       </td>
+
+                                       <td class="text-center" style="vertical-align: middle;">
+                                           ${Value.createDate}
+                                       </td>
+
+                                       <td class="text-center" style="vertical-align: middle;">
+                                           ${Value.reasonDesc}
+                                       </td>
+
+                                       <td class="text-center" style="vertical-align: middle;">
+                                           ${Value.cancelBy}
+                                       </td>
+
+                                       <td class="text-center" style="vertical-align: middle;">
+                                            ${Value.cancelDate}
+                                       </td>
+
+                                   </tr>
+                                 `;
+
+                        }
+                    });
+
+                    $('#modalPO_History tbody').append(tr);
+
+                }
+            });
+            if (systemType == '2') {
+                $("[id *= approve_job_detail]").css("display", "none")
+            }
+
+        }
+
+        async function openModalCheckProjectBudget(projectID) {
+            $("#modalCheckProjectBudget").appendTo("body").modal('show');
+
+            $("#DDLGL_Acct option").remove();
+            await ajaxGet(`${baseUrl}/homecare/api/v1/PurchaseOrder/GetGLAccount`, response => {
+                if (response.data.length > 0) {
+                    //bindingDdlist('DDLGL_Acct', response.data, '')
+                    $.each(response.data, (i, d) => {
+                        $("#DDLGL_Acct").append(`<option value="${d.id}" >${d.id}</option>`);
+
+                    });
+                     ajaxGet(`${baseUrl}/homecare/api/v1/PurchaseOrder/GetProjectCheckBudget?abbr=` + projectID , response2 => {
+                         if (response2.data.length > 0) {
+                             $.each(response2.data, (i, d) => {
+                                 $("#ddlProjectCheckBudget").append(`<option value="${d.id}" >${d.description}</option>`);
+                             });
+                        }
+                    });
+
+
+                }
+
+                $("#saveCancelPO").css("display", "block");
+                //$("#createPO_NO").css("display", "block");
+
+            });
+
+
+
+        }
+        async function checkProjectBudject(worksheetID, systemType) {
+            await page.loading();
+            var tr = "";
+            var wbs = "";
+            var projectCode = $('#hdProjectCode').val();
+
+            await ajaxGet(`${baseUrl}/homecare/api/v1/PurchaseOrder/GetWEBFromWorkSheet?worksheetID=${worksheetID}&systemType=${systemType}`, response => {
+                if (response) {
+                    if (response.data !== undefined) {
+                        if (response.data.id != null) {
+                            wbs = response.data.id;
+                        } else {
+                            wbs = projectCode + "-65512-01";
+                        }
+                    }
+                    else { 
+                        wbs = projectCode + "-65512-01";
+                    }
+                }
+                else {
+                    wbs = projectCode + "-65512-01";
+                }
+            });
+
+            if (wbs != "") {
+                var year = new Date().getFullYear()
+                $('#tbCheckBudgetProject tbody tr').remove();
+                await ajaxGet(`${baseUrl}/homecare/api/v1/PurchaseOrder/CheckBudgetProjecAsync?year=${year}&wbs=${wbs}`, response => {
+                    if (response.data.data.length > 0) {
+                        console.log(response);
+                        $.each(response.data.data, (i, d) => {
+                            tr += `
+                             <tr id=datarow_${d.pspnr}>;
+                                   <td class="text-center" style="vertical-align: middle;">
+                                       ${d.pspnr}
+                                   </td>
+                                   <td class="text-center" style="vertical-align: middle;">
+                                       ${d.budget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                   </td>
+                                   <td class="text-center" style="vertical-align: middle;">
+                                        ${d.release.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                   </td>
+                                   <td class="text-center" style="vertical-align: middle;">
+                                       ${d.actual.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                   </td>
+                                   <td class="text-center" style="vertical-align: middle;">
+                                       ${d.commit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                   </td>
+                                   <td class="text-center" style="vertical-align: middle;">
+                                       ${d.assigned.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                   </td>
+                                   <td class="text-center" style="vertical-align: middle;">
+                                        ${d.avaliable.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                   </td>
+                               </tr>
+                             `;
+                        });
+
+                        $('#tbCheckBudgetProject tbody').append(tr);
+                        page.loaded();
+                    }
+                });
+                $("#modalCheckProjectBudget").appendTo("body").modal('show');
+                page.loaded();
+
+            } else {
+                $('#tbCheckBudgetProject tbody tr').remove();
+                tr += `
+                    <tr>;
+                    <td class="text-left" style="vertical-align: middle;">
+                        ไม่พบข้อมูล WBS
+                    </td>
+                    <td class="text-right" style="vertical-align: middle;">
+                    </td>
+                    <td class="text-right" style="vertical-align: middle;">
+                    </td>
+                    <td class="text-right" style="vertical-align: middle;">
+                    </td>
+                    <td class="text-right" style="vertical-align: middle;">
+                    </td>
+                    <td class="text-right" style="vertical-align: middle;">
+                    </td>
+                    <td class="text-right" style="vertical-align: middle;">
+                    </td>
+                </tr>
+                `;
+                $('#tbCheckBudgetProject tbody').append(tr);
+                $("#modalCheckProjectBudget").appendTo("body").modal('show');
+                page.loaded();
+                return;
+            }
+        }
+
+
+
+    </script>
+    <style>
+        body {
+            font-family: 'Sarabun', 'Roboto';
+        }
+
+        span.select2-selection {
+            height: 34px !important;
+        }
+
+        .sidebar-toggle:hover {
+            text-decoration: none;
+        }
+
+        a:visited, a:focus {
+            text-decoration: none;
+        }
+
+        .sidebar-menu .treeview-menu {
+            padding-right: 5px;
+        }
+
+        .unstyled:hover {
+            background: transparent !important;
+        }
+    </style>
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    @*Success Modal*@
+    <div tabindex="-1" class="modal fade" id="notificationModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius:6px;">
+                <div class="modal-header bg-green" id="headerModal">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title white"><label id="titleModal">ข้อความ</label></h4>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="~/images/success.png" height="100" width="100" id="alertPic" />
+                    <div>
+                        <label id="contentModal" class="green">ระบบบันทึกข้อมูลสำเร็จ</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-success" type="button" name="closeModal" id="closeAlert">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Warning Modal*@
+    <div tabindex="-1" class="modal fade" id="warningModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius:6px;">
+                <div class="modal-header bg-yellow" id="headerModal">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title white"><label id="titleModal">แจ้งเตือน</label></h4>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="~/images/warning.png" height="100" width="100" id="alertPic" />
+                    <div>
+                        <label id="contentwarningModal" class="red"></label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-warning" type="button" name="closewarning" id="closewarningAlert">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Vendor Modal*@
+    <div tabindex="-99999" class="modal fade" id="modalAddVendor" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+        <div class="modal-dialog" style="width:75%">
+            <div class="modal-content" style="border-radius:6px;">
+                <div class="modal-header bg-gray">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">กำหนดผู้รับเหมา</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="row  form-group">
+                        <div class="col-lg-6 col-md-6 col-sm-12  text-left">
+                            <label for="textCrivendorCode" class="col-lg-4 col-form-label">รหัสผู้รับเหมา :</label>
+                            <div class="col-lg-8">
+                                <input class="form-control" type="text" id="textCrivendorCode">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12  text-left">
+                            <label for="textCrivendorName" class="col-lg-4 col-form-label">ชื่อผู้รับเหมา :</label>
+                            <div class="col-lg-8">
+                                <input class="form-control" type="text" id="textCrivendorName">
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="row  form-group">
+                        <div class="col-lg-6 col-md-6 col-sm-12  text-left">
+                            <label for="textCriIDCard" class="col-lg-4 col-form-label">รหัสบัตรประชาชน/หมายเลขผู้เสียภาษี:</label>
+                            <div class="col-lg-8">
+                                <input class="form-control" type="text" id="textCriIDCard">
+                            </div>
+                        </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12  text-left boxVendorRemark hidden">
+                                <label for="textCriIDCard" class="col-lg-4 col-form-label">เหตุผลในการเปลี่ยนผู้รับเหมา:</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control" type="text" id="RemarkVendor">
+                                </div>
+                            </div>
+
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <button type="button" class="btn btn-default" id="btnSearchVendor"><i class="fa fa-search"> </i> ค้นหาผู้รับเหมา</button>
+                            <button type="button" class="btn btn-default" id="btnClearSearchVendor"><i class="fa fa-remove"> </i> ล้างข้อมูลการค้นหา</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table class="table table-striped table-bordered table-hover " id="tbAddvendor" style="margin: 8px 8px 0px 8px; width:100%;overflow:auto;">
+                                <thead>
+                                    <tr class="">
+                                        <th class="text-center" width="10%">
+                                            รหัสผู้รับเหมา
+                                        </th>
+                                        <th class="text-center " width="30%">
+                                            ชื่อผู้รับเหมา
+                                        </th>
+                                        <th class="text-center " width="12%">
+                                            รหัสบัตรประชาชน
+                                        </th>
+                                        <th class="text-center " width="12%">
+                                            หมายเลขผู้เสียภาษี
+                                        </th>
+                                        <th class="text-center " width="30%">
+                                            ที่อยู่
+                                        </th>
+                                        <th class="text-center" width="5%">
+
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center Bold text-danger" colspan="6">ไม่มีข้อมูล</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Validate Retention Form -->
+    <div class="modal fade" id="modalValidateRetention" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div id="frmRetention">
+                <div class="modal-content">
+                    <div name="header" class="modal-header">
+                        <div class="form-row">
+                            <h4 class="modal-title pull-left"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">ต้องการหัก Retention ของใบงาน ใช่หรือไม่ ?</span></h4>
+                            @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>*@
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="padding-left:15px; padding-right:15px;">
+                            <div class="row form-group">
+                                <div class="col-xs-12 col-sm-6 col-lg-12">
+                                    <label class="control-label"></label>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="control-label" for="txtVatPercent">Retention (%)</label>
+                                        <input type="number" name="txtRetentionPercent" class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="control-label">จำนวนเงิน</label>
+                                        <input type="text" name="txtTotalRetention" class="form-control input-sm" readonly />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="control-label">ราคารวม</label>
+                                        <input type="text" name="txtNetPriceWithRetention" class="form-control input-sm" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-12">
+                            <button type="button" class="btn btn-primary " data-dismiss="modal" id="btnConfirmRetention" style="margin-right: 5px">ใช่</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">ไม่หัก</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Confirm Cancel PO Form -->
+    <div class="modal fade" id="modalConfirmCancelPO" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div id="frmCancelPO">
+                <div class="modal-content">
+                    <div name="header" class="modal-header">
+                        <div class="form-row">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title white"><label id="titleModal">ยกเลิกเลขที่ใบ PO</label></h4>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="padding-left:15px; padding-right:15px;">
+                            <div class="row form-group">
+
+                                <div class="col-xs-12 col-sm-6 col-lg-16">
+                                    <label>เหตุผล </label>
+                                    <select class="col-lg-12 form-control select2  input-sm" id="reasonId" name="reasonId" data-placeholder="-- กรุณาคลิกเพื่อเลือกเหตุผล--">
+                                        <option selected>Please select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-16" id="divPOReason" style="display:none;">
+                                    <span class="text-danger" style=" font-style: italic;">* กรุณาระบุเหตุผล</span>
+                                    <input type="text" class="col-lg-12 form-control input-md" style="margin-top:5px;" id="txtOtherReasonCancelPO" name="txtOtherReason" maxlength="500" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-12">
+                            <button type="button" class="btn btn-primary " data-dismiss="modal" id="btnConfCancelPO" style="margin-right: 5px">ยืนยัน</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">ยกเลิก</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Confirm WorkSheet Rollback Form -->
+    <div class="modal fade" id="modalConfirmWorkSheetRollback" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div id="frmWorkSheetRollback">
+                <div class="modal-content">
+                    <div name="header" class="modal-header">
+                        <div class="form-row">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title white"><label id="titleModal">ยืนยันถอยสถานะปิดใบงาน</label></h4>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="padding-left:15px; padding-right:15px;">
+                            <div class="row form-group">
+                                <div class="col-xs-12 col-sm-6 col-lg-16">
+                                    <label>เหตุผล </label>
+                                    <select class="col-lg-12 form-control select2" id="reasonId" name="reasonId" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทระบบ --">
+                                        <option selected>Please select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-16" id="divRollbackReason" style="display:none;">
+                                    <span class="text-danger" style=" font-style: italic;">* กรุณาระบุเหตุผล</span>
+                                    <input type="text" class="col-lg-12 form-control input-md" style="margin-top:5px;" id="txtOtherReasonRollback" name="txtOtherReason" maxlength="500" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-12">
+                            <button type="button" class="btn btn-primary " data-dismiss="modal" id="btnConfRollback" style="margin-right: 5px">ยืนยัน</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">ยกเลิก</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Modal Worksheet Retention History -->
+    <div class="modal fade" id="modalRetentionHistory" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog " role="document" style="width:90%">
+            <div id="frmRetentionHis">
+                <div class="modal-content">
+                    <div class="modal-header bg-light-blue">
+                        <div class="form-row">
+                            <h4 class="modal-title pull-left">ประวัติข้อมูลการหักเงินประกัน</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="padding:0; margin:0 15px ;">
+                            <label class="text-danger">ยอดเงินหักประกันรวม : <span id="txtRetAmtHistory"></span></label>&nbsp;&nbsp;&nbsp;
+                            <button type="button" class="btn btn-danger" id="btnRetRejt" onclick="changeWorksheetPaymentType()" style="margin-left:20px;"><i class="fa fa-refresh"> </i> เปลี่ยนประเภทค่าใช้จ่าย</button>
+                        </div>
+                        <div class="row">
+                            <div class="table-responsive" style="padding:0; margin:0 15px ; overflow: auto; max-height: 300px; margin-top: 10px">
+
+                                <table class="table table-striped table-bordered table-hover" id="tbRetentionHistory" style="margin-top: 10px">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="min-width:200px;">เลขที่ใบ หักเงินประกัน</th>
+                                            <th class="text-center" style="min-width:200px;">เลขที่ PO</th>
+                                            <th class="text-center" style="min-width:200px;">รหัสผู้รับเหมา</th>
+                                            <th class="text-center" style="min-width:200px;">ยอดเงินที่หัก Retention</th>
+                                            <th class="text-center" style="min-width:200px;">วันที่</th>
+                                            <th class="text-center" style="min-width:200px;">หมายเหตุ</th>
+                                            <th class="text-center" style="min-width:200px;">สถานะ Retention</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Worksheet Retention Result -->
+    <div class="modal fade" id="modalRetentionResult" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog " role="document" style="width:90%">
+            <div id="frmRetentionResult">
+                <div class="modal-content">
+                    <div class="modal-header bg-light-blue">
+                        <div class="form-row">
+                            <h4 class="modal-title pull-left">ข้อมูลการหักเงินประกันสำเร็จ</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="table-responsive" style="padding:0; margin:0 15px ; overflow: auto; max-height: 300px; margin-top: 10px">
+                                <label class="text-danger">ยอดเงินที่หัก Retention รวม : <span id="txtRetAmtResult"></span></label>
+                                <table class="table table-striped table-bordered table-hover" id="tbRetentionResult" style="margin-top: 10px">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="min-width:200px;">เลขที่ใบ หักเงินประกัน</th>
+                                            <th class="text-center" style="min-width:200px;">เลขที่ PO</th>
+                                            <th class="text-center" style="min-width:200px;">รหัสผู้รับเหมา</th>
+                                            <th class="text-center" style="min-width:200px;">ยอดเงินที่หัก Retention</th>
+                                            <th class="text-center" style="min-width:200px;">วันที่</th>
+                                            <th class="text-center" style="min-width:200px;">หมายเหตุ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            @if (@EnumConfiguration.Role.PMR.ToString() != @UserDetail.Role)
+            {
+                <a href='@Url.Action("Index","Home")' class="logo bg-blue-active hidden-xs hidden-sm">
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini"><b>H</b>C</span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><b>HOME</b> CARE</span>
+                </a>
+            }
+            else
+            {
+                <a class="logo bg-blue-active hidden-xs hidden-sm">
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini"><b>H</b>C</span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><b>HOME</b> CARE</span>
+                </a>
+            }
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top bg-blue-active">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="navbar-custom-menu ">
+                    <ul class="nav navbar-nav">
+                        <li><a class="unstyled"><span class="hidden-xs"> <b>@UserDetail.Fullname.ToUpper()</b> (@UserDetail.Role)</span></a></li>
+                        <li class="dropdown user user-menu">
+                            @if (Request.IsAuthenticated)
+                            {
+                            <li class="dropdown user user-menu">
+                                <a href="@Url.Action("SignOut", "HC")">
+                                    <i class="fa fa-sign-out" style="margin: 0px;"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="dropdown user user-menu">
+                                @using (Html.BeginForm("LogOff", "HC", FormMethod.Post, new { id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken();
+                                }
+                                <a href="javascript:document.getElementById('logoutForm').submit()">
+                                    <i class="fa fa-sign-out" style="margin: 0px;"></i>
+                                </a>
+                            </li>
+                        }
+                            @*@using (Html.BeginForm("LogOff", "HC", FormMethod.Post, new { id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken();
+                                }
+                                <a href="javascript:document.getElementById('logoutForm').submit()">
+                                    <i class="fa fa-sign-out" style="margin: 0px;"></i>
+                                </a>
+                                </li>*@
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside class="main-sidebar">
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+                    <!-- Sidebar user panel -->
+                    <!--<div class="user-panel">
+                        <div class="pull-left info" style="position:static">
+                            <p>@UserDetail.Fullname</p>
+                            <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                        </div>
+                    </div>-->
+                    <!-- sidebar menu: : style can be found in sidebar.less -->
+                    <ul class="sidebar-menu">
+                       
+                    </ul>
+                </section>
+            </aside>
+
+            <div class="content-wrapper">
+                <section class="content">
+                    @RenderBody()
+                </section>
+            </div>
+
+            <footer class="main-footer">
+                <strong>Copyright &copy; 2017 <a href="https://www.sansiri.com/" target="_blank">Sansiri</a>.</strong> All rights reserved.
+            </footer>
+        </div>
+
+        <!-- Modal Confirm Creat Manual PO -->
+
+        <div class="modal fade" id="modalConfirm" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md" role="document">
+                <div id="frmConfirm">
+                    <div class="modal-content" style="border-radius:6px">
+                        <div class="modal-header" id="headerModal" name="headerModal">
+                            <div class="form-row">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title"><label id="titleModal" name="titleModal"></label></h4>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" style="padding-left:15px; padding-right:15px;">
+                                <div></div><h4><label id="questionDesc" name="questionDesc"></label></h4>
+                                <br />
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="background-color:whitesmoke; text-align:center; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; padding: 10px">
+                            <button type="button" class="btn btn-success" id="modal-btn-yes" data-dismiss="modal" style="margin-right: 5px">ใช่</button>
+                            <button type="button" class="btn btn-danger" id="modal-btn-no" data-dismiss="modal">ไม่ใช่</button>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        @if (IsSectionDefined("Script"))
+        {
+            @RenderSection("Script", required: false)
+        }
+
+        @*Employee Modal*@
+        <div tabindex="-99999" class="modal fade" id="modalSearchEmployee" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+            <div class="modal-dialog" style="width:50%">
+                <div class="modal-content" style="border-radius:6px;">
+                    <div class="modal-header bg-green">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">ค้นหา ชื่อพนักงาน</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="row  form-group">
+                            <div class="col-lg-6 col-md-6 col-sm-12  text-left">
+                                <label for="lblEmpCode" class="col-lg-4 col-form-label">รหัสพนักงาน :</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control" type="text" id="textEmpCode">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12  text-left">
+                                <label for="lblEmpName" class="col-lg-4 col-form-label">ชื่อพนักงาน :</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control" type="text" id="textEmpName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="display : none;">
+                            <div class="col-lg-12 text-center">
+                                <button type="button" class="btn btn-default" id="btnSearchEmpl"><i class="fa fa-search"> </i> ค้นหา</button>
+                                <button type="button" class="btn btn-default" id="btnClearSearchEmpl"><i class="fa fa-search"> </i> ล้างข้อมูล</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table class="table table-striped table-bordered table-hover " id="tbEmployee" style="margin: 8px 8px 0px 8px; width:100%;overflow:auto;">
+                                    <thead>
+                                        <tr class="">
+                                            <th class="text-center" width="10%">
+                                                รหัสพนักงาน
+                                            </th>
+                                            <th class="text-center " width="20%">
+                                                ชื่อพนักงาน
+                                            </th>
+                                            <th class="text-center" width="10%">
+                                                เบอร์โทรศัพท์
+                                            </th>
+                                            <th class="text-center " width="20%">
+                                                เมล์
+                                            </th>
+                                            <th class="text-center" width="5%">
+
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center Bold text-danger" colspan="6">ไม่มีข้อมูล</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @*Modal ประวัติPO*@
+        <div tabindex="-1" class="modal fade" id="modalPO_History" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" style="width:95%">
+                <div class="modal-content" style="border-radius:6px;">
+                    <div class="modal-header bg-light-blue">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">ประวัติเลขที่ใบ PO</h4>
+                    </div>
+
+                    <div class="modal-body" style="max-height: 83vh; overflow-y: auto;">
+                        <form class="widget-content">
+                            <div class="row">
+                                <div class="table-responsive" style="padding:0; margin:0 15px ; overflow: auto; max-height: 300px; margin-top: 10px">
+                                    <table class="table table-striped table-bordered table-hover quotation-item-detail" id="tbPurchesOrderHistory" style=" width:auto ; min-width: 1600px">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">
+                                                    No.
+                                                </th>
+                                                <th class="text-center">
+                                                    เลขที่ใบ PO
+                                                </th>
+                                                <th class="text-center">
+                                                    สถานะ
+                                                </th>
+                                                <th class="text-center">
+                                                    วันที่สร้าง
+                                                </th>
+                                                <th class="text-center">
+                                                    เหตุผลการขอยกเลิก
+                                                </th>
+                                                <th class="text-center">
+                                                    ผู้ทำการแก้ไข
+                                                </th>
+                                                <th class="text-center">
+                                                    วันที่แก้ไข
+                                                </th>
+                                                <th id="approve_job_detail" class="text-center">
+                                                    รายละเอียดใบอนุมัติ
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="purchesOrderHistoryTBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        @*Modal ตรวจสอบงบโครงการ*@
+        <div tabindex="-1" class="modal fade" id="modalCheckProjectBudget" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" style="width:95%">
+                <div class="modal-content" style="border-radius:6px;">
+                    <div class="modal-header bg-light-blue">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">ตรวจสอบงบโครงการ</h4>
+                    </div>
+
+                    <div class="modal-body" style="max-height: 83vh; overflow-y: auto;">
+                        <form class="widget-content">
+                            <div class="row">
+                                <div class="table-responsive" style="padding:0; margin:0 15px ; overflow: auto; max-height: 300px; margin-top: 10px">
+                                    <table class="table table-striped table-bordered table-hover quotation-item-detail" id="tbCheckBudgetProject" style=" width:auto ; min-width: 1600px">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">
+                                                    PSPNR
+                                                </th>
+                                                <th class="text-center">
+                                                    BUDGET
+                                                </th>
+                                                <th class="text-center">
+                                                    RELEASE
+                                                </th>
+                                                <th class="text-center">
+                                                    ACTUAL
+                                                </th>
+                                                <th class="text-center">
+                                                    COMMIT
+                                                </th>
+                                                <th class="text-center">
+                                                    ASSIGNED
+                                                </th>
+                                                <th class="text-center">
+                                                    AVAILABLE
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbCheckBudgetProjectTBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $('#frmCancelPO [name="reasonId"]').change(function () {
+                if ($('#frmCancelPO [name="reasonId"]').val() === '5') {
+                    $('#divPOReason').css('display', 'block');
+                } else {
+                    $('#divPOReason').css('display', 'none');
+                }
+            });
+
+            $('#frmWorkSheetRollback [name="reasonId"]').change(function () {
+                if ($('#frmWorkSheetRollback [name="reasonId"]').val() === '3') {
+                    $('#divRollbackReason').css('display', 'block');
+                } else {
+                    $('#divRollbackReason').css('display', 'none');
+                }
+            });
+            function openModalConfirmRetention() {
+                return new Promise(function (resolve, reject) {
+                    $('#modalValidateRetention').modal({ backdrop: 'static', keyboard: false, show: true });
+                    $('#modalValidateRetention .btn-primary').click(function () {
+                        resolve(true);
+                    });
+                    $('#modalValidateRetention .btn-danger').click(function () {
+                        resolve(false);
+                    });
+
+                });
+                $('#btnConfirmRetention').removeAttr('onclick');
+
+            }
+
+            function openModalConfirmCancelPO() {
+
+                return new Promise(function (resolve, reject) {
+                    $('#modalConfirmCancelPO').modal('show')
+                        .on('shown.bs.modal', function () {
+                            $('#frmCancelPO [name="reasonId"]').on("change select2:select", function (e) {
+                                if (e.target.value === '5' && $('#frmCancelPO [name="txtOtherReason"]').val() === '') {
+                                    $('#modalConfirmCancelPO .btn-primary').prop("disabled", true);
+
+                                } else {
+                                    $('#modalConfirmCancelPO .btn-primary').prop("disabled", false);
+
+                                }
+                            });
+                            $('#frmCancelPO [name="txtOtherReason"]').on("change keyup paste", function (e) {
+                                if (e.target.value === '') {
+                                    $('#modalConfirmCancelPO .btn-primary').prop("disabled", true);
+
+                                } else {
+                                    $('#modalConfirmCancelPO .btn-primary').prop("disabled", false);
+
+                                }
+                            });
+
+                        });
+                    $('#modalConfirmCancelPO .btn-primary').click(function () {
+                        let data = {
+                            reasonId: $('#frmCancelPO [name="reasonId"]').val(),
+                            remark: $('#frmCancelPO [name="txtOtherReason"]').val()
+                        }
+                        resolve(data);
+                    });
+                    $('#modalConfirmCancelPO .btn-danger').click(function () {
+                        resolve(false);
+                    });
+                });
+                $('#btnConfCancelPO').removeAttr('onclick');
+
+            }
+
+            function openModalConfirmRollbackTimeSheet() {
+
+                return new Promise(function (resolve, reject) {
+                    $('#modalConfirmWorkSheetRollback').modal('show')
+                        .on('shown.bs.modal', function () {
+                            $('#frmWorkSheetRollback [name="reasonId"]').on("change select2:select", function (e) {
+                                if (e.target.value === '3' && $('#frmWorkSheetRollback [name="txtOtherReason"]').val() === '') {
+                                    $('#modalConfirmWorkSheetRollback .btn-primary').prop("disabled", true);
+
+                                } else {
+                                    $('#modalConfirmWorkSheetRollback .btn-primary').prop("disabled", false);
+
+                                }
+                            });
+                            $('#frmWorkSheetRollback [name="txtOtherReason"]').on("change keyup paste", function (e) {
+                                if (e.target.value === '') {
+                                    $('#modalConfirmWorkSheetRollback .btn-primary').prop("disabled", true);
+
+                                } else {
+                                    $('#modalConfirmWorkSheetRollback .btn-primary').prop("disabled", false);
+
+                                }
+                            });
+
+                        });
+                    $('#modalConfirmWorkSheetRollback .btn-primary').click(function () {
+
+                        let data = {
+                            reasonId: $('#frmWorkSheetRollback [name="reasonId"]').val(),
+                            remark: $('#frmWorkSheetRollback [name="txtOtherReason"]').val()
+                        }
+                        resolve(data);
+
+                    });
+                    $('#modalConfirmWorkSheetRollback .btn-danger').click(function () {
+                        resolve(false);
+
+                    });
+                });
+                $('#btnConfRollback').removeAttr('onclick');
+
+            }
+            $('#frmWorkSheetRollback [name="txtOtherReason"]').change(function () {
+                console.log($('#frmWorkSheetRollback [name="txtOtherReason"]').val());
+                if ($('#frmWorkSheetRollback [name="reasonId"]').val() === '3') {
+
+                    if ($('#frmWorkSheetRollback [name="txtOtherReason"]').val() === '') {
+                        $('#frmWorkSheetRollback btn btn-primary').prop("disabled", false);
+                    } else {
+                        $('#frmWorkSheetRollback btn btn-primary').prop("disabled", true);
+                    }
+                } else {
+                    $('#frmWorkSheetRollback btn btn-primary').prop("disabled", true);
+                }
+            });
+
+            function getRetentionHistory(worksheetId, system) {
+
+                return new Promise(async function (resolve, reject) {
+                    let tr = ``;
+                    $('#tbRetentionHistory tbody').empty();
+                    await ajaxGet(`${baseUrl}/homecare/api/v1/Worksheet/GetWorkSheetRetentionHistory?id=${worksheetId}`, response => {
+                        let totalAmt = 0;
+                        let cntRejt = 0;
+                        console.log(response);
+                        if (response) {
+                            if (response.data.length > 0) {
+
+                                $.each(response.data, function (Index, Value) {
+                                    tr += `<tr>
+                                                                                                <td  class="text-center"> ${Value.retention_number}</td>
+                                                                                                <td  class="text-center">${Value.po_number} </td>
+                                                                                                <td  class="text-center">${Value.retention_from_vendor}</td>
+                                                                                                <td  class="text-right">${Value.retention_amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                                                                                                <td  class="text-center">${Value.retention_posting_date}</td>
+                                                                                                <td  class="text-center">${Value.retention_remark}</td>
+                                                                                                <td  class="text-center">${Value.retention_status}</td>
+                                                                                            </tr>`;
+
+                                    if (Value.retention_status_Code === 3) {
+                                        cntRejt++;
+                                    }
+
+                                    if (Value.retention_status_Code != 3) {
+                                        totalAmt += Value.retention_amount;
+                                    }
+
+
+                                });
+                                if (system === 1) {
+                                    if ((cntRejt === response.data.length) && (response.data.length !== 0)) {
+                                        $('#btnRetRejt').css('display', 'inline');
+
+                                    } else {
+                                        $('#btnRetRejt').css('display', 'none');
+                                    }
+                                }
+                                else {
+                                    $('#btnRetRejt').css('display', 'none');
+                                }
+                            } else {
+                                tr += `<tr><td colspan="6" class="text-center">ไม่พบข้อมูล</td></tr>`;
+                                $('#btnRetRejt').css('display', 'none');
+                            }
+
+                            $('#txtRetAmtHistory').text(totalAmt.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                            $('#tbRetentionHistory tbody').append(tr);
+                            resolve(true);
+                        } else {
+                            resolve(false);
+                        }
+
+                    });
+                });
+
+
+            }
+
+
+            function openModalConfirmPopUP() {
+
+                return new Promise(function (resolve, reject) {
+                    $('#modalConfirm').modal({ backdrop: 'static', keyboard: false, show: true });
+                    $('#modalConfirm .btn-success').click(function () {
+                        resolve(true);
+                    });
+                    $('#modalConfirm .btn-danger').click(function () {
+                        resolve(false);
+                    });
+
+                });
+                //  $('#modal-btn-yes').removeAttr('onclick');
+
+            }
+
+
+        </script>
+
+
+        @*Modal ประวัติPO*@
+        <div tabindex="-1" class="modal fade" id="modalPO_History" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" style="width:95%">
+                <div class="modal-content" style="border-radius:6px;">
+                    <div class="modal-header bg-light-blue">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">ประวัติเลขที่ใบ PO</h4>
+                    </div>
+
+                    <div class="modal-body" style="max-height: 83vh; overflow-y: auto;">
+                        <form class="widget-content">
+                            <div class="row">
+                                <div class="table-responsive" style="padding:0; margin:0 15px ; overflow: auto; max-height: 300px; margin-top: 10px">
+                                    <table class="table table-striped table-bordered table-hover quotation-item-detail" id="tbPurchesOrderHistory" style=" width:auto ; min-width: 1600px">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">
+                                                    No.
+                                                </th>
+                                                <th class="text-center">
+                                                    เลขที่ใบ PO
+                                                </th>
+                                                <th class="text-center">
+                                                    สถานะ
+                                                </th>
+                                                <th class="text-center">
+                                                    วันที่สร้าง
+                                                </th>
+                                                <th class="text-center">
+                                                    เหตุผลการขอยกเลิก
+                                                </th>
+                                                <th class="text-center">
+                                                    ผู้ทำการแก้ไข
+                                                </th>
+                                                <th class="text-center">
+                                                    วันที่แก้ไข
+                                                </th>
+                                                <th id="approve_job_detail" class="text-center">
+                                                    รายละเอียดใบอนุมัติ
+                                                </th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="purchesOrderHistoryTBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @*Modal รายละเอียดใบงาน ฝั่ง SCPM*@
+        <div tabindex="-1" class="modal fade" id="modalPO_SCPM" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" style="width:95%">
+                <div class="modal-content" style="border-radius:6px;">
+                    <div class="modal-header bg-light-blue">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">รายละเอียดใบงาน</h4>
+                    </div>
+                    <div class="modal-body" style="max-height: 83vh; overflow-y: auto;">
+                        <form class="widget-content">
+                            <div class="row">
+                                <div class="table-responsive" style="padding:0; margin:0 15px ; overflow: auto; max-height: 300px; margin-top: 10px">
+                                    <table class="table table-striped table-bordered table-hover quotation-item-detail" id="tbPurchesOrderSCPM" style=" width:auto ; min-width: 1600px">
+                                        <thead>
+                                            <tr>
+
+                                                <th class="text-center">
+                                                    เลขที่ใบงาน
+                                                </th>
+                                                <th class="text-center">
+                                                    ราคาใบงาน
+                                                </th>
+                                                <th class="text-center">
+                                                    วันที่เปิดใบงาน
+                                                </th>
+                                                <th class="text-center">
+                                                    รหัส ผู้รับเหมา
+                                                </th>
+                                                <th class="text-center">
+                                                    ชื่อ ผู้รับเหมา
+                                                </th>
+                                                <th class="text-center">
+                                                    เลขที่อนุมัติใบงาน
+                                                </th>
+                                                <th id="approve_job_detail" class="text-center">
+                                                    ประเภทค่าใช้จ่าย
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="myPOSCPMTBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

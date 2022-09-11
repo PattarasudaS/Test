@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewBag.message = "Inform";
+}
+
+
+
+@if (ViewBag.message == "Inform")
+{
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a>
+
+                <a class="navbar-brand" href="index.html">Home Care System </a>
+                
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /navbar-inner -->
+    </div>
+    <div class="subnavbar">
+        <div class="subnavbar-inner">
+            <div class="container">
+                <ul class="mainnav">
+                    <li ><a href="../Inform/_Index" target="_self"><i class="icon-home"></i><span>หน้าหลัก</span> </a> </li>
+                    <li class="active"><a href="../Inform/InformAddDetail" target="_self"><i class="icon-bullhorn"></i><span>แจ้งซ่อม</span> </a> </li>
+                    <li><a href="../Options/Knowlage"><i class="icon-star" target="_self"></i><span>ช่วยเหลือ</span> </a> </li>
+                </ul>
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /subnavbar-inner -->
+    </div>
+}
+
+@if (ViewBag.message != "Inform")
+{
+   
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="navbar-brand" href="index.html">Home Care System </a>
+                </div>
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav pull-right">
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-user"></i> จัดการรับเรื่องแจ้งซ่อม <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:;">การแจ้งซ่อม</a></li>
+                                    <li><a href="javascript:;">ค้นหาใบรับเรื่องแจ้งซ่อม</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-user"></i> จัดการใบงานซ่อม <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:;">ค้นหาใบงานซ่อม</a></li>
+
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-user"></i> การอนุมัติ <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:;">อนุมัติราคาการซ่อม</a></li>
+                                    <li><a href="javascript:;">อนุมัติราคาการซ่อมส่วนกลาง</a></li>
+                                    <li><a href="javascript:;">อนุมัติ Retention</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-user"></i> การแจ้งซ่อมส่วนกลาง <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:;">แจ้งซ่อมส่วนกลาง</a></li>
+                                    <li><a href="javascript:;">ค้นหาใบงานส่วนกลาง</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-user"></i> การจัดการเอกสาร <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:;">สั่งพิมพ์เอกสาร F</a></li>
+
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-user"></i> วิเคราะห์งาน <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:;">Tracker งานซ่อม</a></li>
+
+                                </ul>
+                            </li>
+                            @*<li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-user"></i> การจัดการ <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:;">จัดการปฏิทิน</a></li>
+
+                                </ul>
+                            </li>*@
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-cog"></i> Account <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:;">Profile</a></li>
+                                    <li><a href="javascript:;">Logout</a></li>
+                                    <!--<li><a href="javascript:;">Settings</a></li>-->
+                                    <li><a href="javascript:;">Help</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <!-- <form class="navbar-search pull-right">
+               <input type="text" class="search-query" placeholder="Search">
+             </form>-->
+                    </div>
+                    <!--/.nav-collapse -->
+                </div>
+            <!-- /container -->
+        </div>
+        <!-- /navbar-inner -->
+    </div>
+    <div class="subnavbar">
+        <div class="subnavbar-inner">
+            <div class="container">
+                <ul class="mainnav">
+                    <li><a href="../Home/index" target="_blank"><i class="icon-home"></i><span>หน้าหลัก</span> </a> </li>
+                    <li><a href="../Tracker/Index" target="_blank"><i class="icon-list-alt"></i><span>Tracker</span> </a> </li>
+                    <li><a href="../Received/_Index" target="_blank"><i class="icon-file"></i><span>รับเรื่อง</span> </a> </li>
+                    <li class="active"><a href="../WorkSheet/_Index" target="_blank"><i class="icon-file"></i><span>ใบงาน</span> </a> </li>
+                    <li><a href="../Options/Knowlage" target="_blank"><i class="icon-star"></i><span>เกร็ดความรู้</span> </a> </li>
+                </ul>
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /subnavbar-inner -->
+    </div>
+
+}

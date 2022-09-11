@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "_Index";
+}
+
+<div class="main">
+    <div class="main-inner">
+        <div class="container">
+            
+            @Html.Action("_IndexSearch", new { message = ViewBag.Message })
+
+            @Html.Action("_IndexResult", new { message = ViewBag.Message })
+
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /main-inner -->
+</div>
+<!-- /main -->

@@ -1,0 +1,3441 @@
+﻿@model HomeCare_4_0.Models.ReceivedIndexViewModel
+@using HomeCare_4_0.Common
+@using HomeCare_4_0.ClassLib
+@using HomeCare_4_0.Controllers
+
+@{
+    ViewBag.Title = "ReceivedDetail";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+<style type="text/css">
+    .thumbnails li img {
+        width: 350px;
+        height: 350px;
+    }
+
+    .flag-china {
+        height: 21.74px;
+        border-radius: 3px;
+        position: relative;
+        bottom: 1px;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+        -webkit-appearance: none;
+    }
+
+        .table-responsive::-webkit-scrollbar:vertical {
+            width: 12px;
+        }
+
+        .table-responsive::-webkit-scrollbar:horizontal {
+            height: 12px;
+        }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, .5);
+        border-radius: 10px;
+        border: 2px solid #ffffff;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background-color: #ffffff;
+    }
+</style>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+</head>
+<body>
+    <input type="hidden" id="hdProjectSSegment" value=@Model.Data_Unit.PJ_SSegment />
+    <input type="hidden" id="hdReceiveID" value="@Model.Data_Inform.Receive_ID">
+    <input type="hidden" id="hdMain_ProcessID" value="@Model.Data_Inform.Main_ProcessID ">
+    <input type="hidden" id="hdInform_Date" value="@Model.Data_Inform.Inform_Date">
+    <input type="hidden" id="hdddlReceivedStatusIDOld" value="@Model.Data_Inform.Receive_Status_ID">
+    <input type="hidden" id="hdReceive_HC_DateOld" value="@Model.Data_Inform.Receive_HC_Date">
+    <input type="hidden" id="hdReceive_CC_DateOld" value="@Model.Data_Inform.Receive_CC_Date">
+    <input type="hidden" id="hdReceive_Confirm_Date" value="@Model.Data_Inform.Receive_Confirm_Date">
+    <input type="hidden" id="hdReceive_Appointment_Date_Real" value="@Model.Data_Inform.Receive_Appointment_Date_Real">
+    <input type="hidden" id="hdAddReceiveItemStatus">
+    @if (ReceivedController.checkPermission("receivedDetailInform")) // role != vendor
+    {
+        <div id="receivedDetailInform">
+            <div class="main">
+                <div class="main-inner">
+                    <div class="">
+                        <h2 class="page-header">
+                            <span class="text text-blue text-bold"><i class="fa fa-wrench"> </i> รับเรื่องแจ้งซ่อม </span>
+
+                            @if (Model.Data_Inform.flagAgent == true)
+                            {
+                                <span class="text text-danger text-bold"> (งานเร่งด่วน) <i class="fa fa-exclamation"> </i></span>
+                            }
+                        </h2>
+
+
+
+                        @*ข้อมูลลูกค้า*@
+                        <div class="box box-default" id="Received-customer">
+                            <div class="box-header with-border">
+                                <a data-toggle="collapse" data-target="#Received-customer-detail">
+                                    <i class="fa fa-user"></i>
+                                    <h3 class="box-title">
+                                        ข้อมูลลูกค้า
+                                        @if (Model.Data_Customer.VipStatus != null)
+                                        {
+                                            if (Model.Data_Customer.VipStatus.ToLower().Contains("priority"))
+                                            {
+                                                <span class="label label-danger">@Model.Data_Customer.VipStatus</span>
+                                            }
+
+                                            else
+                                            {
+                                                <a class="label label-warning DisplaySiriPiority">VIP</a>
+
+                                            }
+                                            <input type="hidden" value=@Model.Data_Customer.VipStatus id="hdVipStatus" />
+                                        }
+                                    </h3>
+                                </a>
+                            </div>
+                            <div class="box-body" id="Received-customer-detail">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label">ชื่อ-สกุล</label>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Customer.FullName)
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label">ข้อมูลติดต่อ</label>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Customer.FullTelephone)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label">โครงการ</label>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Unit.PJ_Name)
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label">แปลง</label>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Unit.Unit_Code_Address)
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label">แบบบ้าน</label>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Unit.Unit_Model)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label">วันที่เริ่มประกัน</label>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Unit.StartGuaranteeDate)
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label">วันที่หมดประกัน</label>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Unit.EndGuaranteeDate)
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label">วันที่ขยายประกัน</label>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Unit.ExtraGuaranteeDate)
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    @if (@Model.Data_Unit.Unit_GuaranteedYield == 1)
+                                    {
+                                        <div class="col-xs-12 col-sm-6 col-lg-4">
+                                            <label class="control-label text-danger"> Guaranteed Yield </label>
+                                            <div class="controls">
+                                                <input type="checkbox" name="Unit_GuaranteedYield" id="Unit_GuaranteedYield" checked disabled>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (@Model.Data_Unit.Unit_Defer == 1)
+                                    {
+                                        <div class="col-xs-12 col-sm-6 col-lg-4">
+                                            <label class="control-label text-danger"> Defer Payment </label>
+                                            <div class="controls">
+                                                <input type="checkbox" name="Unit_Defer" id="Unit_Defer" checked disabled>
+                                            </div>
+                                        </div>
+
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                        @*ข้อมูลรับเรื่อง*@
+                        <div class="box box-default" id="Received-Receive">
+                            <div class="box-header with-border">
+                                <a data-toggle="collapse" data-target="#Received-Receive-detail">
+                                    <i class="fa fa-phone"></i>
+                                    <h3 class="box-title">
+                                        ข้อมูลรับเรื่อง
+                                        @if (Model.Data_Inform.flagChina == true)
+                                        {
+                                            <img class="flag-china" src="https://s3-ap-southeast-1.amazonaws.com/sansiri-conss-ro77/www/public/images/flag-china.svg" alt="China flag">
+                                        }
+                                    </h3>
+                                </a>
+                            </div>
+                            <div class="box-body collapse in" id="Received-Receive-detail">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <h5><label class="control-label">สถานะรับเรื่อง</label></h5>
+                                        <div class="controls">
+                                            @Html.DropDownListFor(m => m.Data_DLL_Receive_Status.SelectedItemId, new SelectList(Model.Data_DLL_Receive_Status.Items, "Value", "Text", @Model.Data_Inform.Receive_Status_ID), new { @class = "form-control", @id = "ddlReceivedStatusID" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label"> HC รับเรื่องวันที่ </label></h5>
+                                        <div class="controls" id="Receive_HC_Date">
+                                            @Html.DisplayFor(m => m.Data_Inform.Receive_HC_Date)
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label"> หมายเหตุ HC </label></h5>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(m => m.Data_Inform.Receive_HC_Remark, new { @class = "form-control", @id = "txtHCRemark", @maxlength = "512" })
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <h5><label class="control-label"> HC ผู้รับเรื่อง </label></h5>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Inform.Receive_HC_User, new { @maxlength = "512" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label"> Call Centre รับเรื่องวันที่ </label></h5>
+                                        <div class="controls" id="Receive_CC_Date">
+                                            @Html.DisplayFor(m => m.Data_Inform.Receive_CC_Date)
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label"> หมายเหตุ Call Centre </label></h5>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(m => m.Data_Inform.Receive_CC_Remark, new { @class = "form-control", @id = "txtCCRemark", @maxlength = "512" })
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <h5><label class="control-label"> Call Centre ผู้รับเรื่อง </label></h5>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Inform.Receive_CC_User, new { @maxlength = "512" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label"> วันที่นัดหมายตรวจสอบ </label></h5>
+                                        <div class="bootstrap-datepicker">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.Data_Inform.Receive_Appointment_Date, new { @class = "form-control datepicker", style = "width:50%;", @id = "txtAPDate", @onkeypress = "return false" })
+
+                                                <div class="controls">
+                                                    @if (Model.Data_Inform.Receive_Appointment_Date != "" && (string.IsNullOrEmpty(@Model.Data_Inform.Receive_Appointment_Date_Real) || @EnumConfiguration.Role.CallCentre.ToString() == @UserDetail.Role))
+                                                    {
+                                                        <a id="btnExtendedAppointment">  &nbsp; <i class="fa fa-calendar-plus-o fa-lg" style="color:chocolate; font-size: 2.5em;"></i></a>
+                                                    }
+                                                    <a id="viewExtendedHistory">  &nbsp; <i class="fa fa-book fa-lg" style="font-size: 2.5em;"></i></a>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label"> เวลา </label></h5>
+                                        <div class="bootstrap-timepicker">
+                                            <div class="input-group">
+                                                @Html.TextBoxFor(m => m.Data_Inform.Receive_Appointment_Time_From, new { @class = "form-control timepicker", @id = "txtAPTimeForm" })
+
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label"> ถึง </label></h5>
+                                        <div class="bootstrap-timepicker">
+                                            <div class="input-group">
+                                                @Html.TextBoxFor(m => m.Data_Inform.Receive_Appointment_Time_To, new { @class = "form-control timepicker", @id = "txtAPTimeTO" })
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label ">สาเหตุวันนัดเกินกำหนด </label></h5>
+                                        <div class="controls">
+                                            @Html.DropDownListFor(m => m.Data_DLL_HC_OverAppointmentDate_Reason.SelectedItemId, new SelectList(Model.Data_DLL_HC_OverAppointmentDate_Reason.Items, "Value", "Text", @Model.Data_Inform.Receive_Appointment_Date_Reason_ID), new { @class = "form-control", @id = "ddlOverAPDate_ReasonID" })
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label ">วันเข้าตรวจสอบจริง * </label></h5>
+                                        <div class="input-group">
+                                            @if (string.IsNullOrEmpty(@Model.Data_Inform.Receive_Appointment_Date_Real))
+                                            {
+                                                <span class="input-group-addon" style="background-color:#f39c12">
+                                                    <input type="checkbox" name="APDateReal" id="APDateReal" class="APDateReal">
+                                                </span>
+                                                <input type="text" class="form-control" name="APDateRealDate" id="APDateRealDate" value="@Model.Data_Inform.Receive_Appointment_Date_Real" readonly style="width:100px;background-color:#db8b0b;">
+                                            }
+                                            else
+                                            {
+                                                <span class="input-group-addon">
+                                                    <input type="checkbox" name="APDateReal" id="APDateReal" checked class="APDateReal">
+                                                </span>
+                                                <input type="text" class="form-control" name="APDateRealDate" id="APDateRealDate" value="@Model.Data_Inform.Receive_Appointment_Date_Real" readonly style="width:100px">
+                                            }
+                                            @if (ReceivedController.checkPermission("EditReceiveRealDate"))
+                                            {
+                                                <button class="btn btn-default" style="margin-left: 10px;" onclick="openModalEditReceiveRealTime()">แก้ไขวันเข้าตรวจสอบจริง</button>
+                                            }
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <br>
+                                <div id="DivConfirm" style="background-color:#e9e9e9; border-radius: 4px; box-shadow: 2px 2px 3px #888888;" hidden>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 col-lg-4">
+                                            <h5><label class="control-label">สถานะยืนยันการรับเรื่อง</label></h5>
+                                            <div class="controls">
+                                                @Html.DropDownListFor(m => m.Data_DLL_Receive_Confirm_Status.SelectedItemId, new SelectList(Model.Data_DLL_Receive_Confirm_Status.Items, "Value", "Text", @Model.Data_Inform.Receive_Confirm_Status_ID), new { @class = "form-control", @id = "ddlConfirmStatusID" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                            <h5><label class="control-label">วันที่ยืนยันการรับเรื่อง </label></h5>
+                                            <div class="controls">
+                                                @Html.DisplayFor(m => m.Data_Inform.Receive_Confirm_Date, new { @class = "form-control", @id = "txtConfirmDate" })
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                            <h5><label class="control-label">หมายเหตุยืนยันการรับเรื่อง Call Centre </label></h5>
+                                            <div class="controls">
+                                                @Html.TextBoxFor(m => m.Data_Inform.Receive_Confirm_Remark, new { @class = "form-control", @id = "txtConfirmRemark", @maxlength = "512" })
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 col-lg-4">
+                                            <h5><label class="control-label">Call Centre ผู้ยืนยันรับเรื่อง </label></h5>
+                                            <div class="controls">
+                                                @Html.DisplayFor(m => m.Data_Inform.Receive_Confirm_User, new { @class = "form-control", @id = "txtConfirmUser" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*ข้อมูลแจ้งซ่อม*@
+                        <div class="box box-default" id="Received-Inform">
+                            <div class="box-header with-border">
+                                <a data-toggle="collapse" data-target="#Received-Inform-detail">
+                                    <i class="fa fa-pencil"></i>
+                                    <h3 class="box-title">ข้อมูลแจ้งซ่อม</h3>
+                                </a>
+                            </div>
+
+                            <div class="box-body collapse in" id="Received-Inform-detail">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label">รหัสงานซ่อม</label></h5>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Inform.Receive_JobNoText)
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label">สถานะ</label></h5>
+                                        <div class="controls text-danger text-bold">
+                                            <label id="lblMainProcessName">@Model.Data_Inform.Main_ProcessName </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label">วันที่รับแจ้ง</label></h5>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Inform.Inform_Date)
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label">ผู้รับแจ้ง</label></h5>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Inform.Inform_User)
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label">หมายเหตุ Call Centre</label></h5>
+                                        <div class="controls text-danger">
+                                            @Html.DisplayFor(m => m.Data_Inform.Inform_Remark)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <h5><label class="control-label">สถานะผู้แจ้ง</label></h5>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Inform.Inform_CustomerType_Name)
+                                            @Html.HiddenFor(x => x.Data_Inform.Inform_CustomerType_Name)
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 " name="Inform_CustomerName">
+                                        <h5><label class="control-label">ชื่อผู้แจ้ง</label></h5>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Inform.Inform_CustomerName)
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 " name="Inform_CustomerTel">
+                                        <h5><label class="control-label">เบอร์ติดต่อ</label></h5>
+                                        <div class="controls">
+                                            @Html.DisplayFor(m => m.Data_Inform.Inform_CustomerTel)
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-striped table-bordered table-hover" id="InformTable" style="width:100%">
+                                            <thead>
+                                                <tr class="">
+                                                    <th width="1%">
+                                                        <h5 class="text-center">No.</h5>
+                                                    </th>
+                                                    <th width="12%">
+                                                        <h5 class="text-center">สถานะ</h5>
+                                                    </th>
+                                                    <th width="24%">
+                                                        <h5 class="text-center">หมวดงาน</h5>
+                                                    </th>
+                                                    <th width="10%">
+                                                        <h5 class="text-center">รายละเอียดการแจ้ง</h5>
+                                                    </th>
+                                                    <th width="10%">
+                                                        <h5 class="text-center">หมายเหตุ HC (แสดงบน HomeApp)</h5>
+                                                    </th>
+                                                    <th width="12%">
+                                                        <h5 class="text-center">ประเภทการซ่อม</h5>
+                                                    </th>
+                                                    <th width="5%">
+                                                        <h5 class="text-center">สร้างรายการซ่อม</h5>
+                                                    </th>
+                                                    <th width="5%">
+                                                        <h5 class="text-center">ไฟล์ภาพ</h5>
+                                                    </th>
+                                                    <th width="21%">
+                                                        <h5 class="text-center">สาเหตุกรณีไม่ดำเนินการ หรือ Pending</h5>
+                                                    </th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for (var i = 0; i < Model.Data_Inform_Item_List.Count; i++)
+                                                {
+
+
+                                                    <tr>
+
+                                                        <td align="center">
+                                                            <input type="hidden" id="hdItemID" value="@Model.Data_Inform_Item_List[i].TD_Receive_Item_ID " />
+                                                            <input type="hidden" id="hdItemStatusID_Old" value="@Model.Data_Inform_Item_List[i].Status_ID " />
+                                                            @{
+                                                                int no = @i + 1;
+                                                                <label>@no</label>
+                                                            }
+
+
+                                                        </td>
+                                                        <td>
+                                                            @Html.DropDownListFor(m => Model.Data_Inform_Item_List[i].Status_ID, new SelectList(Model.Data_DLL_HC_Receive_Item_Status.Items, "Value", "Text", Model.Data_Inform_Item_List[i].Status_ID), new { @class = "form-control ddlReceivedItemStatusID", @id = "ddlReceivedItemStatusID" })
+                                                        </td>
+                                                        <td>
+                                                            @Html.DropDownListFor(m => Model.Data_Inform_Item_List[i].HC_Guarantee_ID, new SelectList(Model.Data_DLL_HC_Guarantee.Items, "Value", "Text", Model.Data_Inform_Item_List[i].HC_Guarantee_ID), new { @class = "form-control", @id = "ddlGuaranteeID" })
+                                                        </td>
+                                                        <td>
+                                                            @Html.TextAreaFor(m => Model.Data_Inform_Item_List[i].Detail, new { @class = "disabled form-control", @readonly = "readonly", @id = "txtItemDetail" })
+                                                        </td>
+                                                        <td>
+                                                            @Html.TextAreaFor(m => Model.Data_Inform_Item_List[i].Receive_Remark, new { @class = "disabled form-control", @id = "txtItemRemark" })
+                                                        </td>
+                                                        <td>
+                                                            @Html.DropDownListFor(m => Model.Data_Inform_Item_List[i].Repair_ID, new SelectList(Model.Data_DLL_HC_Flg_Repair_Transfer.Items, "Value", "Text", Model.Data_Inform_Item_List[i].Repair_ID), new { @class = "form-control", @id = "ddlRepairID" })
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if (Model.Data_Inform_Item_List[i].Status_ID != 2)
+                                                            {
+                                                            <a id="ReceivedDetailItems" name="ReceivedDetailItems[]" data-InformItem_ID="@Model.Data_Inform_Item_List[i].TD_Receive_Item_ID" data-Received_ID="@Model.Data_Inform.Receive_ID" hidden>
+                                                                <span class="fa fa-folder-open fa-lg" aria-hidden="true"></span>
+                                                                <span class="glyphicon glyphicon-time iconwait" ></span>
+                                                            </a>
+                                                            }
+                                                            else
+                                                            {
+                                                        <a id="ReceivedDetailItems" name="ReceivedDetailItems[]" data-InformItem_ID="@Model.Data_Inform_Item_List[i].TD_Receive_Item_ID" data-Received_ID="@Model.Data_Inform.Receive_ID">
+                                                            <span class="fa fa-folder-open fa-lg" aria-hidden="true"></span>
+                                                            <span class="glyphicon glyphicon-time iconwait"></span>
+                                                        </a>
+                                                            }
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <a id="InformPic" name="InformPic[]" data-InformItem_ID="@Model.Data_Inform_Item_List[i].TD_Receive_Item_ID">
+                                                                <span class="fa fa-picture-o fa-lg viewFile" aria-hidden="true"></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @Html.DropDownListFor(m => Model.Data_Inform_Item_List[i].Cancel_Reason_ID, new SelectList(Model.Data_DLL_HC_Receive_Item_Cancel_Reason.Items, "Value", "Text", Model.Data_Inform_Item_List[i].Cancel_Reason_ID), new { @class = "form-control ddlCancelResonID", @id = "ddlCancelResonID" })
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                <div class="pull-right">
+
+                                    @if (@EnumConfiguration.Role.PMR.ToString() != @UserDetail.Role)
+                                    {
+
+                                        <button class="btn btn-sm btn-primary" id="btnaddReceivedItem">
+                                            <i class="ace-icon fa fa-plus bigger-125"></i>
+                                            เพิ่มรายการ
+                                        </button>
+
+                                        <button class="btn btn-sm btn-success" id="btnsaveReceivedItem" disabled>
+                                            <i class="ace-icon fa fa-floppy-o bigger-125"></i>
+                                            บันทึก
+                                        </button>
+
+                                        <button class="btn btn-sm btn-danger" id="btnremoveReceivedItem" disabled>
+                                            <i class="ace-icon fa fa-times bigger-125"></i>
+
+                                            ยกเลิก
+
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        @*ปุ่มบันทึกข้อมูลและปุ่มเปิดใบงาน*@
+                        @if (@EnumConfiguration.Role.PMR.ToString() != @UserDetail.Role)
+                        {
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12">
+                                    <button type="button" class="btn btn-primary" id="btninsertReceived">บันทึกข้อมูล</button>
+
+                                    <span id="btnOtheAction">
+                                        <button type="button" id="btnPreviewWO" class="btn btn-primary">เปิดใบงาน</button>
+                                        <button type="button" id="btnConvertOTS" class="btn btn-primary" onclick="openModalConfirmWithReason('หน้าต่างยืนยันการเปลี่ยนรายการเป็น OneTimeService', 'convertToOneTimeService')">OneTimeService</button>
+                                        @if (ReceivedController.checkPermission("CloseReceiveButton"))
+                                        {
+                                            <button type="button" id="btnCloseReject" class="btn btn-danger">ปิดใบรับเรื่อง</button>
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!-- /container -->
+                </div>
+
+                @*Modal สร้างรายการซ่อม*@
+                <div tabindex="-1" class="modal fade" id="modalReceivedDetailItems" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog" style="width:95%">
+                        <div class="modal-content" style="border-radius:6px;">
+
+                            <div class="modal-header bg-light-blue">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">ข้อมูลแจ้งซ่อม</h4>
+                            </div>
+                            <div class="modal-body text-left">
+                                <div class="box box-default  collapsed-box box-solid">
+                                    <div class="box-header with-border ">
+                                        <h3 class="box-title">ข้อมูลแจ้งซ่อม</h3>
+                                        <div class="box-tools pull-right">
+                                            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <!-- /.box-tools -->
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <div class="row text text-purple">
+                                            <div class="col-xs-12 col-sm-6 col-lg-4">
+                                                <h5><strong>โครงการ: </strong><span class="text text-primary">@Html.DisplayFor(m => m.Data_Unit.PJ_Name)</span></h5>
+                                            </div>
+
+                                            <div class="col-xs-12 col-sm-6 col-lg-2">
+                                                <h5><strong>แปลง: </strong><span class="text text-primary">@Html.DisplayFor(m => m.Data_Unit.Unit_Code_Address)</span></h5>
+                                            </div>
+
+                                            <div id="MainDataInModal">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <table class="table table-striped table-bordered table-hover" id="ReceiveTable" style="margin: 2px 0px; max-width: 100%">
+                                                    <thead>
+                                                        <tr class="">
+                                                            <th class="text-center">
+                                                                ลักษณะงานหลัก
+                                                            </th>
+                                                            <th class="text-center">
+                                                                ลักษณะงานรอง
+                                                            </th>
+                                                            <th class="text-center">
+                                                                ลักษณะการประเมิน
+                                                            </th>
+                                                            <th class="text-center">
+                                                                ตำแหน่งที่เกิด
+                                                            </th>
+                                                            <th class="text-center">
+                                                                สาเหตุการเกิดปัญหา
+                                                            </th>
+                                                            @*<th class="text-center">
+                                อธิบายสาเหตุ
+                            </th>*@
+                                                            <th class="text-center">
+                                                                การซ้อมซ้ำ
+                                                            </th>
+                                                            <th class="text-center">
+                                                                Priority
+                                                            </th>
+                                                            @*<th class="text-center">
+                                ไฟล์แนบ
+                            </th>*@
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                        @*@if (ReceivedController.checkPermission("EditReceiveItemModal"))
+                                        {*@
+                                            <div class="col-lg-12" style="margin-top: 15px">
+                                                <div style="float: right;">
+                     
+                                                    <textarea class="form-control hidden" id="Remark" style="float:left;width:300px" rows="2" placeholder="กรุณาระบุเหตุผลในการแก้ไข"></textarea>
+                         
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12" style="margin-top: 15px">
+                                                <div style="float: right;">
+                                                    <button class="btn btn-primary" onclick="editConfigReceiveItemModal(this)" style="margin-right: 15px; width: 80px; display: none;">บันทึก</button>
+                                                    <button class="btn btn-default" id="editData" onclick="setVisibleForEditReceiveItemModal(this)">แก้ไขข้อมูล</button>
+                     
+                                                    <label id="lbStatusEditData" hidden>รออนุมัติแก้ไขข้อมูล</label>
+                                                    <label id="lbEmpEditData" hidden></label>
+                                                </div>
+                                            </div>
+                                            @*}*@
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <div class="box box-default  collapsed-box box-solid">
+
+
+                                    <div class="box-header with-border ">
+                                        <h3 class="box-title">เพิ่มรายการแจ้งซ่อมย่อย เพื่อนำไปสร้างใบงาน</h3>
+                                        <div class="box-tools pull-right">
+                                            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <!-- /.box-tools -->
+                                    </div>
+                                    <!-- /widget-header -->
+
+                                    <div class="box-body collapse in">
+                                        <div style="overflow:auto"  >
+                                            <table class="table table-striped table-bordered table-hover" id="AddReceiveTable" style="margin: 8px 8px 0px 8px;" width="100%">
+                                                <thead>
+                                                    <tr class="">
+                                                        <th class="text-center" style="width:50px;">
+                                                            No.
+                                                        </th>
+                                                        <th class="text-center" width="10%">
+                                                            สถานะ
+                                                        </th>
+                                                        <th class="text-center" width="15%">
+                                                            ผู้รับเหมา
+                                                        </th>
+                                                        <th class="text-center" width="10%">
+                                                            ประเภทงานซ่อม
+                                                        </th>
+                                                        <th class="text-center" width="20%">
+                                                            วันที่นัดหมายซ่อม
+                                                        </th>
+                                                        <th class="text-center" width="20%">
+                                                            ถึง
+                                                        </th>
+                                                        <th class="text-center" width="15%">
+                                                            สาเหตุวันนัดเกินกำหนด
+                                                        </th>
+                                                        <th class="text-center"width="7%">
+                                                            สร้างใบงาน
+                                                        </th>
+                                                        <th class="text-center" width="13%">
+                                                            หมายเหตุ
+                                                        </th>
+                                                        <th class="text-center" width="5%">
+                                                            <span class="glyphicon glyphicon-plus addBtn" id="addBtn"></span>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @*ajax*@
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="modal-footer bg-light-blue-active">
+                                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                                @if (@EnumConfiguration.Role.PMR.ToString() != @UserDetail.Role)
+                                {
+                                    <button type="button" class="btn btn-outline" id="btnSaveModal">Save changes</button>
+                                }
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                @*Modal แสดงใบงานก่อนที่จะสร้าง*@
+                <div tabindex="-1" class="modal fade" id="modalPreviewWorkOrder" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+                    <div class="modal-dialog" style="width:60%">
+                        <div class="modal-content" style="border-radius:6px;">
+                            <div class="modal-header bg-gray">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">รอเปิดใบงาน</h4>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div class="row">
+                                    <div class="col-lg-12 text-left">
+                                        <label class="text-primary">จำนวนใบงานที่รอเปิด :</label><span><label class="text-danger" id="lblOpenWO"></label></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-striped table-bordered table-hover " id="tbPreviewWorkOrder" style="margin: 8px 8px 0px 8px; width:100%">
+                                            <thead>
+                                                <tr class="">
+
+                                                    <th class="text-center " width="30%">
+                                                        ชื่อผู้รับเหมา
+                                                    </th>
+                                                    <th class="text-center " width="30%">
+                                                        หมวดรับประกัน
+                                                    </th>
+                                                    @*<th class="text-center " width="30%">
+                                                            หมวดงานที่ ผรม. ต้องซ่อม
+                                                        </th>*@
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center Bold text-danger" colspan="3">ไม่มีข้อมูล</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row">
+                                    <div class="col-lg-12 text-center">
+                                        @if (@UserDetail.Role != "CallCentre")
+                                        {
+                                            <button type="button" class="btn btn-default" id="btnOpenWorkOrder">เปิดใบงาน</button>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                @*Modal ดูไฟล์ภาพจาก Home App*@
+                <div tabindex="-1" class="modal fade" id="modalViewFile" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;" data-backdrop="static">
+                    <div class="modal-dialog" style="width:90%">
+                        <div class="modal-content" style="border-radius:6px;">
+                            <div class="modal-header badge-info">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title white"> <i class="fa fa-file-o bigger-130"></i> View Attach File</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <label class="header smaller lighter blue" id="lblattrachgroupName"></label>
+                                        <div>
+                                            <br />
+
+                                        </div>
+                                        <div class="text-center">
+                                            <select class="image-picker show-labels" id="logo"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer text-center ">
+
+                                <a class="btn btn-primary" id="btndownload"><i class="fa fa-cloud-download bigger-110"></i>Download</a>
+                                <button class="btn btn-danger" data-dismiss="modal" type="button" id="btnmodalviewClose"><i class="fa fa-times bigger-110"></i>Close</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Modal Extended Appointment*@
+                <div tabindex="-99999" class="modal fade" id="modalExtendedAppointment" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+                    <div class="modal-dialog" style="width:40%">
+                        <div class="modal-content" style="border-radius:6px;">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">เลื่อนวันที่นัดหมายตรวจสอบ</h4>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div class="row">
+
+                                    <div class="col-xs-12">
+                                        <div class="row">
+                                            <div class="col-xs-5  text-right">
+                                                <h5><label class="control-label"> วันที่นัดหมายตรวจสอบ(ใหม่): </label></h5>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="bootstrap-datepicker">
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </div>
+                                                        <input type="text" class="form-control datepicker" data-val="true" data-val-date="The field Extended Appointment must be a date." id="ExtendedReceiveAppointmentDate"
+                                                               name="ExtendedReceiveAppointmentDate" style="width:100%;" onkeypress="return false">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="row">
+                                            <div class="col-xs-5  text-right">
+                                                <h5><label class="control-label text-left"> เวลา: </label></h5>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="bootstrap-timepicker">
+                                                    <div class="input-group">
+                                                        <input class="form-control timepicker" data-val="true" data-val-date="The field Extended Appointment must be a date." id="ExtendedReceiveAppointmentTimeForm" name="ExtendedReceiveAppointmentTimeForm" style="width:100%;" type="text">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-clock-o"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="row">
+                                            <div class="col-xs-5 text-right">
+                                                <h5><label class="control-label"> ถึง: </label></h5>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="bootstrap-timepicker">
+                                                    <div class="input-group">
+                                                        <input class="form-control timepicker" data-val="true" data-val-date="The field Extended Appointment must be a date." id="ExtendedReceiveAppointmentTimeTo" name="ExtendedReceiveAppointmentTimeTo" style="width:100%;" type="text">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-clock-o"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="row">
+                                            <div class="col-xs-5 text-right">
+                                                <h5><label class="control-label"> สาเหตุเลื่อนนัดหมายฯ: </label></h5>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="bootstrap-timepicker">
+                                                    <div class="input-group">
+                                                        <select id="ddlExtendedResonID" class="form-control">
+                                                            <option value="">-- กรุณาเลือก --</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="row">
+                                            <div class="col-xs-5 text-right">
+                                                <h5><label class="control-label"> หมายเหตุ HC: </label></h5>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="bootstrap-timepicker">
+                                                    <div class="input-group">
+                                                        <textarea class="form-control" cols="30" rows="2" data-val="true" id="txtExtendRemark" name="txtExtendRemark" style="width:100%;" type="text" maxlength="512"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @if (@EnumConfiguration.Role.CallCentre.ToString() == @UserDetail.Role)
+                                    {
+                                        <div class="col-xs-12">
+                                            <div class="row">
+                                                <h5></h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12">
+                                            <div class="row">
+                                                <div class="col-xs-5 text-right">
+                                                    <h5><label class="control-label"> หมายเหตุ CC: </label></h5>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <div class="bootstrap-timepicker">
+                                                        <div class="input-group">
+                                                            <textarea class="form-control" cols="30" rows="2" data-val="true" id="txtExtendRemarkCC" name="txtExtendRemarkCC" style="width:100%;" type="text" maxlength="512"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <div class="row">
+                                                <div class="col-xs-5 text-right">
+                                                    <h5><label class="control-label"> สถานะ: </label></h5>
+                                                </div>
+                                                <div class="col-xs-6 text-left">
+                                                    <div class="form-check">
+                                                        <label class="radio-inline"><input type="radio" name="rdoConfirm" value="true" style="width:20px;height:20px">ยืนยัน</label>
+                                                        <label class="radio-inline"><input type="radio" name="rdoConfirm" value="false" style="width:20px;height:20px">ไม่ยืนยัน</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row">
+                                    <div class="col-lg-12 text-center">
+                                        <button type="button" class="btn btn-default" id="btnUpdateExtended"><i class="fa fa-floppy-o"> </i> บันทึก</button>
+                                        <button type="button" class="btn btn-default" id="btnCancelxtended" data-dismiss="modal"><i class="fa fa-remove"> </i> ยกเลิก</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                @*Modal Extended Appointment History*@
+                <div tabindex="-1" class="modal fade" id="modalExtendedAppointmentHistory" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+                    <div class="modal-dialog" style="width:60%">
+                        <div class="modal-content" style="border-radius:6px;">
+                            <div class="modal-header bg-light-blue">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">ประวัติการขอเลื่อนนัด</h4>
+                            </div>
+                            <div class="modal-body text-center">
+                                <form class="widget-content">
+                                    <div class="row">
+                                        <div class="col-lg-12" style="overflow:auto">
+
+
+                                            <table class="table table-striped table-bordered table-hover " id="tbExtendedHistory" style="margin: 8px 8px 0px 8px; width:100%">
+                                                <thead>
+                                                    <tr class="">
+                                                        <th class="text-center">
+                                                            ลำดับ
+                                                        </th>
+                                                        <th class="text-center">
+                                                            สถานะ
+                                                        </th>
+                                                        <th class="text-center">
+                                                            ผู้ขอเลื่อน
+                                                        </th>
+                                                        <th class="text-center">
+                                                            วันเดิม
+                                                        </th>
+                                                        <th class="text-center">
+                                                            วันใหม่
+                                                        </th>
+                                                        <th class="text-center">
+                                                            สาเหตุ
+                                                        </th>
+                                                        <th class="text-center">
+                                                            หมายเหตุ HC
+                                                        </th>
+                                                        <th class="text-center">
+                                                            หมายเหตุ CC
+                                                        </th>
+                                                        <th class="text-center">
+                                                            ผู้อนุมัติ CC
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center Bold text-danger" colspan="9">ไม่มีข้อมูล</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /main-inner -->
+            </div>
+            @* Modal Confirm With Reason *@
+            <div tabindex="-1" class="modal fade" id="modalConfirmWithReason" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+                <div class="modal-dialog modal-dialog-centered" style="margin-top: 25vh; width: 35%">
+                    <div class="modal-content" style="border-radius: 6px;">
+                        <div class="modal-header bg-light-blue" style="border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="confirmTitle"></h4>
+                        </div>
+                        <div class="modal-body" style="padding-bottom: 0">
+                            <div class="row form-group">
+                                <div style="margin: 0 5%">
+                                    <label id="confirmTxtReason"></label><label style="color: crimson" id="confirmStarReason">*</label>
+                                    <input class="form-control" type="text" value="" id="confirmReason" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="background-color:whitesmoke; text-align:center; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; padding: 10px">
+                            <button type="button" class="btn btn-primary" id="confirmBtn" onclick="" style="margin-right: 25px">ยืนยัน</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                        </div>
+                    </div>
+                </div>
+            </div>@* Modal edit real date *@
+
+            <div tabindex="-1" class="modal fade" id="modalEditReceiveRealDate" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+                <div class="modal-dialog modal-dialog-centered" style="margin-top: 25vh; width: 25%">
+                    <div class="modal-content" style="border-radius: 6px;">
+                        <div class="modal-header bg-light-blue" style="border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">หน้าต่างแก้ไขวันเข้าตรวจสอบจริง</h4>
+                        </div>
+                        <div class="modal-body" style="padding-bottom: 0">
+                            <div class="row form-group">
+                                <div style="margin: 0 5%">
+                                    <label>วันเข้าตรวจสอบจริง</label><label style="color: crimson" id="confirmStarReason">*</label>
+                                    <input class="form-control" id="selectRealTimeDate" style="width:100%;" type="text">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div style="margin: 0 5%">
+                                    <label>สาเหตุการเปลี่ยนวันเข้าตรวจสอบ</label><label style="color: crimson" id="confirmStarReason">*</label>
+                                    <input class="form-control" id="changeRealTimeDateReason" style="width:100%;" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="background-color:whitesmoke; text-align:center; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; padding: 10px">
+                            <button type="button" class="btn btn-primary" id="confirmBtn" onclick="editConfigReceiveRealDate()" style="margin-right: 25px">ยืนยัน</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalInsertRoleSuccess" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true" style="z-index:2000;">
+                <!-- Change class .modal-sm to change the size of the modal -->
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title w-100" id="myModalLabel">ยืนยันการ บันทึก</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <i class="fa fa fa-check fa-2x" aria-hidden="true" style="color: #32CD32;"></i>
+                            <span id="lbTxtSuccess"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">ตกลง</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* modalAlertLineApprove*@
+            <div tabindex="-1" class="modal fade" id="modalAlertLineApprove" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+                <div class="modal-dialog modal-dialog-centered" style="margin-top: 25vh">
+                    <div class="modal-content" style="border-radius: 6px;">
+                        <div class="modal-header bg-light-blue" style="border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="confirmTitleProjectApprove"></h4>
+                        </div>
+                        <div class="modal-body " style="padding-bottom: 0">
+                            <label>ไม่สามารถทำการแก้ไขข้อมูลได้ เนื่องจากยังไม่ได้ทำการ Set Workflow กรุณาติดต่อ Admin HC</label>
+                        </div>
+                        <div class="modal-footer" style="background-color:whitesmoke; text-align:center; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; padding: 10px">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Modal Alert Siri Piority *@
+            @{Html.RenderPartial("_DisplaySiriPiority");}
+            <!-- /main -->
+        </div>
+    }
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+    let baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+    var obj = {}
+    var objNew = {}
+    var myRows_old = [];
+    var myRows_old = [];
+    var flagEdit = false;
+    var ReceiveJobNoText = null;
+    var empApproveEditData = null;
+    var worksheetCreateFlag = null;
+    var request_token = null;
+    $(document).ready(async function () {
+        var minutes = 30;
+        setTimeout(function () {
+            window.location.reload();
+        }, 1000 * 60 * minutes);
+
+        var InformItem_ID;
+        var Received_ID;
+
+        initRecieved();
+        getExtendReason();
+        request_token = $.ajax({
+            url: '@System.Configuration.ConfigurationManager.AppSettings["Home_Care_API"]/login/getTokenCode',
+            type: 'GET',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $.ajaxSetup({
+                        headers: {
+                            'Authorization': "Bearer " + data.response
+                        }
+                    });
+
+                }
+            });
+        if (sessionStorage.reloadAfterPageLoad) {
+
+        } else {
+            if ($("#hdVipStatus").val() != null) {
+                if ($("#hdVipStatus").val() != "priority") {
+                    $('#modalDisplaySiriPiority').modal('show');
+                }
+            }
+            sessionStorage.reloadAfterPageLoad = false;
+        }
+        function getExtendReason()
+        {
+
+            //ReasonType = 1 Extend Appointment
+            var requestData = {
+                ReasonType:1
+            }
+            var Url = '@Url.Action("getExtendReason", "Master")';
+            var response = CallController_Ajax(requestData,Url);
+
+            $.each(response, function (key, value) {
+                $('#ddlExtendedResonID').append($("<option></option>").val(value.ExtendReasonID).html(value.Reason));
+            });
+        }
+
+        function initRecieved()
+        {
+            var main_ProcessID=$("#hdMain_ProcessID").val();
+            var Receive_StatusID = $("#ddlReceivedStatusID").val();
+            var Confirm_StatusID = $("#ddlConfirmStatusID").val();
+            //console.log(main_ProcessID);
+            //remove option one time service
+            $('#ddlRepairID option[value=3]').remove();
+            if (main_ProcessID == 1) {
+                {   //ปิดส่วนแจ้งซ่อม
+                    $("#InformTable select").prop('disabled', true);
+                    $("#InformTable textarea").prop('readonly', true);
+                    $("#InformTable #ReceivedDetailItems").prop('hidden', true);
+                }
+            }else if (main_ProcessID == 6 ){
+                //ปิดส่วนรับเรื่อง
+                $("#Received-Receive-detail select").prop('disabled', true);
+                $("#Received-Receive-detail input").prop('disabled', true);
+
+                $("#btninsertReceived").prop('disabled', true);
+                $("#btnPreviewWO").prop('disabled', true);
+                $("#btnConvertOTS").prop('disabled', true);
+                $("#btnCloseReject").prop('disabled', true);
+
+                //ปิดส่วนแจ้งซ่อม
+                $("#InformTable textarea").prop('disabled', true);
+                $("#InformTable select").prop('disabled', true);
+                $("#InformTable #ReceivedDetailItems").prop('hidden', true);
+                $("#btnaddReceivedItem").prop('disabled', true);
+            }
+            else
+            {
+                //ปิดส่วนรับเรื่อง
+                $("#Received-Receive-detail select").prop('disabled', true);
+                $("#Received-Receive-detail input").prop('disabled', true);
+                //เปิดส่วนแจ้งซ่อมบางส่วน
+                $("#InformTable textarea").prop('disabled', false);
+                $("#InformTable select").prop('disabled', false);
+
+                //Check real appointment date
+
+                if ($('#APDateRealDate').val() == "") {
+                    $("#InformTable #ddlReceivedItemStatusID").prop('disabled', true);
+                    $("#InformTable #ddlRepairID").prop('disabled', true);
+                }
+
+                $("#InformTable #ddlGuaranteeID").prop('disabled', true);
+                $("#InformTable #ddlCancelResonID").prop('disabled', true);
+            }
+
+            if (Receive_StatusID == 1)
+            {
+                $("#Received-Receive-detail input").prop('disabled', true);
+                $("#ddlOverAPDate_ReasonID").prop('disabled', true);
+            }
+            else if(Receive_StatusID == 2 && main_ProcessID != 1 && main_ProcessID != 6 && $("#APDateRealDate").val() == "")
+            {
+                $("#APDateReal").prop('disabled', false);
+            }
+
+            // รับเรื่องแล้ว แต่ยังไม่ได้ยืนยัน เปิดให้ Call Centre ยืนยันรับเรื่องก่อน
+            if ((Receive_StatusID == 2 && Confirm_StatusID == 0) && ("@EnumConfiguration.Role.CallCentre.ToString()" == "@UserDetail.Role"))
+            {
+                $("#ddlConfirmStatusID").prop('disabled', false);
+                $("#txtConfirmDate").prop('disabled', false);
+                $("#txtConfirmRemark").prop('disabled', false);
+                $("#txtConfirmUser").prop('disabled', false);
+            }
+            else
+            {
+                $("#ddlConfirmStatusID").prop('disabled', true);
+                $("#txtConfirmDate").prop('disabled', true);
+                $("#txtConfirmRemark").prop('disabled', true);
+                $("#txtConfirmUser").prop('disabled', true);
+            }
+            fnGetWorkSheetCrateFlag();
+            $(".DisplaySiriPiority").on('click', function () {
+                $('#modalDisplaySiriPiority').modal('show');
+            });
+
+            ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/CheckHistoryEditDataFlow?id=${$("#hdReceiveID").val()}&projectCode=${"@Model.Data_Unit.PJ_Code"}`, async response => {
+                if (response.data.length > 0 && response.data[0].Detail_old != null) {
+                    $('.iconwait').show();
+                    empApproveEditData = 'รออนุมัติแก้ไขข้อมูลโดยคุณ' + response.data[0].EmpApproveName;
+                    flagEdit = true;
+
+                } else {
+
+                    $('.iconwait').hide();
+                    flagEdit = false;
+                }
+            });
+        }
+
+
+        $('.ddlReceivedItemStatusID').change(function (e) {
+
+            var ReceivedDetailItems = $(this).closest('tr').find("#ReceivedDetailItems");
+            var ddlCancelResonID = $(this).closest('tr').find("#ddlCancelResonID");
+
+            if($(this).val()!=2)
+            {
+                ReceivedDetailItems.attr("hidden","hidden");
+            }
+            else
+            {
+                ReceivedDetailItems.removeAttr("hidden");
+            }
+
+            if($(this).val()==3 || $(this).val()==4)
+            {
+                ddlCancelResonID.removeAttr("disabled");
+                ddlCancelResonID.removeAttr("readonly");
+            }
+            else
+            {
+                ddlCancelResonID.attr("disabled", "disabled");
+                ddlCancelResonID.attr("readonly", "readonly");
+            }
+
+        });
+
+
+        $("#btnCloseReject").click(function () {
+            openModalConfirmWithReasonforRequired("ยืนยันการปิดใบรับเรื่อง");
+            $("#confirmBtn").prop('disabled', true);
+
+            $("#confirmReason").keyup(function (event) {
+                var getmsgreson = $("#confirmReason").val();
+                if (getmsgreson == "") {
+                    $("#confirmBtn").prop('disabled', true);
+                } else {
+                    $("#confirmBtn").prop('disabled', false);
+                }
+            });
+
+        });
+
+        $("#APDateReal").click(function () {
+            var date = new Date();
+            var today = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+            if (document.getElementById('APDateReal').checked) {
+                $("#APDateRealDate").val(today);
+                //$("#btnExtendedAppointment").attr('hidden','hidden');
+                document.getElementById('btnExtendedAppointment').style.display='none';
+
+            }
+            else {
+                $("#APDateRealDate").val("");
+                //document.getElementById('btnExtendedAppointment').style.display='block';
+                document.getElementById('btnExtendedAppointment').style.display='';
+            }
+
+
+        });
+
+        //Extend Appointment
+        $("#btnExtendedAppointment").click(function () {
+
+            $("#ddlExtendedResonID").val("");
+            $("#ExtendedReceiveAppointmentTimeForm").val('');
+            $("#ExtendedReceiveAppointmentTimeTo").val('');
+            var ReceiveID=$("#hdReceiveID").val();
+
+
+            //Check Extend Appointment
+            if ("@EnumConfiguration.Role.CallCentre.ToString()" != "@UserDetail.Role")
+            {
+                var requestData = {
+                    Job_ID:ReceiveID,
+                    Job_Code:"R"
+                }
+                var Url = '@Url.Action("CheckReceivedAppointment", "Received")';
+                var response = CallController_Ajax(requestData,Url);
+
+                if (response != "")
+                {
+                    modalWaring(response);
+                    return false;
+                }
+
+            }
+
+            //Get Extended Appointment
+            var requestData = {
+                ReceiveID:ReceiveID
+            }
+            var Url = '@Url.Action("GetReceivedAppointment", "Received")';
+            var response = CallController_Ajax(requestData, Url);
+            //console.log(response)
+            //console.log(response[0]);
+            if(response.length>0 && "@EnumConfiguration.Role.CallCentre.ToString()" == "@UserDetail.Role")
+            {
+                $("#ReceiveAppointmentDate").val(response[0].Receive_Appointment_Date);
+                $("#ReceiveAppointmentTimeForm").val(response[0].Receive_Appointment_Time_From);
+                $("#ReceiveAppointmentTimeTo").val(response[0].Receive_Appointment_Time_To);
+
+                $("#ExtendedReceiveAppointmentDate").val(response[0].Ext_Receive_Appointment_Date);
+
+                if(response[0].Ext_Receive_Appointment_Time_From==null && response[0].Ext_Receive_Appointment_Time_To==null)
+                {
+                    $("#ExtendedReceiveAppointmentTimeForm").val('');
+                    $("#ExtendedReceiveAppointmentTimeTo").val('');
+                }else
+                {
+                    $("#ExtendedReceiveAppointmentTimeForm").val(response[0].Ext_Receive_Appointment_Time_From);
+                    $("#ExtendedReceiveAppointmentTimeTo").val(response[0].Ext_Receive_Appointment_Time_To);
+                }
+                $("#ddlExtendedResonID").val(response[0].ExtendedReasonID);
+                $("#txtExtendRemark").val(response[0].ExtendedRemark);
+                $("#txtExtendRemarkCC").val(response[0].ExtendedRemarkCC);
+
+
+
+                //console.log(response[0]);
+                if("@EnumConfiguration.Role.CallCentre.ToString()" == "@UserDetail.Role" && (response[0].Ext_Receive_Appointment_Date!='' && response[0].ExtendedApproveFlag==null))
+                {
+                    $("[name='rdoConfirm']").prop('disabled', false);
+                    $("#txtExtendRemarkCC").prop('disabled', false);
+                    $('#btnUpdateExtended').prop('disabled', false);
+
+                }else if("@EnumConfiguration.Role.CallCentre.ToString()" == "@UserDetail.Role" && (response[0].ExtendedApproveFlag==true || response[0].ExtendedApproveFlag==false))
+                {
+                    //$('#chkExtendedConfirm').prop('disabled', true);
+                    $("[name='rdoConfirm']").prop('disabled', true);
+                    $("#txtExtendRemarkCC").prop('disabled', true);
+                    $('#btnUpdateExtended').prop('disabled', true);
+
+                }
+                else if("@EnumConfiguration.Role.CallCentre.ToString()" != "@UserDetail.Role")
+                {
+                    //$('#chkExtendedConfirm').prop('disabled', true);
+                    $("[name='rdoConfirm']").prop('disabled', true);
+                    $("#txtExtendRemarkCC").prop('disabled', true);
+                    $('#btnUpdateExtended').prop('disabled', false);
+
+                }
+                else
+                {
+                    //$('#chkExtendedConfirm').prop('disabled', true);
+                    $("[name='rdoConfirm']").prop('disabled', true);
+                    $("#txtExtendRemarkCC").prop('disabled', true);
+                    $('#btnUpdateExtended').prop('disabled', true);
+                }
+
+                if("@EnumConfiguration.Role.CallCentre.ToString()" == "@UserDetail.Role")
+                {
+                    $("#ExtendedReceiveAppointmentDate").prop('disabled', true);
+                    $("#ExtendedReceiveAppointmentTimeForm").prop('disabled', true);
+                    $("#ExtendedReceiveAppointmentTimeTo").prop('disabled', true);
+                    $("#ddlExtendedResonID").prop('disabled', true);
+                    $("#txtExtendRemark").prop('disabled', true);
+                    //$("#chkExtendedConfirm").prop('checked',response[0].ExtendedApproveFlag);
+
+                }
+                $("input[name=rdoConfirm][value=" + response[0].ExtendedApproveFlag + "]").attr('checked', 'checked');
+
+
+            }else
+            {
+                $("#ReceiveAppointmentDate").val("");
+                $("#ReceiveAppointmentTimeForm").val("");
+                $("#ReceiveAppointmentTimeTo").val("");
+            }
+
+            $("#modalExtendedAppointment").appendTo("body").modal('show');
+
+        });
+
+        $('.ddlCancelResonID').change(function (e) {
+
+            var ddlReceivedItemStatusID = $(this).closest('tr').find("#ddlReceivedItemStatusID").val();
+            //console.log(ddlReceivedItemStatusID);
+            if ($(this).val() == 7)
+            {
+                modalWaring("สาเหตุนี้กรณี Call Centre ติดต่อไม่ได้ และจะเลือกโดยระบบเท่านั้น");
+                $(this).val(0);
+                return false;
+            }
+            else if (($(this).val() == 9 || $(this).val() == 10) && ddlReceivedItemStatusID != 4)
+            {
+                modalWaring("สาเหตุนี้ เฉพาะกรณีเลือกสถานะเป็น Pending เท่านั้น");
+                $(this).val(0);
+                return false;
+            }
+            else if (($(this).val() != 9 && $(this).val() != 10) && ddlReceivedItemStatusID == 4)
+            {
+                modalWaring("สาเหตุนี้ เฉพาะกรณีเลือกสถานะเป็น ไม่ดำเนินการ เท่านั้น");
+                $(this).val(0);
+                return false;
+            }
+
+        });
+
+        var Data_DLL_HC_Receive_Item_Detail_Status;
+        var Data_DLL_HC_Vendor_Price;
+
+
+        //Btn plus and minus For collapse
+        function toggleIcon(event) {
+            //console.log($(event.target));
+            $(this).find('.pull-right').toggleClass('icon-minus icon-plus');
+        }
+        $('.widget').on('hidden.bs.collapse', toggleIcon);
+        $('.widget').on('shown.bs.collapse', toggleIcon);
+
+        //Btn minus RemoveRow For AddReceiveTable
+        $("#AddReceiveTable").on('click', '#addBtnRemove', function () {
+            $(this).parent().parent().remove();
+            $.each($("#AddReceiveTable tr"), function (i, item) {
+                if (i != 0) {
+                    $(item).find("#No").html(i);
+                }
+            });
+        });
+
+        //Btn add New Item
+
+        $('#btnaddReceivedItem').on('click', function () {
+            GenerateEmptyRow();
+            $(this).prop('disabled', true);
+            $("#btnsaveReceivedItem").prop('disabled', false);
+            $("#btnremoveReceivedItem").prop('disabled', false);
+            //set status add
+            $("#hdAddReceiveItemStatus").val(true);
+        });
+
+        $('#btnsaveReceivedItem').on('click', function () {
+
+            var item=$("#InformTable tbody tr:last");
+            var ReceiveID=$("#hdReceiveID").val();
+            var ItemNo  =$('#InformTable tbody tr').length;
+            var ReceivedItemStatusID=item.find("#ddlReceivedItemStatusID").val();
+            var GuaranteeID=item.find("#ddlGuaranteeID").val();
+            var Remark=item.find("#txtItemRemark").val();
+            var Detail=item.find("#txtItemDetail").val();
+            var RepairID=item.find("#ddlRepairID").val();
+            var CancelResonID=item.find("#ddlCancelResonID").val();
+
+            if(GuaranteeID==0||Detail=="")
+            {
+                modalWaring("กรุณาระบุ หมวดงาน หรือ รายละเอียดการแจ้ง");
+                return;
+            }
+
+            //call function
+            var requestData = {
+                ReceiveID:ReceiveID,
+                ItemNo:ItemNo,
+                ReceivedItemStatusID:ReceivedItemStatusID,
+                GuaranteeID:GuaranteeID,
+                Remark:Remark,
+                Detail:Detail,
+                RepairID:RepairID,
+                CancelResonID:CancelResonID,
+                User:"@UserDetail.CodeName",
+            }
+            var Url = '@Url.Action("InsertReceiveItem", "Received")';
+            //console.log(Url);
+            var response =CallController_Ajax(requestData,Url);
+            //console.log(response);
+            //End function
+
+            if(response=="True")
+            {
+                var CurrentItem=GetReceivedLastItem();
+                if(CurrentItem!=null)
+                {
+                    item.find("#hdItemID").val(CurrentItem.TD_Receive_Item_ID);
+                    item.find("#ReceivedDetailItems").attr('data-informitem_id', CurrentItem.TD_Receive_Item_ID);
+                    item.find("#ReceivedDetailItems").attr('data-received_id', ReceiveID);
+                    item.find("#ReceivedDetailItems").removeAttr('hidden');
+                }
+                $(this).prop('disabled', true);
+                $("#btnaddReceivedItem").prop('disabled', false);
+                $("#btnremoveReceivedItem").prop('disabled', true);
+
+                //disable
+                item.find("#hdItemID").prop('disabled', false);
+                //item.find("#txtItemDetail").prop('disabled', true);
+
+                //set event
+                item.find("#ReceivedDetailItems").on("click", function () {
+                    InformItem_ID = this.getAttribute("data-InformItem_ID");
+                    Received_ID = this.getAttribute("data-Received_ID");
+                    //console.log(InformItem_ID,Received_ID);
+
+                    getReceivedDetailItem()
+
+                });
+                //set status add
+                $("#hdAddReceiveItemStatus").val(false);
+                modalSuccess();
+            }
+
+        });
+
+
+        $('#btnremoveReceivedItem').on('click', function () {
+
+            $(this).prop('disabled', true);
+            $("#btnsaveReceivedItem").prop('disabled', true);
+            $("#btnaddReceivedItem").prop('disabled', false);
+            $("#InformTable tbody tr:last").remove();
+            //set status add
+            $("#hdAddReceiveItemStatus").val(false);
+        });
+
+
+
+        $('#btninsertReceived').on('click', function () {
+
+            var mainProcessID= $("#hdMain_ProcessID").val();
+            var Receive_StatusID = $("#ddlReceivedStatusID").val();
+            var APDate=$("#txtAPDate").val();
+            var APTimeForm=$("#txtAPTimeForm").val();
+            var APTimeTO=$("#txtAPTimeTO").val();
+            var ddlOverAPDate_ReasonID = $("#ddlOverAPDate_ReasonID").val();
+            var txtHCRemark=$("#txtHCRemark").val();
+            var txtCCRemark=$("#txtCCRemark").val();
+
+            //วันถัดไปอีก 2 วัน
+            var Day = new Date();
+            var ToDay = new Date(Day.getFullYear(), (Day.getMonth()), Day.getDate());
+            var DueDay = new Date(Day.getFullYear(), (Day.getMonth()), Day.getDate());
+            var TheDay = new Date(APDate.substring(6,10), APDate.substring(3,5)-1, APDate.substring(0,2));
+            DueDay.setDate(DueDay.getDate() + 2);
+
+            //check if last item not save ; then:remove
+            if($("#hdAddReceiveItemStatus").val()=="true")
+            {
+                $("#btnremoveReceivedItem").prop('disabled', true);
+                $("#btnsaveReceivedItem").prop('disabled', true);
+                $("#btnaddReceivedItem").prop('disabled', false);
+                $("#InformTable tbody tr:last").remove();
+            }
+
+            if((Receive_StatusID==0||Receive_StatusID==1)&&mainProcessID==1)
+            {
+                modalWaring("กรุณาระบุ สถานะรับเรื่อง");
+                return false;
+            }else if((Receive_StatusID==2)&&mainProcessID==1&&(APDate==""||APTimeForm==""||APTimeTO==""))
+            {
+                modalWaring("กรุณาระบุ วันที่นัดหมายตรวจสอบ");
+                return false;
+            }else if((Receive_StatusID==2)&&mainProcessID==1&&(ToDay>TheDay))
+            {
+                modalWaring("กรุณาระบุ วันที่นัดหมายตรวจสอบมากกว่าหรือเท่ากับวันปัจจุบัน");
+                return;
+            }else if((Receive_StatusID==2)&&mainProcessID==1&&(APTimeForm>APTimeTO || APTimeForm==APTimeTO))
+            {
+                modalWaring("กรุณาระบุ เวลานัดหมายตรวจสอบสิ้นสุดมากกว่่าเวลาเริ่มต้น");
+                return;
+            }else if((Receive_StatusID==2)&&mainProcessID==1&&(DueDay < TheDay && ddlOverAPDate_ReasonID == 0))
+            {
+                modalWaring("กรุณาระบุ สาเหตุวันที่นัดหมายตรวจสอบเกิน 2 วัน");
+                return false;
+            }else if(((Receive_StatusID==2)||(Receive_StatusID==3)||(Receive_StatusID==4)||(Receive_StatusID==5)) && mainProcessID==1 && txtHCRemark=="" )
+            {
+                modalWaring("กรุณาระบุ หมายเหตุ HC");
+                return false;
+            }else if(((Receive_StatusID==6)||(Receive_StatusID==7)) && mainProcessID==1 && txtCCRemark=="" )
+            {
+                modalWaring("กรุณาระบุ หมายเหตุ CC");
+                return false;
+            }
+            else if(mainProcessID==2||mainProcessID==3||mainProcessID==4||mainProcessID==5)
+            {
+                var requireCancelID=0;
+                var Recieveditem=[]
+                $("#InformTable tbody tr").each(function ()
+                {
+                    var hdItemID=$(this).find("#hdItemID").val();
+                    var ItemStatusID_Old=$(this).find("#hdItemStatusID_Old").val();
+                    var ddlReceivedItemStatusID=$(this).find("#ddlReceivedItemStatusID").val();
+                    var ddlRepairID=$(this).find("#ddlRepairID").val();
+                    var ddlCancelResonID=$(this).find("#ddlCancelResonID").val();
+                    var txtItemRemark = $(this).find("#txtItemRemark").val();
+
+                    if((ddlReceivedItemStatusID==3 && ddlCancelResonID==0) || (ddlReceivedItemStatusID==4 && ddlCancelResonID==0))
+                    {
+                        requireCancelID++;
+                    }
+                    if(hdItemID!="")
+                    {
+                        Recieveditem.push(hdItemID+"|"+txtItemRemark+"|"+ddlReceivedItemStatusID+"|"+ItemStatusID_Old+"|"+ddlRepairID+"|"+ddlCancelResonID);
+                    }
+                });
+
+                if(requireCancelID > 0)
+                {
+                    modalWaring("กรุณาระบุ สาเหตุกรณีไม่ดำเนินการ หรือ Pending");
+                    return false;
+                }
+            }
+
+
+            var values={
+                ReceiveID:$("#hdReceiveID").val(),
+                ReceiveJobNoText:"@Model.Data_Inform.Receive_JobNoText",
+                Main_ProcessID:mainProcessID,
+                Receive_StatusID:Receive_StatusID,
+                Receive_HCRemark:$("#txtHCRemark").val(),
+                Receive_CCRemark:$("#txtCCRemark").val(),
+                Receive_Confirm_Status_ID:$("#ddlConfirmStatusID").val(),
+                Receive_Confirm_Remark:$("#txtConfirmRemark").val(),
+                Receive_Confirm_User:"@UserDetail.CodeName",
+                Receive_Confirm_date:$("#hdReceive_Confirm_Date").val(),
+                Receive_AppointmentDate:APDate,
+                Receive_AppointmentTime_From:APTimeForm,
+                Receive_AppointmentTime_To:APTimeTO,
+                ddlOverAPDate_ReasonID: ddlOverAPDate_ReasonID,
+                Receive_Appointment_Date_Real: $("#APDateRealDate").val() == "" ? null : $("#APDateRealDate").val(),
+                listReceiveItem:Recieveditem,
+                UnitID:@Model.Data_Unit.Unit_ID,
+                UnitCode:"@Model.Data_Unit.Unit_Code",
+                UnitAddress:"@Model.Data_Unit.Unit_Address",
+                ProjectCode:"@Model.Data_Unit.PJ_Code",
+                User_Code:"@UserDetail.CodeName",
+                User_ID:@UserDetail.UserID,
+            }
+
+
+            insertReceivedDetail(values);
+        });
+
+        function insertReceivedDetail(values) {
+            pleaseWaitDialog();
+
+            $.ajax({
+                url: '@Url.Action("ReceivedDetail", "Received")',
+                type: 'POST',
+                data: values,
+                traditional: true,
+                success: function (data) {
+                    pleaseWaitDialogClose();
+                    modalSuccess();
+                    //console.log(data);
+                    $("#hdMain_ProcessID").val(data.Data_Inform.Main_ProcessID);
+                    $("#lblMainProcessName").text(data.Data_Inform.Main_ProcessName);
+                    $("#hdReceive_Appointment_Date_Real").val(data.Data_Inform.Receive_Appointment_Date_Real);
+
+                    var i = 0;
+                    $("#InformTable tbody tr").each(function () {
+                        $(this).find("#hdItemStatusID_Old").val(data.Data_Inform_Item_List[i].Status_ID);
+                        $(this).find("#ddlReceivedItemStatusID").val(data.Data_Inform_Item_List[i].Status_ID);
+                        i++;
+                    });
+
+                    initRecieved();
+
+                },error: {
+
+                }
+
+            });
+        };
+
+
+        //Btn plus AddRow For AddReceiveTable
+        $('.addBtn').on('click', function () {
+            addTableRow();
+        });
+
+        function addTableRow() {
+            var i = document.getElementById('AddReceiveTable').rows.length;
+            var row = "<tr>";
+            row += "   <td>";
+            row += "       <input id='id' type='hidden' value='0' /><p type='text' id='No' name='No[]'>" + i + "</p>";
+            row += "   </td>";
+            row += "   <td class='text-center'>";
+            row += "       <select class='form-control' style='width:fit-content;' id='ddl_HC_Receive_Item_Detail_Status' name='ddl_HC_Receive_Item_Detail_Status[]'>";
+            $.each(Data_DLL_HC_Receive_Item_Detail_Status, function (keyDDLStatus, valueDDLStatus) {
+                row += "           <option value='" + valueDDLStatus.Value + "'>" + valueDDLStatus.Text + "</option>'";
+            });
+            row += "       </select>";
+            row += "   </td>";
+            row += "   <td class='text-center'>";
+            row += "       <input type='hidden' id='hdVendorCode'/>";
+            row += "       <div class='input-group'>";
+            row += "            <div class='input-group-addon'>";
+            row += "                <a id='itemAddVendor' name='itemAddVendor[]'><i class='fa fa-user fa-lg'></i></a>";
+            row += "            </div>";
+            row += "           <div class='input-group'>";
+            row += "                <input type='text' id='InformItemDetail_Vendor_Name' name='InformItemDetail_Vendor_Name[]' disabled readonly class='form-control' style='width:fit-content;' value='' /> ";
+            row += "           </div>";
+            row += "       </div>";
+            row += "   </td>";
+            row += "   <td class='text-center'>";
+            row += "       <select class='form-control' style='width:fit-content;' id='ddl_HC_JobType' name='ddl_HC_JobType[]'>";
+            $.each(Data_DLL_HC_JobType, function (keyDDLStatus, valueDDLStatus) {
+                row += "           <option value='" + valueDDLStatus.Value + "'>" + valueDDLStatus.Text + "</option>'";
+            });
+            row += "       </select>";
+            row += "   </td>";
+            row += "   <td class='text-center'>";
+            row += "       <div class='input-group'>";
+            row += "            <div class='input-group-addon'>";
+            row += "                <i class='fa fa-calendar'></i>";
+            row += "            </div>";
+            row += "           <div class='input-group date' >";
+            row += "               <input class='form-control datepicker' data-val='true' data-val-date='The field Receive_Appointment_Date must be a date.' id='RepairAppointmentDateFrom' name='RepairAppointmentDateFrom[]' style='width:200px;' type='text'>";
+            row += "           </div>";
+            row += "       </div>";
+            row += "   </td>";
+            row += "   <td class='text-center'>";
+            row += "       <div class='input-group'>";
+            row += "            <div class='input-group-addon'>";
+            row += "                <i class='fa fa-calendar'></i>";
+            row += "            </div>";
+            row += "           <div class='input-group date' >";
+            row += "               <input class='form-control datepicker' data-val='true' data-val-date='The field Receive_Appointment_Date must be a date.' id='RepairAppointmentDateTo' name='RepairAppointmentDateTo[]' style='width:200px;' type='text'>";
+            row += "           </div>";
+            row += "       </div>";
+            row += "   </td>";
+            row += "   <td class='text-center'>";
+            row += "       <select class='form-control' style='width:fit-content;' id='ddl_HC_OverRepairAppointmentDate_Reason' name='ddl_HC_OverRepairAppointmentDate_Reason[]'>";
+            $.each(Data_DLL_HC_OverRepairAppointmentDate_Reason, function (keyDDLStatus, valueDDLStatus) {
+                row += "           <option value='" + valueDDLStatus.Value + "'>" + valueDDLStatus.Text + "</option>'";
+            });
+            row += "       </select>";
+            row += "   </td>";
+            row += "   <td></td>";
+            row += "   <td class='text-center'>";
+            row += "       <input type='text' id='InformItemDetail_Remark' name='InformItemDetail_Remark[]' class='form-control' style='width:400px;'>";
+            row += "   </td>";
+            row += "   <td><span class='fa fa-minus' id='addBtnRemove'></span></td></tr>";
+            row += "</tr>";
+
+
+            $("#AddReceiveTable").append(row);
+            i++;
+
+
+            $("[name*='itemAddVendor[]']").each(function(idx, elem) {
+
+                $(this).click(function() {
+                    itemAddvendor($(this));
+                });
+            });
+
+            $('.datepicker').datepicker(
+            { autoclose: true,
+                format: 'dd/mm/yyyy'  });
+        }
+
+
+        // datepicker
+        $('.datepicker').datepicker(
+            { autoclose: true,
+                format: 'dd/mm/yyyy'  });
+
+        $(".timepicker").timepicker({
+            showInputs: false,
+            showMeridian: false
+        });
+
+
+        //สถานะผู้แจ้ง ถ้าเป็นเจ้าบ้านจะไม่แสดงชื่อผู้แจ้งและเบอร์ติดต่อ
+        if ($("#Data_Inform_Inform_CustomerType_Name").val() == "เจ้าของบ้าน") {
+            $("[name*='Inform_CustomerName']").hide();
+            $("[name*='Inform_CustomerTel']").hide();
+        }
+        else {
+            $("[name*='Inform_CustomerName']").show();
+            $("[name*='Inform_CustomerTel']").show();
+        }
+
+        //สถานะรับเรื่อง function
+        Number.prototype.padLeft = function (base, chr) {
+            var len = (String(base || 10).length - String(this).length) + 1;
+            return len > 0 ? new Array(len).join(chr || '0') + this : this;
+        }
+
+        //สถานะรับเรื่อง
+        $("#ddlReceivedStatusID").on("change", function () {
+
+            var StatusID = $("#ddlReceivedStatusID").val();
+            var StatusIDOld = $("#hdddlReceivedStatusIDOld").val();
+            var HC_DateOld = $("#hdReceive_HC_DateOld").val();
+            var CC_DateOld = $("#hdReceive_CC_DateOld").val();
+            var InformDate = new Date($("#hdInform_Date").val().substring(3,5) +'/'+ $("#hdInform_Date").val().substring(0,2) +'/'+ $("#hdInform_Date").val().substring(6,19));
+
+            var d = new Date(Date.now())
+                , today = [d.getDate().padLeft(),
+                           (d.getMonth() + 1).padLeft(),
+                           d.getFullYear()].join('/') + ' ' +
+                          [d.getHours().padLeft(),
+                           d.getMinutes().padLeft(),
+                        d.getSeconds().padLeft()].join(':');
+
+            var currentDatetime = moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
+            var lastUpdateDatetimeStatus = moment(InformDate).format('DD/MM/YYYY HH:mm:ss');
+
+            var currentDateTimeConverted = moment(currentDatetime, 'DD/MM/YYYY HH:mm:ss');
+            var lastUpdateDatetimeStatusConverted = moment(lastUpdateDatetimeStatus, 'DD/MM/YYYY HH:mm:ss');
+            var duration = moment(currentDateTimeConverted).diff(lastUpdateDatetimeStatusConverted, 'hours', true);
+
+            if (StatusID == "1"){
+                $("#ddlReceivedStatusID").val(StatusIDOld);
+                $("#Receive_HC_Date").text(HC_DateOld);
+                $("#Receive_CC_Date").text(CC_DateOld);
+                modalWaring("กรุณาเลือกสถานะรับเรื่อง");
+            }
+            else if ("@EnumConfiguration.Role.CallCentre.ToString()" != "@UserDetail.Role" && (StatusID == "6"||StatusID == "7")){
+                $("#ddlReceivedStatusID").val(StatusIDOld);
+                $("#Receive_HC_Date").text(HC_DateOld);
+                $("#Receive_CC_Date").text(CC_DateOld);
+                modalWaring("คุณไม่มีสิทธิ์เลือกสถานะของ Call Centre");
+            }
+            else if ("@EnumConfiguration.Role.CallCentre.ToString()" == "@UserDetail.Role" && (StatusID == "2"||StatusID == "3"||StatusID == "4"||StatusID == "5")){
+                $("#ddlReceivedStatusID").val(StatusIDOld);
+                $("#Receive_HC_Date").text(HC_DateOld);
+                $("#Receive_CC_Date").text(CC_DateOld);
+                modalWaring("คุณไม่มีสิทธิ์เลือกสถานะของ Home Care");
+            }
+                //else if (StatusID == "5" &&  Math.abs(d - InformDate) / 36e5 < 12) {
+            else if (((StatusIDOld != "4" && StatusID == "5")) || ((StatusID == "5") && (duration != NaN && duration < 24))) {
+                $("#ddlReceivedStatusID").val(StatusIDOld);
+                $("#Receive_HC_Date").text(HC_DateOld);
+                $("#Receive_CC_Date").text(CC_DateOld);
+                modalWaring("กรุณาติดต่อลูกค้าให้ครบภายใน 24 ชั่วโมง");
+            }
+            else if (((StatusIDOld != "5" && StatusID == "7")) || ((StatusID == "7") && (duration != NaN && duration < 72))) {
+                $("#ddlReceivedStatusID").val(StatusIDOld);
+                $("#ReceiveHCDate").text(HCDateOld);
+                $("#ReceiveCCDate").text(CCDateOld);
+                modalWaring("กรุณาติดต่อลูกค้าให้ครบภายใน 3 วัน");
+            }
+            else if (StatusID == "2") {
+                $("#Receive_HC_Date").text(today);
+                $("#txtCCRemark").attr('disabled','disabled');
+                $("#txtHCRemark").removeAttr('disabled');
+
+                if ($("#txtAPDate").val() == "")
+                {
+                    $("#txtAPDate").removeAttr('disabled');
+                    $("#txtAPTimeForm").removeAttr('disabled');
+                    $("#txtAPTimeTO").removeAttr('disabled');
+                    $("#ddlOverAPDate_ReasonID").removeAttr('disabled');
+                }
+            }
+            else if (StatusID == "3"||StatusID == "4"||StatusID == "5") {
+                $("#Receive_HC_Date").text(today);
+                $("#txtCCRemark").attr('disabled','disabled');
+                $("#txtHCRemark").removeAttr('disabled');
+
+                $("#txtAPDate").attr('disabled','disabled');
+                $("#txtAPTimeForm").attr('disabled','disabled');
+                $("#txtAPTimeTO").attr('disabled','disabled');
+                $("#ddlOverAPDate_ReasonID").attr('disabled','disabled');
+
+            }
+            else if (StatusID == "6"||StatusID == "7") {
+                $("#Receive_CC_Date").text(today);
+                $("#txtHCRemark").attr('disabled','disabled');
+                $("#txtCCRemark").removeAttr('disabled');
+                $("#txtAPDate").attr('disabled','disabled');
+                $("#txtAPTimeForm").attr('disabled','disabled');
+                $("#txtAPTimeTO").attr('disabled','disabled');
+            }
+            else {
+                $("#Receive_HC_Date").text("");
+                $("#Receive_CC_Date").text("");
+
+                $("#txtCCRemark").attr('disabled','disabled');
+                $("#txtHCRemark").attr('disabled','disabled');
+            }
+        });
+
+        //Get Data in Item
+        function Initail() {
+            if ($("#AddReceiveTable tbody tr").length == 0) {
+                addTableRow();
+            }
+
+        }
+
+
+        $("[name*='ReceivedDetailItems']").on("click", function () {
+            InformItem_ID = this.getAttribute("data-InformItem_ID");
+            Received_ID = this.getAttribute("data-Received_ID");
+            getReceivedDetailItem()
+            if (worksheetCreateFlag == true) {
+                $('#editData').removeClass('hidden');
+            } else {
+                $('#editData').addClass('hidden');
+            }
+            if (worksheetCreateFlag == false) {
+                if (flagEdit == true) {
+                    $('#lbStatusEditData').removeClass('hidden');
+                    $('#lbEmpEditData').text(empApproveEditData).show();
+                    $('#editData').addClass('hidden');
+                } else {
+                    $('#lbStatusEditData').addClass('hidden');
+                    $('#lbEmpEditData').addClass('hidden');
+                    $('#editData').removeClass('hidden');
+                }
+            }
+            
+            
+        });
+
+        function getReceivedDetailItem()
+        {
+            $.ajax({
+                url: '@Url.Action("ReceivedDetailItem", "Received")',
+                type: 'POST',
+                data: '{"ReceiveItem_ID": ' + InformItem_ID + ' , "Receive_ID": ' + Received_ID + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    //console.log(data);
+                    Data_DLL_HC_Receive_Item_Detail_Status = data.Data_DLL_HC_Receive_Item_Detail_Status.Items;
+                    Data_DLL_HC_Vendor_Price = data.Data_DLL_HC_Vendor_Price.Items;
+                    Data_DLL_HC_OverRepairAppointmentDate_Reason = data.Data_DLL_HC_OverRepairAppointmentDate_Reason.Items;
+                    Data_DLL_HC_JobType = data.Data_DLL_HC_JobType.Items;
+
+                    //หัวข้อหลักใน Modal
+                    $("#MainDataInModal div").remove();
+                    $("#MainDataInModal ").append('<div class="col-xs-12 col-sm-6 col-lg-4">'
+                                                        + '<h5><strong> หมวดประกัน: </strong><span class="text text-primary">' + data.Data_Inform_Item.Guarantee_Name + '</span></h5>'
+                                                        + '</div>');
+                    $("#MainDataInModal").append('<div class="col-xs-12 col-sm-6 col-lg-2">'
+                                                        + '<h5><strong> รายละเอียดการแจ้ง: </strong><span class="text text-primary">' + data.Data_Inform_Item.Detail + '</span></h5>'
+                                                        + '</div>');
+
+                    //ตารางข้อมูลแจ้งซ่อม
+                    $("#ReceiveTable tbody tr").remove();
+                    $("#ReceiveTable tbody").append('<tr></tr>');
+
+                    //column 1 ลักษณะงานหลัก
+                    $("#ReceiveTable tbody tr:last").append('<td><input type="hidden" id="hdID" value=' + data.Data_Inform_Item.TD_Receive_Item_ID + '></input></td>');
+                    $("#ReceiveTable tbody tr td:last").append('<select class="form-control" data-val="true" data-val-number="The field SelectedItemId must be a number." id="Data_DLL_HC_Spec1" name="Data_DLL_HC_Spec1"></select>');
+                    $.each(data.Data_DLL_HC_Spec1, function (keyDDLSpec, valueDDLSpec) {
+                        $("#ReceiveTable tbody tr td select:last").append('<option value=' + valueDDLSpec.value + '>' + valueDDLSpec.text + '</option>');
+                    });
+                    $("#Data_DLL_HC_Spec1 option[value='" + data.Data_Inform_Item.SpecL1_ID + "']").attr("selected", "selected");
+
+
+                    //ลักษณะงานรอง depend on ลักษณะงานหลัก
+                    $("#ReceiveTable tbody tr:last").append('<td></td>');
+                    $("#ReceiveTable tbody tr td:last").append('<select class="form-control" data-val="true" data-val-number="The field SelectedItemId must be a number." id="Data_DLL_HC_Spec2" name="Data_DLL_HC_Spec2"></select>');
+                    $("#ReceiveTable tbody tr td select:last").append('<option value=0>-- กรุณาเลือก --</option>');
+                    $.each(data.Data_DLL_HC_Spec2, function (keyDDLSpec, valueDDLSpec) {
+                        $("#ReceiveTable tbody tr td select:last").append('<option value=' + valueDDLSpec.value + '>' + valueDDLSpec.text + '</option>');
+                    });
+                    $("#Data_DLL_HC_Spec2 option[value='" + data.Data_Inform_Item.SpecL2_ID + "']").attr("selected", "selected");
+
+                    //ลักษณะการประเมิน depend on ลักษณะงานรอง
+                    $("#ReceiveTable tbody tr:last").append('<td></td>');
+                    $("#ReceiveTable tbody tr td:last").append('<select class="form-control" data-val="true" data-val-number="The field SelectedItemId must be a number." id="Data_DLL_HC_Spec3" name="Data_DLL_HC_Spec3"></select>');
+                    $("#ReceiveTable tbody tr td select:last").append('<option value=0>-- กรุณาเลือก --</option>');
+                    $.each(data.Data_DLL_HC_Spec3, function (keyDDLSpec, valueDDLSpec) {
+                        $("#ReceiveTable tbody tr td select:last").append('<option value=' + valueDDLSpec.value + '>' + valueDDLSpec.text + '</option>');
+                    });
+                    $("#Data_DLL_HC_Spec3 option[value='" + data.Data_Inform_Item.SpecL3_ID + "']").attr("selected", "selected");
+
+                    //column 2 ตำแหน่งที่เกิด
+
+                    $("#ReceiveTable tbody tr:last").append('<td></td>');
+                    $("#ReceiveTable tbody tr td:last").append('<select class="form-control" data-val="true" data-val-number="The field SelectedItemId must be a number." id="Data_DLL_HC_Location" name="Data_DLL_HC_Location"></select>');
+                    $("#ReceiveTable tbody tr td select:last").append('<option value=0>-- กรุณาเลือก --</option>');
+                    $.each(data.Data_DLL_HC_Location, function (keyDDLLocation, valueDDLLocation) {
+                        $("#ReceiveTable tbody tr td select:last").append('<option value=' + valueDDLLocation.Code + '>' + valueDDLLocation.Des + '</option>');
+                    });
+                    $("#Data_DLL_HC_Location option[value='" + data.Data_Inform_Item.Location_ID + "']").attr("selected", "selected");
+
+                    //column 3 สาเหตุการเกิดปัญหา
+                    $("#ReceiveTable tbody tr:last").append('<td></td>');
+                    $("#ReceiveTable tbody tr td:last").append('<select class="form-control" data-val="true" data-val-number="The field SelectedItemId must be a number." id="Data_DLL_HC_Cause" name="Data_DLL_HC_Cause"></select>');
+                    $.each(data.Data_DLL_HC_Cause.Items, function (keyDDLCause, valueDDLCause) {
+                        $("#ReceiveTable tbody tr td select:last").append('<option value=' + valueDDLCause.Value + '>' + valueDDLCause.Text + '</option>');
+                    });
+                    $("#Data_DLL_HC_Cause option[value='" + data.Data_Inform_Item.Cause_ID + "']").attr("selected", "selected");
+
+                    ////column 4 อธิบายสาเหตุ
+                    //var Cause_text;
+                    //if (data.Data_Inform_Item.Cause_text == null) { Cause_text = ''; }
+                    //else Cause_text = data.Data_Inform_Item.Cause_text;
+                    //$("#ReceiveTable tbody tr:last").append('<td></td>');
+                    //$("#ReceiveTable tbody tr td:last").append('<input class="form-control" id="Data_Inform_Item_Cause_text" name="Data_Inform_Item.Cause_text" type="text" value="' + Cause_text + '">');
+
+                    //column 5 แจ้งซ่อมซ้ำ
+                    var DuplicateFixID;
+                    if (data.Data_Inform_Item.DuplicateFixID == null ||data.Data_Inform_Item.DuplicateFixID == 0)
+                    {
+                        DuplicateFixID = '';
+                    }
+                    else {
+                        DuplicateFixID = 'fa fa-check'
+                    }
+                    $("#ReceiveTable tbody tr:last").append('<td class="text-center"></td>');
+                    $("#ReceiveTable tbody tr td:last").append('<i class="' + DuplicateFixID + ' fa-lg" id="Data_Inform_Item_DuplicateFixID" value="' + data.Data_Inform_Item.DuplicateFixID + '"></i>');
+
+                    //column 6 Priority
+                    var Priority_Name;
+                    if (data.Data_Inform_Item.Priority_Name == null) { Priority_Name = ''; }
+                    else Priority_Name = data.Data_Inform_Item.Priority_Name;
+                    $("#ReceiveTable tbody tr:last").append('<td></td>');
+                    $("#ReceiveTable tbody tr td:last").append('<input class="form-control" disabled="disabled" id="Data_Inform_Priority_Name" name="ReceivedItem_Priority_Name" readonly="readonly" type="text" value="' + Priority_Name + '">');
+
+
+                    //validate ถ้ามีรายการที่ดำเนินการ และสร้างใบงานแล้ว ไม่สามารถแก้ไข Header ได้
+                    var checkCreateJob=0;
+                    $.each(data.Data_Inform_Item_Detail_List, function (key, value) {
+                        if(value.Status_ID == 1 && value.Worksheet_Create_Flag == 1)
+                        {
+                            //console.log(value.Status_ID);
+                            //console.log(value.Worksheet_Create_Flag);
+                            checkCreateJob++;
+                        }
+                    })
+                    if(checkCreateJob > 0)
+                    {
+                        //ปิดข้อมูลแจ้งซ่อม Header Modal
+                        $("#ReceiveTable select").prop('disabled', true);
+                        $("#ReceiveTable input").prop('disabled', true);
+                    }
+
+                    // ON Change
+                    $('#Data_DLL_HC_Spec1').change(function (e) {
+                        getListSpec2();
+                    });
+
+                    $('#Data_DLL_HC_Spec2').change(function (e) {
+                        getListSpec3();
+                    });
+                    $('#Data_DLL_HC_Spec3').change(function (e) {
+                        getPriority();
+                    });
+
+                    $('#Data_DLL_HC_Location').change(function (e) {
+                        checkDuplicateFix();
+                    });
+
+
+                    //ตารางเพิ่มรายการแจ้งซ่อมย่อย เพื่อนำไปสร้างใบงาน
+                    $('#AddReceiveTable tbody tr').remove();
+                    $.each(data.Data_Inform_Item_Detail_List, function (key, value) {
+
+                        var IconCheck = "";
+                        var disabled = "";
+                        if (value.Worksheet_Create_Flag != null && value.Worksheet_Create_Flag != 0)
+                        {
+                            disabled = "disabled readonly";
+                            IconCheck = "fa fa-check";
+                        }
+                        //console.log(value.Worksheet_Create_Flag);
+
+                        $("#AddReceiveTable tbody").append('<tr></tr>');
+
+                        //column 1 No
+                        $("#AddReceiveTable tbody tr:last").append('<td><input type="hidden" id="id" value='+value.TD_Receive_Item_Detail_ID+' /></td>');
+                        $("#AddReceiveTable tbody tr td:last").append('<p type="text" id="No" name="No' + value.No + '">'+(key+1)+'</p>');
+
+                        //column 2 สถานะ
+                        $("#AddReceiveTable tbody tr:last").append('<td></td>');
+                        $("#AddReceiveTable tbody tr td:last").append('<select class="form-control" id="ddl_HC_Receive_Item_Detail_Status" name="ddl_HC_Receive_Item_Detail_Status['+key+']" style="width:fit-content;" '+disabled+'  >');
+                        $.each(data.Data_DLL_HC_Receive_Item_Detail_Status.Items, function (keyDDLStatus, valueDDLStatus) {
+                            $("#AddReceiveTable tbody tr td select:last").append('<option value=' + valueDDLStatus.Value + '>' + valueDDLStatus.Text + '</option>');
+                        });
+                        //console.log(value.Status_ID);
+                        $("[name*='ddl_HC_Receive_Item_Detail_Status["+key+"]'] option[value='" + value.Status_ID + "']").attr("selected", "selected");
+
+                        //column 3 ผู้รับเหมา
+                        var Vendor_Name;
+                        if (value.Vendor_Name == null) { Vendor_Name = ''; }
+                        else Vendor_Name = value.Vendor_Name;
+                        $("#AddReceiveTable tbody tr:last").append('<td></td>');
+                        $("#AddReceiveTable tbody tr td:last").append('<input type="hidden" id="hdVendorCode"  value="' + value.Vendor_ID + '"/><div class="input-group"><div class="input-group-addon"><a id="itemAddVendor" name="itemAddVendor[]"><i class="fa fa-user fa-lg"></i></a></div><div class="input-group"><input type="text" id="InformItemDetail_Vendor_Name" name="InformItemDetail_Vendor_Name[]" disabled readonly style="width:fit-content;" class="form-control col-lg-10"   value="' + Vendor_Name + '"/></div></div>');
+
+
+
+
+                        //column 4 ประเภทงานซ่อม
+                        $("#AddReceiveTable tbody tr:last").append('<td></td>');
+                        $("#AddReceiveTable tbody tr td:last").append('<select class="form-control" style="width:fit-content;" id="ddl_HC_JobType" name="ddl_HC_JobType['+key+']" '+disabled+'  >');
+                        $.each(data.Data_DLL_HC_JobType.Items, function (keyDDLStatus, valueDDLStatus) {
+                            $("#AddReceiveTable tbody tr td select:last").append('<option value=' + valueDDLStatus.Value + '>' + valueDDLStatus.Text + '</option>');
+                        });
+                        //console.log(value.JobTypeID);
+                        $("[name*='ddl_HC_JobType["+key+"]'] option[value='" + value.JobTypeID + "']").attr("selected", "selected");
+
+
+                        //column 5 วันที่นัดหมายซ่อม
+                        var RepairAppointmentDateFrom;
+                        if (value.RepairAppointmentDateFrom == null){ RepairAppointmentDateFrom = ''; }
+                        else {RepairAppointmentDateFrom = value.RepairAppointmentDateFrom;}
+                        $("#AddReceiveTable tbody tr:last").append('<td></td>');
+                        $("#AddReceiveTable tbody tr td:last").append('<div class="input-group">'
+                                                            + '         <div class="input-group date">'
+                                                            + '             <div class="input-group-addon">'
+                                                            + '                 <i class="fa fa-calendar"></i>'
+                                                            + '             </div>'
+                            + '             <input class="form-control datepicker" data-val="true" data-val-date="The field Receive_Appointment_Date must be a date." id="RepairAppointmentDateFrom" name="RepairAppointmentDateFrom[]" style="width:200px;" '+disabled+' type="text" value="' + RepairAppointmentDateFrom + '">'
+                                                            + '         </div>'
+                                                            + '     </div>');
+                        //column 6 ถึง
+                        var RepairAppointmentDateTo;
+                        if (value.RepairAppointmentDateTo == null){ RepairAppointmentDateTo = ''; }
+                        else {RepairAppointmentDateTo = value.RepairAppointmentDateTo;}
+                        $("#AddReceiveTable tbody tr:last").append('<td></td>');
+                        $("#AddReceiveTable tbody tr td:last").append('<div class="input-group">'
+                                                            + '         <div class="input-group date">'
+                                                            + '             <div class="input-group-addon">'
+                                                            + '                 <i class="fa fa-calendar"></i>'
+                                                            + '             </div>'
+                                                            + '             <input class="form-control datepicker" data-val="true" data-val-date="The field Receive_Appointment_Date must be a date." id="RepairAppointmentDateTo" name="RepairAppointmentDateTo[]" style="width:200px;" '+disabled+' type="text" value="' + RepairAppointmentDateTo + '">'
+                                                            + '         </div>'
+                                                            + '     </div>');
+
+                        //column 7 สาเหตุวันนัดเกินกำหนด
+                        $("#AddReceiveTable tbody tr:last").append('<td></td>');
+                        $("#AddReceiveTable tbody tr td:last").append('<select class="form-control" style="width:fit-content;" id="ddl_HC_OverRepairAppointmentDate_Reason" name="ddl_HC_OverRepairAppointmentDate_Reason['+key+']" '+disabled+'  >');
+                        $.each(data.Data_DLL_HC_OverRepairAppointmentDate_Reason.Items, function (keyDDLStatus, valueDDLStatus) {
+                            $("#AddReceiveTable tbody tr td select:last").append('<option value=' + valueDDLStatus.Value + '>' + valueDDLStatus.Text + '</option>');
+                        });
+                        //console.log(value.RepairAppointmentDateReasonID);
+                        $("[name*='ddl_HC_OverRepairAppointmentDate_Reason["+key+"]'] option[value='" + value.RepairAppointmentDateReasonID + "']").attr("selected", "selected");
+
+
+                        //column 8 การนำไปสร้างใบงาน
+                        $("#AddReceiveTable tbody tr:last").append('<td class="text-center"></td>');
+                        $("#AddReceiveTable tbody tr td:last").append('<i class="' + IconCheck + ' fa-lg" id="InformItemDetail_Worksheet_Create_Flag" value="' + value.Worksheet_Create_Flag + '" ></i>');
+
+
+                        //column 9 หมายเหตุ
+                        var Remark;
+                        if (value.Remark == null) { Remark = ''; }
+                        else Remark = value.Remark;
+                        $("#AddReceiveTable tbody tr:last").append('<td></td>');
+                        $("#AddReceiveTable tbody tr td:last").append('<input type="text" id="InformItemDetail_Remark" style="width:400px" name="InformItemDetail_Remark[]" class="form-control" '+disabled+' value="' + Remark + '">');
+
+
+
+
+
+                        //column 9 -
+                        $("#AddReceiveTable tbody tr:last").append('<td></td>');
+
+
+
+
+                        $('.datepicker').datepicker({
+                            autoclose: true,
+                            format: 'dd/mm/yyyy'
+                        });
+
+
+                    });
+
+
+
+                    $("[name*='itemAddVendor[]']").each(function(idx, elem) {
+
+                        $(this).click(function() {
+                            itemAddvendor($(this));
+                        });
+                    });
+
+                    Initail();
+                    $('#ReceiveTable').parent().parent().parent().find('button:first').hide();
+                    $("#modalReceivedDetailItems").modal("show");
+
+                }
+                , error: function () {
+                    //console.log("error")
+                }
+
+
+            });
+
+        }
+
+        function checkDuplicateFix()
+        {
+            var ddlGuaranteeID = $("#ddlGuaranteeID").val();
+            var ddlSpec1ID = $("#Data_DLL_HC_Spec1").val();
+            var ddlSpec2ID = $("#Data_DLL_HC_Spec2").val();
+            var ddlSpec3ID = $("#Data_DLL_HC_Spec3").val();
+            var ddlLocationID = $("#Data_DLL_HC_Location").val();
+
+            $.ajax({
+                url: '@Url.Action("checkDuplicateFix", "Received")',
+                type: "POST",
+                data: '{"UnitID": ' + @Model.Data_Unit.Unit_ID + ',"ddlGuaranteeID": ' + ddlGuaranteeID + ',"ddlSpec1ID": ' + ddlSpec1ID + ',"ddlSpec2ID": ' + ddlSpec2ID + ',"ddlSpec3ID": ' + ddlSpec3ID + ',"ddlLocationID": ' + ddlLocationID + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+
+                },
+                success: function (response) {
+                    if (response != "") {
+                        $("#Data_Inform_Item_DuplicateFixID").val(true)
+                        $("#Data_Inform_Item_DuplicateFixID").addClass("fa fa-check");
+                        modalWaring(response);
+                    }
+                    else{
+                        $("#Data_Inform_Item_DuplicateFixID").val(false)
+                        $("#Data_Inform_Item_DuplicateFixID").removeClass("fa fa-check");
+                    }
+                },
+            });
+        }
+
+
+        function getListSpec2()
+        {
+            var ddlSpec1 = $("[id*=Data_DLL_HC_Spec1]");
+            $("#Data_Inform_Priority_Name").val("");
+
+            $.ajax({
+                url: "@Url.Action("getListSpec2", "Master")",
+                type: "POST",
+                data: '{"spec1ID": ' + ddlSpec1.val() + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+
+                },
+                success: function (response) {
+
+                    var ddlSpec2 = $("[id*=Data_DLL_HC_Spec2]");
+                    var ddlSpec3 = $("[id*=Data_DLL_HC_Spec3]");
+
+
+                    ddlSpec2.empty().append('<option selected value="0">-- กรุณาเลือก --</option>');
+                    ddlSpec3.empty().append('<option selected value="0">-- กรุณาเลือก --</option>');
+                    var ddlLocation = $("[id*=Data_DLL_HC_Location]");
+                    ddlLocation.empty().append('<option selected value="0">-- กรุณาเลือก --</option>');
+
+
+                    $.each(response, function (Index, Value) {
+                        ddlSpec2.append($("<option value=" + Value.value + ">"+Value.text+"</option>"))
+                    });
+                    getLocation();
+                }
+
+            });
+
+
+
+        }
+        function getListSpec3()
+        {
+            var ddlSpec2 = $("[id*=Data_DLL_HC_Spec2]");
+            $("#Data_Inform_Priority_Name").val("");
+
+            $.ajax({
+                url: "@Url.Action("getListSpec3", "Master")",
+                type: "POST",
+                data: '{"spec2ID": ' + ddlSpec2.val() + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+
+                },
+                success: function (response) {
+
+                    var ddlSpec3 = $("[id*=Data_DLL_HC_Spec3]");
+                    ddlSpec3.empty().append('<option selected value="0">-- กรุณาเลือก --</option>');
+
+                    $.each(response, function (Index, Value) {
+
+                        //console.log(Value);
+                        ddlSpec3.append($("<option value=" + Value.value + ">"+Value.text+"</option>"))
+                    });
+
+                }
+            });
+        }
+
+        function getLocation()
+        {
+            var ddlSpec1 = $("[id*=Data_DLL_HC_Spec1]");
+
+
+            $.ajax({
+                url: "@Url.Action("getLocation", "Master")",
+                type: "POST",
+                data: '{"spec1ID": ' + ddlSpec1.val() + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+
+                },
+                success: function (response) {
+
+                    var ddlLocation = $("[id*=Data_DLL_HC_Location]");
+                    ddlLocation.empty().append('<option selected value="0">-- กรุณาเลือก --</option>');
+
+                    $.each(response, function (Index, Value) {
+                        //console.log(Value);
+                        ddlLocation.append($("<option value=" + Value.Code + ">"+Value.Des+"</option>"))
+                    });
+
+                }
+            });
+        }
+
+        function getPriority()
+        {
+            var ddlSpec3 = $("[id*=Data_DLL_HC_Spec3]");
+            $.ajax({
+                url: "@Url.Action("getPriority", "Master")",
+                type: "POST",
+                data: '{"spec3ID": ' + ddlSpec3.val() + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                success: function (response) {
+
+                    $("#Data_Inform_Priority_Name").val(response);
+                }
+            });
+
+
+        }
+
+
+
+        var VendoorRow;
+        function itemAddvendor(e)
+        {
+            //Clear Vendor Search
+            clearVendorSearch();
+
+            VendoorRow=e;
+            $("#modalAddVendor").appendTo("body").modal('show');
+            $("#tbAddvendor tbody tr").remove();
+
+            $("#tbAddvendor tbody").append("<tr></tr>");
+            $("#tbAddvendor tbody tr").append("<td class='text-center Bold text-danger' colspan='6'>ไม่มีข้อมูล</td>");
+
+
+        }
+
+        $("#btnSearchVendor").on("click", function () {
+            if ( $("#textCrivendorCode").val() == "" && $("#textCrivendorName").val() == "" && $("#textCriIDCard").val() == "" )
+            {
+                modalWaring("กรุณาระบุเงื่อนไขในการค้นหา");
+            }else
+            {
+                SearchVendor();
+            }
+
+        });
+        function SearchVendor() {
+
+            var values = {
+                Name: $("#textCrivendorName").val(),
+                TaxID: $("#textCriIDCard").val(),
+                Vendor: $("#textCrivendorCode").val() == "" ? "": $("#textCrivendorCode").val()
+            }
+            pleaseWaitDialog();
+            $.ajax({
+
+                url: '@Url.Action("getListVendormaster", "Master")',
+                type: 'POST',
+                data: values,
+                traditional: true,
+                success: function (data) {
+                    $("#tbAddvendor tbody tr").remove();
+                    //console.log(data.length);
+                    if (data.length == 0) {
+                        $("#tbAddvendor tbody").append("<tr></tr>");
+                        $("#tbAddvendor tbody tr").append("<td class='text-center Bold text-danger' colspan='6'>ไม่มีข้อมูล</td>");
+                    } else {
+                        $.each(data, function (key, value) {
+                            $("#tbAddvendor tbody").append("<tr></tr>");
+                            $("#tbAddvendor tbody tr:last").append("<td class=\"text-center\"><label id='VendorCode'>" + value.Vendor.substr(value.Vendor.length - 6) + "</label></td>");
+                            $("#tbAddvendor tbody tr:last").append("<td class=\"text-left\"><label id='VendorName'>" + value.Name + "</lable></td>");
+                            $("#tbAddvendor tbody tr:last").append("<td class=\"text-center\">" + value.CardID + "</td>");
+                            $("#tbAddvendor tbody tr:last").append("<td class=\"text-center\">" + value.TaxID + "</td>");
+                            $("#tbAddvendor tbody tr:last").append("<td class=\"text-center\">" + value.Address + "</td>");
+                            $("#tbAddvendor tbody tr:last").append("<td class=\"text-center\"><a id='selectVendor' name='selectVendor[]'>เลือก</a></td>");
+
+
+                        });
+
+
+
+                        $("[name*='selectVendor[]']").each(function (idx, elem) {
+                            $(this).click(function () {
+                                var VendorCode = $(this).closest('tr').find("#VendorCode").text()
+                                var VendorName = $(this).closest('tr').find("#VendorName").text()
+
+                                VendoorRow.closest('tr').find("#InformItemDetail_Vendor_Name").val(VendorName);
+                                VendoorRow.closest('tr').find("#hdVendorCode").val(VendorCode);
+
+                                $("#modalAddVendor").modal('hide');
+
+                            });
+                        });
+
+                    }
+
+
+                    pleaseWaitDialogClose();
+                },
+                error: function (data) {
+
+                },
+
+            });
+        }
+        $("#btnSaveModal").on("click", function () {
+
+
+            $("#ReceiveTable tbody tr").each(function () {
+                var row = $(this);
+                var spec1id = row.find("#Data_DLL_HC_Spec1").val();
+                var spec2id = row.find("#Data_DLL_HC_Spec2").val();
+                var spec3id = row.find("#Data_DLL_HC_Spec3").val();
+                var locationid = row.find("#Data_DLL_HC_Location").val();
+                var causeid = row.find("#Data_DLL_HC_Cause").val();
+                //var causetext = row.find("#Data_Inform_Item_Cause_text").val();
+                var duplicateFixid = row.find("#Data_Inform_Item_DuplicateFixID").val();
+                var HeaderId=@Model.Data_Inform.Receive_ID;
+                var id=row.find("#hdID").val();
+
+                //validation
+                if(spec1id=="0"||spec2id=="0"||spec3id=="0"||locationid=="0"||causeid=="0")
+                {
+                    modalWaring("กรุณาระบุ ข้อมูลแจ้งซ่อม ให้ครบ");
+                    return false;
+                }
+                //else if(causetext=="")
+                //{
+                //    modalWaring("กรุณาระบุ ข้อมูลอธิบายสาเหตุ");
+                //    return false;
+                //}
+
+                //validation
+                var checkError = 0;
+
+                //1. ต้องเพิ่มรายการแจ้งซ่อมย่อย อย่างน้อย 1 รายการ
+                var checkVendor=0;
+                var checkRAPDateFrom=0;
+                var checkRAPDateTo=0;
+                var checkJobType=0;
+                $("#AddReceiveTable tbody tr").each(function () {
+                    var rowitem = $(this);
+                    var Status = rowitem.find("#ddl_HC_Receive_Item_Detail_Status").val();
+                    var VendorName = rowitem.find("#InformItemDetail_Vendor_Name").val();
+                    var CreateJob = rowitem.find("#InformItemDetail_Worksheet_Create_Flag").val();
+                    var RAPDateFrom = rowitem.find("#RepairAppointmentDateFrom").val();
+                    var RAPDateTo = rowitem.find("#RepairAppointmentDateTo").val();
+                    var JobType = rowitem.find("#ddl_HC_JobType").val();
+
+                    if(VendorName=="")
+                    {
+                        checkVendor++;
+                    }
+                    if(RAPDateFrom=="" && Status == 1)
+                    {
+                        checkRAPDateFrom++;
+                    }
+                    if(RAPDateTo=="" && Status == 1)
+                    {
+                        checkRAPDateTo++;
+                    }
+                    if(JobType==0 && Status == 1)
+                    {
+                        checkJobType++;
+                    }
+                })
+
+                if($("#hdReceive_Appointment_Date_Real").val() == ""){
+                    modalWaring("กรุณาระบุ วันเข้าตรวจสอบจริง และกดปุ่มบันทึกข้อมูลก่อน");
+                    checkError = 1;
+                    return false;
+                }else if(checkVendor>0){
+                    modalWaring("กรุณาระบุ ผู้รับเหมา")
+                    checkError = 1;
+                    return false;
+                }else if(checkRAPDateFrom>0){
+                    modalWaring("กรุณาระบุ วันที่นัดหมายเข้าซ่อมเริ่มต้น")
+                    checkError = 1;
+                    return false;
+                }else if(checkRAPDateTo>0){
+                    modalWaring("กรุณาระบุ วันที่นัดหมายเข้าซ่อมสิ้นสุด")
+                    checkError = 1;
+                    return false;
+                }
+                else if(checkJobType>0){
+                    modalWaring("กรุณาระบุ ประเภทงานซ่อม")
+                    checkError = 1;
+                    return false;
+                }
+
+                //2. เงื่อนไขการใส่วันนัดเข้าซ่อม
+                var checkOne=0;
+                var checkTwo=0;
+                var checkThree=0;
+
+                var OverDay = 3;
+                var Msg = "กรุณาระบุ สาเหตุวันที่นัดหมายเข้าซ่อมเกิน 3 วัน";
+                if ($("#hdProjectSSegment").val() == "1"){
+                    OverDay = 2;
+                    Msg  = "กรุณาระบุ สาเหตุวันที่นัดหมายเข้าซ่อมเกิน 2 วันของโครงการ S Segment";
+                }
+
+                $("#AddReceiveTable tbody tr").each(function () {
+                    var rowitem = $(this);
+                    var Status = rowitem.find("#ddl_HC_Receive_Item_Detail_Status").val();
+                    var RAPDateFromTxt = rowitem.find("#RepairAppointmentDateFrom").val();
+                    var RAPDateToTxt = rowitem.find("#RepairAppointmentDateTo").val();
+                    var ddl_HC_OverRepairAppointmentDate_Reason = rowitem.find("#ddl_HC_OverRepairAppointmentDate_Reason").val();
+
+                    var APDateReal = new Date($("#APDateRealDate").val().substring(6,10) , $("#APDateRealDate").val().substring(3,5)-1 , $("#APDateRealDate").val().substring(0,2));
+                    var RAPDateFrom = new Date(RAPDateFromTxt.substring(6,10) , RAPDateFromTxt.substring(3,5)-1 , RAPDateFromTxt.substring(0,2));
+                    var RAPDateTo = new Date(RAPDateToTxt.substring(6,10) , RAPDateToTxt.substring(3,5)-1 , RAPDateToTxt.substring(0,2));
+
+                    var DueDay = new Date(APDateReal);
+                    DueDay.setDate(DueDay.getDate() + OverDay);
+
+                    if (DueDay < RAPDateFrom && ddl_HC_OverRepairAppointmentDate_Reason == 0  && Status == 1){
+                        checkOne++;
+                    }
+                    if (RAPDateFrom < APDateReal && Status == 1){
+                        checkTwo++;
+                    }
+                    if (RAPDateTo < RAPDateFrom && Status == 1){
+                        checkThree++;
+                    }
+
+                })
+                if(checkOne>0){
+                    modalWaring(Msg);
+                    checkError = 1;
+                    return false;
+                }
+                else if(checkTwo>0){
+                    modalWaring("กรุณาระบุ วันที่นัดหมายเข้าซ่อมมากกว่าวันเข้าตรวจสอบจริง");
+                    checkError = 1;
+                    return false;
+                }else if(checkThree>0){
+                    modalWaring("กรุณาระบุ วันที่นัดหมายเข้าซ่อมสิ้นสุดมากกว่าวันที่นัดหมายเข้าซ่อมเริ่มต้น");
+                    checkError = 1;
+                    return false;
+                }
+
+
+
+                if(checkError==0)
+                {
+                    //updateReceiveItemModal
+                    var value={
+                        SpecL1ID:spec1id,
+                        SpecL2ID:spec2id,
+                        SpecL3ID:spec3id,
+                        LocationID:locationid,
+                        CauseID:causeid,
+                        //CauseText:causetext,
+                        DuplicateFixid:duplicateFixid,
+                        HeaderID:HeaderId,
+                        ID:id
+                    }
+                    updateReceiveItemModal(value);
+                }
+
+                var CheckErrorInReceiveDetail = 0;
+
+                $("#AddReceiveTable tbody tr").each(function () {
+
+                    var rowitem = $(this);
+                    var id = rowitem.find("#id").val();
+                    var no = rowitem.find("#No").text();
+                    var Status = rowitem.find("#ddl_HC_Receive_Item_Detail_Status").val();
+                    var VendorCode = rowitem.find("#hdVendorCode").val();
+                    var VendorName = rowitem.find("#InformItemDetail_Vendor_Name").val();
+
+                    var ddl_HC_JobType = rowitem.find("#ddl_HC_JobType").val();
+                    var RepairAppointmentDateFrom = (rowitem.find("#RepairAppointmentDateFrom").val() == "" ? null : rowitem.find("#RepairAppointmentDateFrom").val()) ;
+                    var RepairAppointmentDateTo = (rowitem.find("#RepairAppointmentDateTo").val() == "" ? null : rowitem.find("#RepairAppointmentDateTo").val()) ;
+                    var ddl_HC_OverRepairAppointmentDate_Reason = rowitem.find("#ddl_HC_OverRepairAppointmentDate_Reason").val();
+
+
+                    var Price = rowitem.find("#ddl_HC_Vendor_Price"+(no-1)).val();
+                    var ReceiveGoodsDate = null;
+                    var InformItemDetailRemark = rowitem.find("#InformItemDetail_Remark").val();
+
+
+                    var itemDetail=
+                      {
+                          ReceiveItemID:InformItem_ID,
+                          ID:id,
+                          No:no,
+                          StatusID:Status,
+                          VendorID:VendorCode,
+                          JobTypeID:ddl_HC_JobType,
+                          VendorName:VendorName,
+                          RepairAppointmentDateFrom:RepairAppointmentDateFrom,
+                          RepairAppointmentDateTo:RepairAppointmentDateTo,
+                          ReasonID:ddl_HC_OverRepairAppointmentDate_Reason,
+                          PriceID:Price,
+                          ReceiveOrderDate:ReceiveGoodsDate,
+                          Remark:InformItemDetailRemark,
+                      }
+                    //console.log(itemDetail);
+                    updateReceiveItemDetail(itemDetail);
+
+                })
+
+                if (CheckErrorInReceiveDetail == 0){
+                    modalSuccess();
+                }
+                //binddata
+                pleaseWaitDialogClose();
+                getReceivedDetailItem();
+            })
+
+
+
+        });
+
+        function updateReceiveItemModal(InformReceiveHead) {
+
+            pleaseWaitDialog();
+
+            //insert Header
+            $.ajax({
+                url: '@Url.Action("updateReceiveItemModal", "Received")',
+                type: 'POST',
+                data: InformReceiveHead,
+
+                success: function (data) {
+
+                },
+                error: function (data) {
+
+                },
+
+            });
+        }
+
+        function updateReceiveItemDetail(InformitemDetail) {
+
+            $.ajax({
+                url: '@Url.Action("updateReceiveItemDetail", "Received")',
+                type: 'POST',
+                data: InformitemDetail,
+                async:false,
+
+                success: function (data) {
+
+
+                },
+                error: function (data) {
+
+                },
+
+            });
+        }
+
+        function GetReceivedLastItem() {
+            var ReceiveID=$("#hdReceiveID").val();
+            var response;
+            $.ajax({
+                url: '@Url.Action("ReceivedLastItem", "Received")',
+                type: 'POST',
+                data: '{"ReceiveID": ' +ReceiveID + '}',
+                contentType: "application/json; charset=utf-8",
+                async: false,
+                success: function (data) {
+                    response = data;
+                },
+                error: function (data) {
+                    response =  null;
+                },
+            });
+            return response;
+        }
+
+        function GenerateEmptyRow()
+        {
+            $("#InformTable tbody").append('<tr></tr>');
+            ///Status
+            var col="<td align='center'><input type='hidden' id='hdItemID' /><input type='hidden' id='hdItemStatusID_Old' value='@EnumConfiguration.ReceiveStatusID.Operation.GetHashCode()' /><label>"+$('#InformTable tbody tr').length+"</label>";
+
+            var Status = @Html.Raw(Json.Encode(@Model.Data_DLL_HC_Receive_Item_Status));
+
+            console.log(Status);
+            col+="<td>";
+            col+="<select class='form-control ddlReceivedItemStatusID' data-val='true' id='ddlReceivedItemStatusID' disabled>";
+
+            $.each(Status.Items, function (key, list) {
+                console.log(col);
+                col += " <option value='" + list.Value + "'>" + list.Text + "</option>'";
+            });
+
+            col+="</select></td>";
+            //End Staus
+
+
+            ///Guarantee
+
+            var Guarantee = @Html.Raw(Json.Encode(@Model.Data_DLL_HC_Guarantee));
+
+            //console.log(Status);
+            col+="<td>";
+            col+="<select class='form-control' data-val='true'   id='ddlGuaranteeID' >";
+
+            $.each(Guarantee.Items, function (key, list) {
+                col += " <option value='" + list.Value + "'>" + list.Text + "</option>'";
+            });
+
+            col+="</select></td>";
+            ///End Status
+
+            col+="<td>";
+            col+="<textarea class='disabled form-control' cols='20' id='txtItemDetail'  rows='2'></textarea>";
+            col+="</td>";
+
+
+            col+="<td>";
+            col+="<textarea class='disabled form-control' cols='20' id='txtItemRemark'  rows='2'></textarea>";
+            col+="</td>";
+
+            //Repair
+
+            var Repair = @Html.Raw(Json.Encode(@Model.Data_DLL_HC_Flg_Repair_Transfer));
+            //console.log(Status);
+            col+="<td>";
+            col+="<select class='form-control' data-val='true'   id='ddlRepairID' >";
+
+            $.each(Repair.Items, function (key, list) {
+                col += " <option value='" + list.Value + "'>" + list.Text + "</option>'";
+            });
+
+            col+="</select></td>";
+            ///End Repair
+
+            col+="<td class='text-center'>";
+            col += "<a id='ReceivedDetailItems' name='ReceivedDetailItems[]' data-informitem_id='' data-received_id='' hidden=''>";
+            col += "<span class='fa fa-folder-open fa-lg' aria-hidden='true'></span>";
+            col += "<span class='glyphicon glyphicon-time iconwait' ></span>";
+            col+="</a>";
+            col+="</td>";
+
+            col+="<td class='text-center'>";
+            col+="<a id='InformPic' name='InformPic[]'>";
+            col+="<span class='fa fa-picture-o fa-lg viewFile' aria-hidden='true'></span>";
+
+            col+="</a>";
+            col+="</td>";
+
+            //Cancel_Reason
+            var CancelReason = @Html.Raw(Json.Encode(@Model.Data_DLL_HC_Receive_Item_Cancel_Reason));
+
+            col+="<td>";
+            col+="<select class='form-control' data-val='true'   id='ddlCancelResonID' disabled >";
+
+            $.each(CancelReason.Items, function (key, list) {
+                col += " <option value='" + list.Value + "'>" + list.Text + "</option>'";
+            });
+
+            col+="</select></td>";
+
+
+            //End Cancel_Reason
+
+            $("#InformTable tbody tr:last").append(col);
+            //  $("#InformTable tbody tr:last").find("#ddlReceivedItemStatusID").val("@EnumConfiguration.ReceiveStatusID.Operation.GetHashCode()");
+
+        }
+
+
+        $("#btnOpenWorkOrder").on("click", function ()  {
+            //console.log(@Model.Data_Unit.PJ_ID);
+            //console.log(@Model.Data_Customer.ID);
+
+            var value = {
+                ReceiveID:@Model.Data_Inform.Receive_ID,
+                ReceiveJobNoText:"@Model.Data_Inform.Receive_JobNoText",
+                User_Code:"@UserDetail.CodeName",
+                ProjectID:@Model.Data_Unit.PJ_ID,
+                ProspectID:@Model.Data_Customer.ID,
+                ProjectCode:"@Model.Data_Unit.PJ_Code",
+                UnitAddress:"@Model.Data_Unit.Unit_Address",
+                UnitCode:"@Model.Data_Unit.Unit_Code",
+            }
+            //console.log(value);
+            pleaseWaitDialog();
+            $.ajax({
+                url: '@Url.Action("OpenWorkOrder", "Received")',
+                type: 'POST',
+                data: JSON.stringify(value),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $("#modalPreviewWorkOrder").modal("hide");
+                    pleaseWaitDialogClose();
+                    modalSuccess();
+                },
+                error: function (data) {
+                    pleaseWaitDialogClose();
+                },
+
+            });
+
+
+        });
+
+
+        $("#btnPreviewWO").on("click", function ()  {
+            $("#modalPreviewWorkOrder").modal("show");
+
+            $.ajax({
+                url: '@Url.Action("PrepairWorkOrder", "Received")',
+                type: 'POST',
+                data: '{"Receive_ID": ' + @Model.Data_Inform.Receive_ID + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $("#tbPreviewWorkOrder tbody tr").remove();
+                    var vendorName="";
+                    var colsp=1;
+                    var countWO=0;
+                    var rowspan= [];
+
+                    //console.log(data);
+                    if(data.length>0)
+                    {
+
+                        $.each(data, function (key, value) {
+
+                            if(vendorName==value.Vendor_Name)
+                            {
+                                colsp=colsp+1;
+                            }else
+                            {
+                                rowspan.push(colsp);
+                                //console.log(colsp);
+                                countWO=countWO+1;
+                                colsp=1;
+                            }
+                            vendorName=value.Vendor_Name;
+                        });
+
+                        rowspan.push(colsp);
+                        //console.log(rowspan);
+                        rowspan.shift();
+                        //console.log(rowspan);
+                        vendorName="";
+                        $.each(data, function (key, value) {
+
+                            $("#tbPreviewWorkOrder tbody").append("<tr></tr>");
+                            if(vendorName!=value.Vendor_Name)
+                            {
+                                $("#tbPreviewWorkOrder tbody tr:last").append("<td class=\"text-left\">"+value.Vendor_Name+"</td>");
+                                $('#tbPreviewWorkOrder tr:last').find('td:first').prop("rowspan",rowspan.shift());
+                            }
+
+                            $("#tbPreviewWorkOrder tbody tr:last").append("<td class=\"text-left\">"+value.Guarantee_Name+"</td>");
+                            //$("#tbPreviewWorkOrder tbody tr:last").append("<td class=\"text-left\">"+value.Vendor_Type+"</td>");
+
+                            vendorName=value.Vendor_Name;
+
+                        });
+
+                        $("#btnOpenWorkOrder").removeAttr("disabled");
+                    }else
+                    {
+                        $("#tbPreviewWorkOrder tbody").append("<tr></tr>");
+                        $("#tbPreviewWorkOrder tbody tr:last").append("<td class='text-center Bold text-danger' colspan='3'>ไม่มีข้อมูล</td>");
+                        $("#btnOpenWorkOrder").attr("disabled","disabled");
+
+                    }
+                    $("#lblOpenWO").text(countWO+" ใบงาน");
+
+
+                },
+                error: function (data) {
+
+                },
+
+            });
+
+
+
+        });
+
+
+
+        //ไฟล์ภาพแจ้งซ่อมจากลูกค้า (Home Service Application)
+        $("[name*='InformPic']").on("click", function () {
+            InformItem_ID = this.getAttribute("data-InformItem_ID");
+            viewFile(InformItem_ID);
+            $("#modalViewFile").modal('show');
+
+        });
+        function viewFile(InformItem_ID)
+        {
+            $("#lblattrachgroupName").text("ประเภทเอกสาร: ไฟล์ภาพแจ้งซ่อมจากลูกค้า (Home Service Application)" );
+
+            $.ajax({
+
+                url: '@Url.Action("getAttachmentFileReceive", "Fileupload")',
+                type: "POST",
+                data: '{"ReceiveItemID": ' + InformItem_ID + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+
+                },
+                success: function (response) {
+                    $("#logo option").remove();
+
+                    $.each(response, function (key, file) {
+                        //console.log(key);
+                        var fileicon = "@System.Configuration.ConfigurationManager.AppSettings["Iconpath"].ToString()";
+
+                        if (file.Attachment_URL.indexOf(".pdf") != -1) {
+                            fileicon = fileicon + "pdfIcon.png"
+                        } else if (file.Attachment_URL.indexOf(".doc") != -1 || file.Attachment_URL.indexOf(".docx") != -1) {
+                            fileicon = fileicon + "docIcon.png"
+                        } else if (file.Attachment_URL.indexOf(".xlsx") != -1 || file.Attachment_URL.indexOf(".xls") != -1) {
+                            fileicon = fileicon + "excelIcon.png"
+                        } else {
+                            fileicon = file.Attachment_URL;
+                        }
+
+                        var filePath = file.Attachment_URL;
+                        if (key == 0) {
+                            $('#logo').append('<option data-img-src=' + fileicon + ' value='+filePath+'>' + file.Attachment_Detail + '</option>');
+                            $("#btndownload").attr("href", filePath);
+                            $("#btndownload").attr("target", "_blank")
+                        } else {
+                            $('#logo').append('<option data-img-src=' + fileicon + ' value='+filePath+'>' + file.Attachment_Detail + '</option>');
+                        }
+                    });
+
+                    $("#logo").imagepicker({
+                        hide_select: false,
+                        show_label: false
+                    })
+
+
+                    $("#logo").imagepicker({
+                        clicked: function () {
+                            $("#btndownload").attr("href", this.val());
+                            $("#btndownload").attr("target", "_blank")
+                        }
+
+                    });
+                }
+            });
+
+        }
+
+        $("#btnUpdateExtended").on("click", function ()  {
+
+
+            //console.log($('input[name=rdoConfirm]:checked').val()== "false");
+            var ExtendedReceiveAppointmentDate=$("#ExtendedReceiveAppointmentDate").val();
+
+            var date = new Date();
+            var today = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+            var ExtendedReceiveAppointmentDate = new Date(ExtendedReceiveAppointmentDate.substring(6,10) , ExtendedReceiveAppointmentDate.substring(3,5)-1 , ExtendedReceiveAppointmentDate.substring(0,2));
+            var ExtendedApproveFlag=null;
+
+            if ('@EnumConfiguration.Role.CallCentre.ToString()' != "@UserDetail.Role")
+            {
+                if((new Date(today)>new Date(ExtendedReceiveAppointmentDate)))
+                {
+                    modalWaring("กรุณาระบุ วันที่เลื่อนนัดหมายตรวจสอบมากกว่าหรือเท่ากับวันปัจจุบัน");
+                    return;
+                }else if($("#ExtendedReceiveAppointmentTimeForm").val()>$("#ExtendedReceiveAppointmentTimeTo").val() || $("#ExtendedReceiveAppointmentTimeForm").val()==$("#ExtendedReceiveAppointmentTimeTo").val())
+                {
+                    modalWaring("กรุณาระบุ เวลาสิ้นสุดมากกว่าเริ่มต้น");
+                    return;
+                }else if ($("#ExtendedReceiveAppointmentDate").val() == "" ||$("#ExtendedReceiveAppointmentTimeForm").val() == "" ||$("#ExtendedReceiveAppointmentTimeTo").val() == ""
+                    ||$("#ddlExtendedResonID").val() == "")
+                {
+                    modalWaring("กรูณากรอกข้อมูลเลื่อนนัดหมายตรวจสอบให้ครบถ้วน");
+                    return;
+                }
+            }
+            else
+            {
+                if ($("#ExtendedReceiveAppointmentDate").val() == "" ||$("#ExtendedReceiveAppointmentTimeForm").val() == "" ||$("#ExtendedReceiveAppointmentTimeTo").val() == ""
+                   ||$("#ddlExtendedResonID").val() == ""|| ($('input[name=rdoConfirm]:checked').val()!= "true" && $('input[name=rdoConfirm]:checked').val()!= "false")
+                   ||($('input[name=rdoConfirm]:checked').val()== "false" && $("#txtExtendRemarkCC").val()=='') )
+                {
+                    modalWaring("กรูณากรอกข้อมูลเลื่อนนัดหมายตรวจสอบให้ครบถ้วน");
+                    return;
+                }
+                ExtendedApproveFlag=$('input[name=rdoConfirm]:checked').val();
+            }
+
+
+
+
+
+            var ReceiveID=$("#hdReceiveID").val();
+            var ExtendedReceiveAppointmentDate=$("#ExtendedReceiveAppointmentDate").val()
+            var ExtendedReceiveAppointmentTimeForm=$("#ExtendedReceiveAppointmentTimeForm").val()
+            var ExtendedReceiveAppointmentTimeTo=$("#ExtendedReceiveAppointmentTimeTo").val()
+            var ExtendedResonID=$("#ddlExtendedResonID").val()
+            var ExtendRemark=$("#txtExtendRemark").val()
+            var ExtendRemarkCC=$("#txtExtendRemarkCC").val()
+
+            var requestData = {
+                UnitID:@Model.Data_Unit.Unit_ID,
+                ReceiveID:ReceiveID,
+                ExtendedReceiveAppointmentDate:ExtendedReceiveAppointmentDate,
+                ExtendedReceiveAppointmentTimeForm:ExtendedReceiveAppointmentTimeForm,
+                ExtendedReceiveAppointmentTimeTo:ExtendedReceiveAppointmentTimeTo,
+                ExtendedResonID:ExtendedResonID,
+                ExtendedReasonRemark:ExtendRemark,
+                ExtendedReasonRemarkCC:ExtendRemarkCC,
+                ExtendedApproveFlag:ExtendedApproveFlag,
+                UserCode : "@UserDetail.CodeName"
+
+            }
+            //console.log(requestData);
+            var Url = '@Url.Action("InsertReceivedAppointment", "Received")';
+            var response = CallController_Ajax(requestData,Url);
+            if(response==true)
+            {
+                modalSuccess();
+                $("#modalExtendedAppointment").modal('hide');
+            }else
+            {
+
+            }
+
+        });
+
+        $("#viewExtendedHistory").click(function () {
+            $("#modalExtendedAppointmentHistory").modal('show');
+
+            var ReceiveID=$("#hdReceiveID").val();
+            var requestData = {
+                ID:ReceiveID
+            }
+            var Url = '@Url.Action("GetReceivedAppointmentHistory", "Received")';
+            var response = CallController_Ajax(requestData,Url);
+            if(response.length>0)
+            {
+                $("#tbExtendedHistory tbody tr").remove();
+                $.each(response, function (key, value) {
+                    $("#tbExtendedHistory tbody").append("<tr></tr>");
+                    if (response.length > 0) {
+
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-center'><label id='lblNo' name='No'>" + (key + 1) + "</label></td>");
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-left'>" + value.ExtendedApproveFlag + "</td>");
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-left'>" + value.CreatedBy + "</td>");
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-left'>" + value.Receive_Appointment_Old + "</td>");
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-left'>" + value.Receive_Appointment_New + "</td>");
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-left'>" + value.Reason + "</td>");
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-left'>" + value.ExtendedRemark + "</td>");
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-left'>" + value.ExtendedRemarkCC + "</td>");
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-left'>" + value.UpdatedBy + "</td>");
+                    } else {
+                        $("#tbExtendedHistory tbody tr:last").append("<td class='text-center Bold text-danger' colspan='9'>ไม่มีข้อมูล</td>");
+
+                    }
+                });
+            }
+        });
+
+
+        CheckReadOnlyPermission();
+    });
+
+    function CheckReadOnlyPermission() {
+
+        ajaxGet(`${baseUrl}/homecare/api/v1/User/@UserDetail.UserID/Permission`, response => {
+            if (response) {
+                if (!response.data.find(a => a.permissionDescription === 'receivedAction')) {
+                    console.log('disable');
+                    $("#receivedDetailInform :input").attr('disabled', 'disabled');
+                    $(".modal-header .close ").removeAttr('disabled');
+                    $("#btnOtheAction").css('disable', 'none');
+                }
+                if (response.data.find(a => a.accessDescription === 'HCRole')) {
+                    $("#btnOtheAction").css('disable', 'none');
+                }
+
+            }
+
+        });
+    }
+    function openModalConfirmWithReason(title, func) {
+        $('#confirmTitle').text(title);
+        $('#confirmBtn').removeAttr('onclick');
+        $('#confirmBtn').attr('onclick', func + '()');
+        $('#modalConfirmWithReason .modal-body').hide();
+        $('#modalConfirmWithReason').modal('show');
+    }
+
+    function openModalConfirmWithReasonforRequired(title) {
+        $('#confirmTitle').text(title);
+        $('#modalConfirmWithReason .modal-body').show();
+        $('#confirmTxtReason').text("กรุณาระบุเหตุผลในการปิดใบรับเรื่อง : ");
+        $('#modalConfirmWithReason').modal('show');
+
+        $("#confirmBtn").click(function () {
+            fnCloseReciveToReject();
+        });
+    }
+
+    function fnCloseReciveToReject() {
+        pleaseWaitDialog();
+
+        var msgremark = $("#confirmReason").val();
+        var body = {
+            receiveId: $("#hdReceiveID").val(),
+            remark: msgremark,
+            role : "hc",
+            updatedBy: '@UserDetail.CodeName'
+        }
+
+        ajaxDelete(`@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]/homecare/api/v1/Receive/DeleteReceive`, body, response => {
+            if (response) {
+                modalSuccess();
+                pleaseWaitDialogClose();
+                window.location.href = `@System.Configuration.ConfigurationManager.AppSettings["BasePath"]/Received/ReceivedDetail/@Model.Data_Inform.Receive_ID`;
+            } else {
+                $('#modalConfirmWithReason').modal('hide');
+                pleaseWaitDialogClose();
+            }
+        })
+    }
+
+    function convertToOneTimeService() {
+        pleaseWaitDialog();
+        var body = {
+            receiveId: $("#hdReceiveID").val(),
+            userId: '@UserDetail.UserID'
+        }
+        //console.log('One Time Service', body);
+        ajaxPut(`@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]/homecare/api/v1/Receive/UpdateReceiveToAfterWarranty`, body, response => {
+            if (response) {
+                modalSuccess();
+                pleaseWaitDialogClose();
+                window.location.href = `@System.Configuration.ConfigurationManager.AppSettings["BasePath"]/Home/SearchInformation/@Model.Data_Unit.PJ_ID/@Model.Data_Unit.Unit_ID`
+            } else {
+                $('#modalConfirmWithReason').modal('hide');
+                pleaseWaitDialogClose();
+            }
+        })
+    }
+
+
+    function fnGetWorkSheetCrateFlag() {
+
+        var gethdReceiveID =  $("#hdReceiveID").val();
+        ajaxGet(`${baseUrl}/homecare/api/v1/Receive/GetWorkSheetCrateFlag?receiveId=${gethdReceiveID}`, response => {
+            if (response.statusCode === 200) {
+                if (response.data == true) {
+                    $("#btnConvertOTS").attr("disabled", 1);
+                    $("#btnCloseReject").attr("disabled", 1);
+                    worksheetCreateFlag = true;
+                }
+            }
+            //console.log('response = ' + response);
+        })
+    }
+
+
+    function openModalEditReceiveRealTime() {
+        $('#selectRealTimeDate').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true
+        });
+
+        $('#modalEditReceiveRealDate').modal('show');
+    }
+
+
+
+    function editConfigReceiveRealDate() {
+        var body = {
+            Receive_ID: $("#hdReceiveID").val(),
+            Remark: $('#changeRealTimeDateReason').val(),
+            Date: reorganizeDateFormat($('#selectRealTimeDate').val())
+        }
+        if ($('#selectRealTimeDate').val() == '') {
+            pleaseWaitDialogClose();
+            modalWaring('กรูณากรอกวันเข้าตรวจสอบจริง');
+            return false;
+        }
+        if ($('#changeRealTimeDateReason').val() == '') {
+            pleaseWaitDialogClose();
+            modalWaring('กรูณากรอกสาเหตุการเปลี่ยนวันเข้าตรวจสอบจริง');
+            return false;
+        }
+        pleaseWaitDialog();
+        $.ajax({
+            url: '@Url.Action("UpdateConfigRealDate", "Received")',
+            type: "POST",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                modalWaring('มีบางอย่างผิดพลาดกรุณาดำเนินการใหม่ในภายหลัง');
+                pleaseWaitDialogClose();
+            },
+            success: function (response) {
+                modalSuccess();
+                $('#APDateReal').attr('disabled', 1);
+                $('#APDateReal').prop('checked', 1);
+                $('#APDateRealDate').val($('#selectRealTimeDate').val());
+                pleaseWaitDialogClose();
+            }
+        });
+        $('#modalEditReceiveRealDate').modal('hide');
+    }
+    function setVisibleForEditReceiveItemModal(element) {
+
+        $.get(`${baseUrl}/homecare/api/v1/LineApprove/GetLineApproveEditData?projectId=${@Model.Data_Unit.PJ_ID}`, function (data) {
+            if (data.data.length == 0) {
+                $('#modalAlertLineApprove').modal('show');
+                var projectCode = "@Model.Data_Unit.PJ_Code.ToString()";
+                var projectName = "@Model.Data_Unit.PJ_Name.ToString()";
+                var title = "โครงการ " + projectCode + " - " + projectName;
+                $('#confirmTitleProjectApprove').text(title);
+
+            } else {
+                $(element).parent().parent().parent().find('#ReceiveTable tbody select').removeAttr('disabled');
+                $(element).parent().find('button').show();
+                $('#Remark').removeClass('hidden');
+                var obj = {}
+                var row = $(element).parent().parent().parent().find('#ReceiveTable tbody');
+                obj["mainJobDetails"] = row.find("#Data_DLL_HC_Spec1").val();
+                obj["SecondaryWork"] = row.find("#Data_DLL_HC_Spec2").val();
+                obj["appraisalCharacteristics"] = row.find("#Data_DLL_HC_Spec3").val();
+                obj["location"] = row.find("#Data_DLL_HC_Location").val();
+                obj["causeOfProblem"] = row.find("#Data_DLL_HC_Cause").val();
+                obj["duplicateFixid"] = row.find("#Data_Inform_Item_DuplicateFixID").val();
+                obj["id"] = row.find("#hdID").val();
+
+                myRows_old.push(obj)
+
+            }
+        });
+
+    }
+    function editConfigReceiveItemModal(element) {
+
+        if ($('#Remark').val() == "") {
+            modalWaring("กรุณาระบุเหตุผลในการแก้ไข");
+            return
+        }
+
+        var row = $(element).parent().parent().parent().find('#ReceiveTable tbody');
+        var myRows_new = [];
+        objNew["mainJobDetails"] = row.find("#Data_DLL_HC_Spec1").val();
+        objNew["SecondaryWork"] = row.find("#Data_DLL_HC_Spec2").val();
+        objNew["appraisalCharacteristics"] = row.find("#Data_DLL_HC_Spec3").val();
+        objNew["location"] = row.find("#Data_DLL_HC_Location").val();
+        objNew["causeOfProblem"] = row.find("#Data_DLL_HC_Cause").val();
+        objNew["duplicateFixid"] = row.find("#Data_Inform_Item_DuplicateFixID").val();
+        objNew["id"] = row.find("#hdID").val();
+
+        myRows_new.push(objNew)
+
+
+        //validation
+        if (row.find("#Data_DLL_HC_Spec1").val() == "0" || row.find("#Data_DLL_HC_Spec2").val() == "0" || row.find("#Data_DLL_HC_Spec3").val() == "0" || row.find("#Data_DLL_HC_Location").val() == "0" || row.find("#Data_DLL_HC_Cause").val()=="0")
+        {
+            pleaseWaitDialogClose();
+            modalWaring("กรุณาระบุ ข้อมูลแจ้งซ่อม ให้ครบ");
+            return false;
+        }
+        var data = {
+            ID: $("#hdReceiveID").val(),
+            ReceiveJobNo: "@Model.Data_Inform.Receive_JobNoText",
+            projectCode: "@Model.Data_Unit.PJ_Code",
+            projectName: "@Model.Data_Unit.PJ_Code" + "-" + "@Model.Data_Unit.PJ_Name",
+            EditType: "แก้ไขรายละเอียดงานซ่อม",
+            UserLogin: "@UserDetail.CodeName",
+            Remark: $('#Remark').val(),
+            Detail_old: myRows_old,
+            Detail_new: myRows_new
+        };
+        //pleaseWaitDialog();
+         ajaxPost(`${baseUrl}/homecare/api/v1/Receive/SaveEditDataSendApprove`, data, response => {
+
+             if (response) {
+                 $(element).parent().parent().parent().find('#ReceiveTable tbody select').prop('disabled', true);
+                 $(element).parent().find('button').hide();
+                 $('#modalInsertRoleSuccess').modal('show');
+                 $('#lbStatusEditData').show();
+                 $('#lbTxtSuccess').text('ส่งคำขอแก้ไขข้อมูลเรียบร้อยแล้ว');
+                } else {
+                    showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                }
+            });
+
+    }
+    // Date format for post
+    function reorganizeDateFormat(date) {
+        if (!date) { return '' }
+        var temp = date.split('/');
+        var newDate = new Date(`${temp[2]}-${temp[1]}-${temp[0]}`);
+        return thaiTimeInUTC(newDate);
+    }
+    function thaiTimeInUTC(date) {
+        return new Date(date.setHours(date.getHours() + date.getTimezoneOffset() / 60 + 7));
+    }
+</script>

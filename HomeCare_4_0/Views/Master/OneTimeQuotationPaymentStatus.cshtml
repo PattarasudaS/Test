@@ -1,0 +1,176 @@
+﻿@using HomeCare_4_0.Common
+@{
+    ViewBag.Title = "OneTimeQuotationPaymentStatus";
+}
+
+<div class="row" id="search-quotation-panel">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">จัดการสถานะการชำระเงิน - ใบเสนอราคา</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                        <label>ค้นหาใบเสนอราคา</label>
+                        <input class="form-control" id="quotation-good-name" placeholder="Example : QG0000/0000/0000" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped" id="quotation-data-table" style="margin-bottom: 0;">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ใบเสนอราคา</th>
+                                        <th class="text-center">การอนุมัติ</th>
+                                        <th class="text-center">สถานะการชำระเงิน</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center" colspan="3">กรุณาค้นหาใบเสนอราคา</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script{
+    <link href="~/assets/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="~/assets/izi-toast/css/iziToast.min.css" rel="stylesheet" />
+    <script src="~/assets/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+    <script src="~/assets/izi-toast/js/iziToast.min.js"></script>
+    <script>
+        const baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+
+        window.onload = async function () {
+            $('#quotation-good-name').on('keyup', getQuotationData).focus();
+        }
+
+        async function getQuotationData() {
+            if ($('#quotation-good-name').val()) {
+                clearTimeout($.searchDelay);
+                $.searchDelay = setTimeout(async function () {
+                box('#search-quotation-panel').loading();
+                    var quotationName = $('#quotation-good-name').val().replace(/\//g, '%2F');
+                    var quotations = await get(`${baseUrl}/homecare/api/v1/Quotation/SearchQuotationGoods?text=${quotationName}`);
+                    if (quotations.length) {
+                        var tr = '';
+                        for (var q of quotations) {
+
+                            var paymentStatus = '';
+                            var approvedStatus = '';
+
+                            if (q.approvedStatusId === 2 && q.Price != 0) {
+                                approvedStatus = '';
+                            } else {
+                                approvedStatus = 'disabled = "disabled"';
+                            }
+
+                            if (q.paymentStatusId === 1) {
+                                paymentStatus = `<input id="${q.quotationGoodsName.replace(/\//g, '-')}" type="checkbox" data-toggle="toggle" onchange="changePaymentStatus(this)"  ${approvedStatus} >`;
+                            } else if (q.paymentStatusId === 2 && q.Price != 0) { // มีค่าใช้จ่าย และชำระแล้ว
+                                paymentStatus = `<input id="${q.quotationGoodsName.replace(/\//g, '-')}" type="checkbox" data-toggle="toggle"  onchange="changePaymentStatus(this)" checked  ${approvedStatus}  >`;
+                            } else if (q.paymentStatusId === 2 && q.Price == 0) { // ไม่ม่ค่าใช้จ่าย
+                                paymentStatus = `<input id="${q.quotationGoodsName.replace(/\//g, '-')}" type="checkbox" data-toggle="toggle-nocost"  onchange="changePaymentStatus(this)" checked  ${approvedStatus}  >`;
+                            } else {
+                                paymentStatus = q.paymentStatusDescription;
+                            }
+
+                            tr += `
+                                <tr>
+                                    <td class="text-center" style="vertical-align: middle;">${q.quotationGoodsName}</td>
+                                    <td class="text-center" style="vertical-align: middle;">${q.approvedStatusDescription}</td>
+                                    <td class="text-center" style="vertical-align: middle;">${paymentStatus}</td>
+                                </tr>
+                            `;
+                        }
+                        
+                        $('#quotation-data-table tbody').empty().append(tr);
+                        $('[data-toggle="toggle"]').bootstrapToggle({
+                            on: 'ชำระเงินเรียบร้อย',
+                            onstyle:'success',
+                            off: 'รอการชำระเงิน',
+                            offstyle: 'danger',
+                            width: 110,
+                            size: 'small'
+                        });
+                        $('[data-toggle="toggle-nocost"]').bootstrapToggle({
+                            on: 'ไม่มีค่าใช้จ่าย',
+                            onstyle: '',
+                            off: 'รอการชำระเงิน',
+                            offstyle: 'danger',
+                            width: 110,
+                            size: 'small'
+                        });
+                    } else {
+                        $('#quotation-data-table tbody').empty().append(`
+                            <tr>
+                                <td class="text-center text-red" colspan="3">ไม่พบใบเสนอราคา</td>
+                            </tr>
+                        `);
+                    }
+                    box('#search-quotation-panel').loaded();
+                }, 1000);
+            } else {
+                clearTimeout($.searchDelay);
+                $('#quotation-data-table tbody').empty().append(`
+                    <tr>
+                        <td class="text-center" colspan="3">กรุณาค้นหาใบเสนอราคา</td>
+                    </tr>
+                `);
+            }
+        }
+
+        async function changePaymentStatus(e) {
+            if ($.waitConfirmation) {
+                return false;
+            }
+            var quotationGoodsName = e.id.replace(/-/g, '%2F');
+            var paymentStatusId = e.checked ? 2 : 1;
+            if (paymentStatusId === 2) {
+                var response = await ajaxPut(`${baseUrl}/homecare/api/v1/Quotation/UpdateQuotationGoodsPaymentStatus/${quotationGoodsName}?paymentStatusId=${paymentStatusId}&updatedBy=@UserDetail.CodeName`);
+                if (response) {
+                    iziToast.show({
+                        title: 'แจ้งเตือน',
+                        message: 'ระบบบันทึกข้อมูลสำเร็จ',
+                        color: 'green'
+                    });
+                }
+            } else {
+                $.waitConfirmation = true;
+                $(e).bootstrapToggle('toggle');
+                modal.confirm('ยืนยันการถอยสถานะเป็น <span class="text-red">"รอการชำระเงิน"</span>', async function () {
+                    var response = await ajaxPut(`${baseUrl}/homecare/api/v1/Quotation/UpdateQuotationGoodsPaymentStatus/${quotationGoodsName}?paymentStatusId=${paymentStatusId}&updatedBy=@UserDetail.CodeName`);
+                    if (response) {
+                        iziToast.show({
+                            title: 'แจ้งเตือน',
+                            message: 'ถอยสถานะการชำระเงินสำเร็จ',
+                            color: 'green'
+                        });
+                        $(e).bootstrapToggle('toggle');
+                        $.waitConfirmation = false;
+                    }
+                });
+                //$('#confirm-modal').on('hidden.bs.modal', function () {
+                //    $.waitConfirmation = false;
+                //});
+            }
+        }
+    </script>
+}
+
+@section addtohead{
+    <style>
+
+        h3.box-title {
+            font-weight: 600;
+        }
+    </style>
+}

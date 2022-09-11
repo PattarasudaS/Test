@@ -1,0 +1,42 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HomeCare_4_0.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PI_Domain_Prd" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PI_User_Prd" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">SIRIPI</Value>
+    </Setting>
+    <Setting Name="PI_Pwd_Prd" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">sansiri</Value>
+    </Setting>
+    <Setting Name="HomeCare_4_0_SAP_HC_XI_ff07ed6e42ac32019d0af43160bf618e_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://xidev:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_CRM_WEB_SERVICE&amp;receiverParty=&amp;receiverService=&amp;interface=Z_SI_ADVANCE_VENDOR&amp;interfaceNamespace=http%3A%2F%2Fwww.sansiri.com%2FCRM%2Fadvance</Value>
+    </Setting>
+    <Setting Name="HomeCare_4_0_SI_Vendor_Search_Sync_Req_SI_Vendor_Search_Sync_ReqService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://xiqas.sansiri.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_VENDOR_MANAGEMENT_WEB_SERVICE&amp;receiverParty=&amp;receiverService=&amp;interface=SI_Vendor_Search_Sync_Req&amp;interfaceNamespace=http%3A%2F%2Fwww.sansiri.com%2FECC%2FVENDOR%2F</Value>
+    </Setting>
+    <Setting Name="HomeCare_4_0_WebServiceGetLeave_webServiceGetLeave" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://www.siriintranet.com/eleave/Service/webServiceGetLeave.asmx</Value>
+    </Setting>
+    <Setting Name="CareSyncOutlookAPI" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">API/Calendar/GetHCCalendarList</Value>
+    </Setting>
+    <Setting Name="HomeCare_4_0_PushService_PushService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://mobile.sansiri.com/moaserver/PushService.asmx</Value>
+    </Setting>
+    <Setting Name="Hostapi" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://20.20.20.38/homecare_api/</Value>
+    </Setting>
+    <Setting Name="HomeCare_4_0_SAP_HC_XI_ff07ed6e42ac32019d0af43160bf618e_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://xidev:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_CRM_WEB_SERVICE&amp;receiverParty=&amp;receiverService=&amp;interface=Z_SI_ADVANCE_VENDOR&amp;interfaceNamespace=http%3A%2F%2Fwww.sansiri.com%2FCRM%2Fadvance</Value>
+    </Setting>
+    <Setting Name="HomeCare_4_0_SI_Vendor_Search_Sync_Req_SI_Vendor_Search_Sync_ReqService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://xiqas.sansiri.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_VENDOR_MANAGEMENT_WEB_SERVICE&amp;receiverParty=&amp;receiverService=&amp;interface=SI_Vendor_Search_Sync_Req&amp;interfaceNamespace=http%3A%2F%2Fwww.sansiri.com%2FECC%2FVENDOR%2F</Value>
+    </Setting>
+    <Setting Name="HomeCare_4_0_PushService_PushService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://mobile-dev.sansiri.com/moaserverqas/PushService.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

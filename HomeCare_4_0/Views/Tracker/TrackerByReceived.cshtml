@@ -1,0 +1,569 @@
+﻿@model HomeCare_4_0.Models.TrackerViewModel
+@using HomeCare_4_0.ClassLib
+@using HomeCare_4_0.Common
+@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<style type="text/css">
+    div.dataTables_wrapper {
+        width: auto;
+        margin: 0 auto;
+    }
+
+    li.select2-selection__choice {
+        background-color: #6bbbc7 !important;
+    }
+
+    ::placeholder {
+        color: #555;
+    }
+
+    .row.spece-line {
+        margin-top: 8px;
+    }
+
+    /*
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        display : flex;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        flex-direction: row;
+    }
+    */
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        box-sizing: border-box;
+        list-style: none;
+        margin: 0;
+        padding: 0 5px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        padding: 0 5px;
+    }
+
+    ul.select2-selection__rendered > span.select2-selection__clear {
+        position: absolute;
+        right: 0;
+        margin: 3px 5px;
+    }
+    .input-group-select-left {
+        width: 20%;
+        display: inline;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        float: left;
+    }
+
+    .input-group-text-right {
+        width: 80%;
+        display: inline;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-right: 0;
+        float: left;
+    }
+   
+</style>
+
+<!-- /.box -->
+<div class="box" id="form-box" hidden>
+    <div class="box-header">
+        <h3 class="box-title">Tracker ใบรับเรื่อง</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-lg-4 ">
+                <label class="control-label">โครงการ :</label>
+                <select class="col-lg-12 form-control select2 selectpicker" multiple="multiple" data-max-options="2" id="searchProjectDoc" name="ProjectID" data-placeholder="-- กรุณาคลิกเพื่อเลือกโครงการ --">
+                    <option value="0">0000 - โครงการทั้งหมด : ALL</option>
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-sm-4">
+                <label class="control-label"> ยูนิต :</label>
+                <div class="controls">
+                    @*@{ int intSetProjectUnitID = 17 ; }
+                        <select id="ddlSearchUnitID" name="UnitID" class="form-control" disabled>
+                            <option value="0">0000 - ยูนิตทั้งหมด : ALL</option>
+                            @foreach (var HC_UnitID in new Cls_HC_TM_Lookup().Get_Unit_By_PJ_ID(intSetProjectUnitID))
+                            {
+                                <option value="@HC_UnitID.Value">@HC_UnitID.Text</option>
+                            }
+                        </select>*@
+                    <select id="ddlSearchUnitID" name="UnitID" class="form-control select2 selectpicker" multiple data-max-options="2" data-placeholder="-- กรุณาคลิกเพื่อยูนิต --" disabled>
+                        <!-- <option value="0000">0000 - ยูนิตทั้งหมด : ALL</option> -->
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-sm-4">
+                <label class="control-label">ประเภทแปลง :</label>
+                <div class="controls">
+                    <select id="UnitType" name="UnitType" class="form-control">
+                        @foreach (var HC_UnitType in new Cls_HC_TM_Lookup().Get_Master_DDL(Cls_HC_TM_Lookup_Type.HC_UnitType))
+                        {
+                            <option value="@HC_UnitType.Value">@HC_UnitType.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row spece-line">
+            <div class="col-xs-12 col-sm-4 col-sm-4">
+                <label class="control-label">สถานะใบรับเรื่อง :</label>
+                <div class="controls">
+                    <select id="HC_MainProcessReceive" name="MainProcessID" class="form-control">
+                        @foreach (var HC_MainProcessReceive in new Cls_HC_TM_Lookup().Get_Master_DDL(Cls_HC_TM_Lookup_Type.HC_MainProcessReceive))
+                        {
+                            <option value="@HC_MainProcessReceive.Value">@HC_MainProcessReceive.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-sm-4">
+                <label class="control-label">ประเภทใบรับเรื่อง :</label>
+                <div class="controls">
+                    <select id="Tracker_JobType" name="Tracker_JobType" class="form-control">
+                        <option value="">เลือกทั้งหมด</option>
+                        <option value="R">งานซ่อมทั่วไป</option>
+                        <option value="RA">One Time Service</option>
+                        <option value="RC">Yearly Service</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2 col-lg-2 ">
+                <label class="control-label"> วันที่แจ้งซ่อม: </label>
+                <div class="bootstrap-datepicker">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" id="Tracker_DateFrom" name="Tracker_DateFrom" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2 col-lg-2 ">
+                <label class="control-label"> ถึงวันที่: </label>
+                <div class="bootstrap-datepicker">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" id="Tracker_DateTo" name="Tracker_DatTo" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row  spece-line">
+            <div class="col-xs-12 col-sm-4 col-lg-4">
+                <label class="control-label">เลขที่ใบรับเรื่อง</label>
+                <div class="form-inline">
+                    <select class="form-control  input-group-select-left" id="receiveType" name="receiveType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทระบบ --" style="width: 20%;">
+                        <option selected="">Please select</option>
+                    </select>
+                    <input type="text" class="form-control input-group-text-right" id="receiveNo" name="receiveNo" style="width: 80%;">
+                </div>
+            </div>
+        </div>
+        <div class="row  spece-line">
+            <div class="col-xs-12 col-sm-6 col-lg-12 text-center">
+                <br />
+                <div class="controls">
+                    <button type="submit" class="btn btn-primary" id="btnSearch" style="width: 100px;">ค้นหา</button>
+                    <button type="button" class="btn btn-success" id="btnExport" style="width: 100px;" hidden>ออกรายงาน</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- /.box -->
+<div class="box" id="search-result" style="margin-bottom: 0;" hidden>
+    <!-- /.box-header -->
+    <div class="box-header">
+        <h3 class="box-title" id="searchCount"></h3>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-body">
+        <div class="col-lg-12">
+            <table id="tbDocumentRSearchDetail" class="display nowrap table table-striped table-bordered table-hover" cellspacing="0" style="width:100%; white-space: nowrap">
+                <thead id="searchHeaderDisplay">
+                    <tr>
+                        <th class="text-center">โครงการ</th>
+                        <th class="text-center">แปลง</th>
+                        <th class="text-center">เลขที่ใบรับเรื่องแจ้งซ่อม</th>
+                        <th class="text-center">สถานะใบรับเรื่องแจ้งซ่อม</th>
+                        <th class="text-center">รายการที่เปิด/รายการทั้งหมด</th>
+                        <th class="text-center">ช่องทางการแจ้งซ่อม</th>
+                        <th class="text-center">CC ผู้แจ้งซ่อม</th>
+                        <th class="text-center">วันที่แจ้งซ่อม</th>
+                        <th class="text-center">หมายเหตุแจ้งซ่อม</th>
+                        <th class="text-center">รายละเอียดงานซ่อม</th>
+
+                        <th class="text-center">สถานะการรับเรื่องของ HC</th>
+                        <th class="text-center">HC รับเรื่องวันที่</th>
+                        <th class="text-center">HC ผู้รับเรื่องแจ้ง</th>
+                        <th class="text-center">หมายเหตุการรับเรื่องของ HC</th>
+                        <th class="text-center">จำนวนเวลานับจากวันแจ้งซ่อม (ชม.)</th>
+                        <th class="text-center">Miss Due รับเรื่อง</th>
+
+                        <th class="text-center">วันที่นัดหมายเข้าตรวจสอบ</th>
+                        <th class="text-center">เวลา</th>
+                        <th class="text-center">ถึง</th>
+                        <th class="text-center">วันเข้าตรวจสอบจริง</th>
+                        <th class="text-center">ผลต่างวันเข้าตรวจสอบ</th>
+                        <th class="text-center">Miss Due วันเข้าตรวจสอบ</th>
+                    </tr>
+                </thead>
+                <tbody id="searchResultDisplay"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+
+    // Date format for post
+    function reorganizeDateFormat(date) {
+        if (!date) { return '' }
+        var temp = date.trim().split('/');
+        return `${temp[2]}-${temp[1]}-${temp[0]}`
+    }
+
+    // Initialize stuffs
+    window.onload = function () {
+
+        page.loading();
+        document.title = 'Tracker ใบรับเรื่อง - Home Care';
+        initReceiveTypeDropdown();
+
+        $('#btnExport').on("click", function () {
+            ExportWorkSheetReport();
+        });
+
+        
+        // Set #btnSearch onClick event
+        $('#btnSearch').on("click", function () {
+            var ProjectID = $('#searchProjectDoc').val();
+            if (ProjectID.length === 0) {
+                modalWaring("กรุณาเลือกโครงการ");
+                return false;
+            } else if (ProjectID.length > 9) {
+                modalWaring("กรุณาเลือกโครงการไม่เกิน 10 โครงการ");
+                return false;
+            }
+
+            var Tracker_DateFrom = $('#Tracker_DateFrom').val();
+            if (Tracker_DateFrom == "") {
+                modalWaring("กรุณาใส่วันที่แจ้งซ่อม");
+                return false;
+            }
+            var Tracker_DateTo = $('#Tracker_DateTo').val();
+            if (Tracker_DateTo == "") {
+                modalWaring("กรุณาใส่วันที่แจ้งซ่อมสิ้นสุด");
+                return false;
+            }
+            var Tracker_DateFromDate = new Date(Tracker_DateFrom.substring(6, 10), Tracker_DateFrom.substring(3, 5) - 1, Tracker_DateFrom.substring(0, 2));
+            var Tracker_DateToDate = new Date(Tracker_DateTo.substring(6, 10), Tracker_DateTo.substring(3, 5) - 1, Tracker_DateTo.substring(0, 2));
+            var DueDay = new Date(Tracker_DateFrom.substring(6, 10), Tracker_DateFrom.substring(3, 5) - 1, Tracker_DateFrom.substring(0, 2));
+            if (Tracker_DateFromDate > Tracker_DateToDate) {
+                modalWaring("กรุณาใส่วันที่แจ้งซ่อมเริ่มต้นน้อยกว่าวันที่สิ้นสุด");
+                return false;
+            }
+            var Tracker_JobType = $('#Tracker_JobType').val();
+
+            // Check if user select all project then date range must not higher than 6 month
+            for (var id of ProjectID) {
+                if (id == '0') {
+                    DueDay.setMonth(Tracker_DateFromDate.getMonth() + 24);
+                    if (Tracker_DateToDate > DueDay) {
+                        modalWaring('กรณีเลือกทุกโครงการ กรุณาเลือกระยะเวลาไม่เกิน 2 ปี');
+                        return false;
+                    }
+                } else {
+                    DueDay.setMonth(Tracker_DateFromDate.getMonth() + 24);
+                    if (Tracker_DateToDate > DueDay) {
+                        //console.log(Tracker_DateToDate, DueDay)
+                        modalWaring('กรุณาเลือกระยะเวลาไม่เกิน 2 ปี');
+                        return false;
+                    }
+                }
+            }
+            page.loading();
+            searchAndRendor();
+        });
+
+        // Initialize date picker
+        const today = new Date().getDate();
+        const thisMonth = new Date().getMonth() + 1;
+        const thisYear = new Date().getFullYear();
+        $('.datepicker').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            endDate: '0d'
+        });
+        $('#Tracker_DateFrom').datepicker('update', `01/01/${thisYear}`);
+        $('#Tracker_DateTo').datepicker('update', `${today}/${thisMonth}/${thisYear}`);
+        // Initialize form
+        (function () {
+            $.ajax({
+                url: "@Url.Action("GetProejctMaster", "Home")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+
+                },
+                success: function (response) {
+                    // Show form-box
+                    $('#form-box').show();
+                    $.each(response, function (Index, Value) {
+                        $("#searchProjectDoc").append($("<option></option>").val(Value.Value).html(Value.Text));
+
+                    });
+                }
+            }).always(function () {
+                $('.select2').css('width', '100%').select2({
+                    allowClear: true,
+                    tags: true
+                });
+                // Hide progress bar
+                page.loaded();
+            });
+        })();
+
+
+
+    } // --- ** End Windows on Load()
+
+
+    $('#searchProjectDoc').on('select2:select', function (e) {
+        var data_projectID = e.params.data.id;
+        if (data_projectID == '' || data_projectID == 0) {
+            data_projectID = 0 ;
+            $('#ddlSearchUnitID').attr('disabled', 'disabled');
+        } else {
+            getSearchDDLUnitID();
+        }
+
+    });
+
+    $('#searchProjectDoc').on('select2:unselect', function (e) {
+        
+        $('#ddlSearchUnitID').trigger('change.select2');
+        var data_projectID = $('#searchProjectDoc').val();
+        $('#searchProjectDoc').trigger('change.select2');
+
+        if (data_projectID == '' || data_projectID == 0) {
+            data_projectID = 0;
+            $("#ddlSearchUnitID").empty();
+            $('#ddlSearchUnitID').attr('disabled', 'disabled');
+        } else {
+            getSearchDDLUnitID();
+        }
+    });
+
+
+    async function getSearchDDLUnitID() {
+        /*
+        await ajaxGet(`${baseUrl}/homecare/api/v1/Tracker/GetUnitIDbyProjectsID/${ProjectIDList ? pProjectID : 0}`, response => {
+             if (response.statusCode === 200) {
+            if (response.data.length > 0) {
+                $.each(response.data, function (Index, Value) {
+                    $("#ddlSearchUnitID").append($("<option></option>").val(this.Unit_ID).html(this.Unit_Code));
+                    $("#ddlSearchUnitID").removeAttr("disabled");
+                });
+            }
+        } */
+
+        var ProjectIDList = "";
+         for (var m of $(searchProjectDoc).val()) {
+            ProjectIDList += m + ",";
+        }
+
+        var body = {
+            ProjectIDList: ProjectIDList ? ProjectIDList : "0,",
+        };
+
+        $("#ddlSearchUnitID").empty();
+
+        await ajaxPost(`${baseUrl}/homecare/api/v1/Tracker/GetUnitIDbyProjectsID`, body, response => {
+               if (response.data.length > 0) {
+                    $.each(response.data, function (Index, Value) {
+                        $("#ddlSearchUnitID").append($("<option></option>").val(this.Unit_ID).html(this.Unit_Code));
+                        $("#ddlSearchUnitID").removeAttr("disabled");
+                    });
+                }
+
+        });
+
+ }
+
+    function ExportWorkSheetReport() {
+        var ProjectList = "";
+        var UnitIDList = "";
+        let receiveNoArr = [];
+        let receiveNo;
+      
+        for (var m of $(searchProjectDoc).val()) {
+            ProjectList += m + ",";
+        }
+
+        for(var i of $(ddlSearchUnitID).val())
+        {
+            UnitIDList += i + ",";
+        }
+
+        if ($('#receiveNo').val() !== '') {
+            receiveNoArr = $('#receiveNo').val().split(',');
+            let receiveType = $('#receiveType').val();
+            receiveNo = receiveNoArr.map((item) => {
+                return receiveType + item.trim();
+            });
+        }
+    
+
+        window.open(`${baseUrl}/homecare/api/v1/ExportExcelSheet/ExportTrackerByReceive?projectList=${ProjectList ? ProjectList : "0,"}&UnitIDList=${UnitIDList ? UnitIDList : "0,"}&unitType=${$('#UnitType').val() ? $('#UnitType').val() : "0"}&mainProcessID=${$('#HC_MainProcessReceive').val() ? $('#HC_MainProcessReceive').val() : 0}&worksheetDateFrom=${reorganizeDateFormat($('#Tracker_DateFrom').val())}&worksheetDateTo=${reorganizeDateFormat($('#Tracker_DateTo').val())}&jobType=${$('#Tracker_JobType').val() ? $('#Tracker_JobType').val() : ""}&ReceiveNoList=${$('#receiveNo').val().replace(/ /g,'') !== '' ? receiveNo.join() : "" }`, '_blank');
+    }
+
+    async function searchAndRendor() {
+        var ProjectList = "";
+        var UnitIDList = "";
+        let receiveNoArr = [];
+        let receiveNo;
+     
+        $('#tbDocumentRSearchDetail').DataTable().destroy();
+
+        for(var m of $(searchProjectDoc).val())
+        {
+            ProjectList += m + ",";
+        }
+
+         for(var i of $(ddlSearchUnitID).val())
+        {
+            UnitIDList += i + ",";
+        }
+
+        if ($('#receiveNo').val() !== '') {
+            receiveNoArr = $('#receiveNo').val().split(',');
+            let receiveType = $('#receiveType').val().trim();
+            receiveNo = receiveNoArr.map((item) => {
+                return receiveType + item.trim();
+            });
+        }
+            
+        var body = {
+            ProjectList: ProjectList ? ProjectList : "0,",
+            UnitIDList: UnitIDList.slice(0, -1) ? UnitIDList.slice(0, -1) : "0,",
+            UnitType: $('#UnitType').val() ? $('#UnitType').val() : "0",
+            MainProcessId: $('#HC_MainProcessReceive').val() ? $('#HC_MainProcessReceive').val() : 0,
+            WorksheetDateFrom: reorganizeDateFormat($('#Tracker_DateFrom').val()),
+            WorksheetDateTo: reorganizeDateFormat($('#Tracker_DateTo').val()),
+            JobType: $('#Tracker_JobType').val() ? $('#Tracker_JobType').val() : null,
+            ReceiveNoList: $('#receiveNo').val().replace(/ /g, '') === '' ? null : receiveNo.join()
+        };
+
+
+        var startQueryAt = new Date();
+        await ajaxPost(`${baseUrl}/homecare/api/v1/Tracker/GetTrackerByReceive`, body, response => {
+            var doneQueryAt = new Date();
+            $('#searchResultDisplay').empty();
+            if (response.data.length > 0)
+                $('#searchCount').html('ทั้งหมด ' + response.data.length + ' รายการ' + ' (แสดง ' + (response.data.length <= 100 ? response.data.length : '100') + ' รายการ) <span style="color: darkgray; font-size: 11px; font-style: italic;">- ระยะเวลาในการค้นหา ' + (doneQueryAt - startQueryAt) / 1000 + ' วินาที</span><p/><span style="color: green; font-size: 12px;">* คลิกปุ่ม "ออกรายงาน" เพื่อดาวน์โหลดรายการทั้งหมด</span>');
+            else
+                $('#searchCount').text("ไม่พบรายการ");
+            $.each(response.data.slice(0, 100), (i, d) => {
+                $('#searchResultDisplay').append(`
+                    <tr>
+                        <td>${d.ProjectName}</td>
+                        <td>${d.UnitCode}</td>
+                        <td><a href='./../Received/${d.ReceiveJobNoText.match(/^[RA]{1,2}/)[0] === 'R' ? 'ReceivedDetail' : 'ReceivedRepair'}/${d.ReceiveId}' target="_blank">${d.ReceiveJobNoText}</a></td>
+                        <td>${d.ReceiveMainProcessName}</td>
+                        <td>${d.ReceiveCountNumber}</td>
+                        <td>${d.InformChannel}</td>
+                        <td>${d.InformCallcentre}</td>
+                        <td>${d.InfromDate}</td>
+                        <td style="min-width:500px; max-width:900px; word-wrap:break-word; white-space:normal;">${d.InformRemark}</td>
+                        <td>${d.detail}</td>
+
+                        <td>${d.ReceiveStatusName}</td>
+                        <td>${d.ReceiveHcDate}</td>
+                        <td>${d.ReceiveHcName}</td>
+                        <td style="min-width:500px; max-width:900px; word-wrap:break-word; white-space:normal;">${d.ReceiveHcRemark}</td>
+                        <td>${d.DateDiffReceiveDate}</td>
+                        <td>
+                            ${d.DateDiffReceiveDate > 24 ? '<div class="text-danger"> MissReceive </div>' : ''}
+                        </td>
+                        <td>${d.ReceiveAppointmentDate}</td>
+                        <td>${d.ReceiveAppointmentTimeFrom}</td>
+                        <td>${d.ReceiveAppointmentTimeTo}</td>
+                        <td>${d.ReceiveAppointmentDateReal}</td>
+                        <td>${d.DateDiffReceiveAppointmentDate}</td>
+                        <td>
+                            ${d.DateDiffReceiveAppointmentDate > 0 ? '<div class="text-danger"> MissCheck </div>' : ''}
+                        </td>
+                    </tr>
+                `);
+            });
+        });
+
+        // Initialize data table
+        $('#tbDocumentRSearchDetail').DataTable({
+            scrollX: true,
+            pageLength: 10,
+            "language": {
+                "processing": "กำลังดึงข้อมูล...กรุณารอสักครู่",
+                "search": "ค้นหา : ",
+                "lengthMenu": "แสดง _MENU_ รายการ",
+                "emptyTable": "ไม่พบข้อมูล",
+                "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                "infoFiltered": "",
+                "zeroRecords": "ไม่พบข้อมูล",
+                "paginate": {
+                    "first": "หน้าแรก",
+                    "last": "หน้าสุดท้าย",
+                    "next": "ถัดไป",
+                    "previous": "ก่อนหน้า"
+                }
+
+            }
+        });
+        $('.dataTables_scrollBody').css('max-height', '967px');
+        $('.select2-search__field').css({paddingLeft: '1rem' });
+
+        $('#btnExport').show();
+        $('#form-box').show();
+        $('#search-result').show();
+        $('#tbDocumentRSearchDetail').DataTable().columns.adjust().draw();
+
+        await page.loaded();
+    }
+
+    async function initReceiveTypeDropdown() {
+        let option = ``;
+        await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetReceiveTypeList`, response => {
+            if (response) {
+                var ddlReceiveType = $('#receiveType');
+              
+                //option += `<option selected="selected" value="">Please select</option>`;
+                $.each(response.data, function (Index, Value) {
+                    option += `<option value="${Value.description}">
+                                       ${Value.description}
+                                  </option>`;
+                });
+                ddlReceiveType.empty().html(option);             
+            }
+
+        });
+    }
+
+</script>

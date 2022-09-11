@@ -1,0 +1,75 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Not Permission</title>
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="~/assets/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/assets/lib/font-awesome/v5.13.1/all.min.css" />
+    <link rel="stylesheet" href="~/assets/lib/font-awesome/v5.13.1/font-awesome.min.css" />
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="~/assets/lib/ionicons/ionicons.min.css" />
+
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/assets/dist/css/AdminLTE.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/assets/dist/css/skins/_all-skins.min.css">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="~/assets/plugins/bootstrap/css/v3.3.7/bootstrap.min.css" /> 
+    <!-- jQuery -->
+    <script src="~/assets/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/assets/plugins/jQuery/jquery-3.4.1.min.js"></script>
+
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/assets/plugins/jQueryUI/jquery-ui.min.js"></script>
+    @*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>*@
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>$.widget.bridge('uibutton', $.ui.button);</script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="~/assets/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script type="text/javascript" src="~/assets/plugins/bootstrap/js/v3.3.7/bootstrap.min.js"></script>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                window.location.href = '@Url.Action("SignOut", "HC")';
+            }, 5000);
+
+        });
+    </script>
+    <style>
+        .middle {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            /* bring your own prefixes */
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="main-inner">
+            <div class="container">
+                <blockquote class="blockquote text-center  middle">
+                    <p class="mb-0 text-danger">ระบบตรวจสอบ ไม่พบสิทธิ์เข้าใช้งานระบบ Home Care</p>
+                    <footer class="blockquote-footer">กรุณาติดต่อ IT Callcentre เพื่อเปิดสิทธิ์เข้าใช้งานระบบ<cite title="Source Title">.... กำลังไปยังหน้า เข้าสู่ระบบ ใหม่อีกครั้ง ....</cite></footer>
+                </blockquote>
+
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

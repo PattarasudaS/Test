@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="http://www.sansiri.com/CRM/advance" xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="Z_SI_ADVANCE_VENDOR" targetNamespace="http://www.sansiri.com/CRM/advance" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation />
+  <wsp:UsingPolicy wsdl:required="true" />
+  <wsp:Policy wsu:Id="OP_Z_SI_ADVANCE_VENDOR" />
+  <wsdl:types>
+    <xsd:schema xmlns="urn:sap-com:document:sap:rfc:functions" targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:element name="Z_PI_ADVANCE_VENDOR">
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element minOccurs="0" name="IM_LIFNR">
+              <xsd:annotation>
+                <xsd:documentation>Account Number of Vendor or Creditor</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="10" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="IM_NAME">
+              <xsd:annotation>
+                <xsd:documentation>Name 1</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="35" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="IM_NAME2">
+              <xsd:annotation>
+                <xsd:documentation>Name 2</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="35" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="IM_SORTL">
+              <xsd:annotation>
+                <xsd:documentation>Sort field</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="10" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="IM_STCD1">
+              <xsd:annotation>
+                <xsd:documentation>Tax Number 1</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="16" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="IM_STCD2">
+              <xsd:annotation>
+                <xsd:documentation>Tax Number 2</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="11" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="IM_V_TYPE">
+              <xsd:annotation>
+                <xsd:documentation>Vendor Type: 'P' for Petty Cashier, 'E' for Employee</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="1" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="EX_VENDOR">
+              <xsd:annotation>
+                <xsd:documentation>Structure for PI interface: Vendor List</xsd:documentation>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZSPI_VENDOR_LIST" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Z_PI_ADVANCE_VENDOR.Response">
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element minOccurs="0" name="EX_RETURN" type="rfc:BAPIRETURN1">
+              <xsd:annotation>
+                <xsd:documentation>Return Parameter</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="EX_VENDOR">
+              <xsd:annotation>
+                <xsd:documentation>Structure for PI interface: Vendor List</xsd:documentation>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZSPI_VENDOR_LIST" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="ZSPI_VENDOR_LIST">
+        <xsd:annotation>
+          <xsd:documentation>Structure for PI interface: Vendor List</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="LIFNR">
+            <xsd:annotation>
+              <xsd:documentation>Account Number of Vendor or Creditor</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="NAME1">
+            <xsd:annotation>
+              <xsd:documentation>Name 1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="35" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="NAME2">
+            <xsd:annotation>
+              <xsd:documentation>Name 2</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="35" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="SORTL">
+            <xsd:annotation>
+              <xsd:documentation>Sort field</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="SMTP_ADDR">
+            <xsd:annotation>
+              <xsd:documentation>E-Mail Address</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="241" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BANKS">
+            <xsd:annotation>
+              <xsd:documentation>Bank country key</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BANKL">
+            <xsd:annotation>
+              <xsd:documentation>Bank number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="15" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BANKN">
+            <xsd:annotation>
+              <xsd:documentation>Bank account number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="18" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="KOINH">
+            <xsd:annotation>
+              <xsd:documentation>Account Holder Name</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="60" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="STCD1">
+            <xsd:annotation>
+              <xsd:documentation>Tax Number 1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="16" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="STCD2">
+            <xsd:annotation>
+              <xsd:documentation>Tax Number 2</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="11" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIRETURN1">
+        <xsd:annotation>
+          <xsd:documentation>Return Parameter</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="TYPE">
+            <xsd:annotation>
+              <xsd:documentation>Message type: S Success, E Error, W Warning, I Info, A Abort</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="1" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ID">
+            <xsd:annotation>
+              <xsd:documentation>Message Class</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="20" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="NUMBER">
+            <xsd:annotation>
+              <xsd:documentation>Message Number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+                <xsd:pattern value="\d+" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="MESSAGE">
+            <xsd:annotation>
+              <xsd:documentation>Message Text</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="220" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="LOG_NO">
+            <xsd:annotation>
+              <xsd:documentation>Application log: log number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="20" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="LOG_MSG_NO">
+            <xsd:annotation>
+              <xsd:documentation>Application log: Internal message serial number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="6" />
+                <xsd:pattern value="\d+" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="MESSAGE_V1">
+            <xsd:annotation>
+              <xsd:documentation>Message Variable</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="50" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="MESSAGE_V2">
+            <xsd:annotation>
+              <xsd:documentation>Message Variable</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="50" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="MESSAGE_V3">
+            <xsd:annotation>
+              <xsd:documentation>Message Variable</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="50" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="MESSAGE_V4">
+            <xsd:annotation>
+              <xsd:documentation>Message Variable</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="50" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="rfc.Z_PI_ADVANCE_VENDOR.Input">
+    <wsdl:documentation />
+    <wsdl:part name="parameters" element="rfc:Z_PI_ADVANCE_VENDOR" />
+  </wsdl:message>
+  <wsdl:message name="rfc.Z_PI_ADVANCE_VENDOR.Output">
+    <wsdl:documentation />
+    <wsdl:part name="parameters" element="rfc:Z_PI_ADVANCE_VENDOR.Response" />
+  </wsdl:message>
+  <wsdl:portType name="Z_SI_ADVANCE_VENDOR">
+    <wsdl:documentation />
+    <wsdl:operation name="Z_SI_ADVANCE_VENDOR">
+      <wsdl:documentation />
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP_Z_SI_ADVANCE_VENDOR" />
+      </wsp:Policy>
+      <wsdl:input message="p1:rfc.Z_PI_ADVANCE_VENDOR.Input" />
+      <wsdl:output message="p1:rfc.Z_PI_ADVANCE_VENDOR.Output" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Z_SI_ADVANCE_VENDORBinding" type="p1:Z_SI_ADVANCE_VENDOR">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <wsdl:operation name="Z_SI_ADVANCE_VENDOR">
+      <operation soapAction="http://sap.com/xi/WebService/soap1.1" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <wsdl:input>
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </wsdl:input>
+      <wsdl:output>
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="XI_ff07ed6e42ac32019d0af43160bf618e_Service">
+    <wsdl:port name="HTTP_Port" binding="p1:Z_SI_ADVANCE_VENDORBinding">
+      <address location="http://xidev:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_CRM_WEB_SERVICE&amp;receiverParty=&amp;receiverService=&amp;interface=Z_SI_ADVANCE_VENDOR&amp;interfaceNamespace=http%3A%2F%2Fwww.sansiri.com%2FCRM%2Fadvance" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+    <wsdl:port name="HTTPS_Port" binding="p1:Z_SI_ADVANCE_VENDORBinding">
+      <address location="https://xidev/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_CRM_WEB_SERVICE&amp;receiverParty=&amp;receiverService=&amp;interface=Z_SI_ADVANCE_VENDOR&amp;interfaceNamespace=http%3A%2F%2Fwww.sansiri.com%2FCRM%2Fadvance" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

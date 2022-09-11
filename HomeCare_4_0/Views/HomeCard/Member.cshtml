@@ -1,0 +1,694 @@
+﻿@using HomeCare_4_0.Common;
+@using HomeCare_4_0.ClassLib;
+@{
+    ViewBag.Title = "Home Card";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+    var hideVat = System.Configuration.ConfigurationManager.AppSettings["HomeCardVat"] == "true" ? "false" : "true";
+}
+<main>
+
+
+    @*ข้อมูลรับเรื่อง*@
+    <div class="box box-default" id="Received-Receive">
+        <div class="box-header with-border cursor-pointer collapsed" data-toggle="collapse" data-target="#Received-Receive-detail" aria-expanded="false" aria-controls="Received-Receive-detail">
+            <a>
+                <h3 class="box-title " id="HeaderReceive"><i class="fa fa-phone" style="position: relative; top: 2px;"></i> ข้อมูลการเข้าตรวจสอบ</h3>
+            </a>
+        </div>
+
+        <div class="box-body collapse in" id="Received-Receive-detail">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="control-label">สถานะรับเรื่อง</label>
+                        <select id="ddlReceivedStatusID" class="form-control" onchange="onChangeddlReceivedStatus()"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                    <div class="form-group">
+                        <label class="control-label"> HC รับเรื่องวันที่ </label>
+                        <div id="ReceiveHCDate" class="form-control-static text-primary"></div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                    <div class="form-group">
+                        <label class="control-label"> หมายเหตุ HC </label>
+                        <input id="ReceiveHCRemark" class="form-control" type="text" disabled />
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="control-label"> HC ผู้รับเรื่อง </label>
+                        <div id="ReceiveHCUser" class="form-control-static text-primary"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="control-label"> Call Centre รับเรื่องวันที่ </label>
+                        <div class="controls" id="Receive_CC_Date">
+                            <div id="ReceiveCCDate" class="form-control-static text-primary"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                    <div class="form-group">
+                        <label class="control-label"> หมายเหตุ Call Centre </label>
+                        <div class="controls width60">
+                            <input id="ReceiveCCRemark" class="form-control" type="text" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="control-label"> Call Centre ผู้รับเรื่อง </label>
+                        <div class="controls">
+                            <div id="ReceiveCCUser" class="form-control-static text-primary"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="control-label"> วันที่นัดหมายตรวจสอบ </label>
+                        <div class="input-group" id="ReceiveAppointmentGroup">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" class="form-control datepicker" id="ReceiveAppointmentDate" name="ReceiveAppointmentDate" onchange="onchangeAppointmentDate()" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="control-label"> เวลา </label>
+                        <div class="bootstrap-timepicker">
+                            <div class="input-group width60">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-clock-o"></i>
+                                </div>
+                                <input class="form-control timepicker" id="ReceiveAppointmentTimeForm" name="ReceiveAppointmentTimeForm" type="text" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                    <div class="form-group">
+                        <label class="control-label"> ถึง </label>
+                        <div class="bootstrap-timepicker">
+                            <div class="input-group width60">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-clock-o"></i>
+                                </div>
+                                <input class="form-control timepicker" id="ReceiveAppointmentTimeTo" name="ReceiveAppointmentTimeTo" type="text" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-lg-4 " id="DivRealRepairDate">
+                    <div class="form-group">
+                        <label class="control-label ">วันเข้าตรวจสอบจริง *</label>
+                        <div class="input-group">
+                            <span class="input-group-addon" style="background-color:whitesmoke">
+                                <input type="checkbox" id="chkAPDateReal" onclick="bindRealAppointmentDate()">
+                            </span>
+                            <input type="text" class="form-control" id="ReceiveAppointmentDateReal" value="" readonly style="background-color: whitesmoke" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <hr class="col-xs-12" style="margin: 0; margin-bottom: 10px;">
+                    <button type="button" class="btn btn-success" id="btnsent" onclick="saveHCPanel()" style="min-width: 130px;">บันทึก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*ข้อมูลใบเสนอราคา HomeCard*@
+    <div class="box box-default" id="Received-Inform">
+        <div class="box-header with-border">
+            <a>
+                <h3 class="box-title "><i class="fa fa-pencil"></i> ข้อมูลใบเสนอราคา HomeCard</h3>
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                @if (@UserDetail.Role != @EnumConfiguration.Role.PMR.ToString())
+                {
+                <button type="button" class="btn btn-success" id="btnQuotation" onclick="openModalConfirmWOR('หน้าต่างยืนยันการสร้างใบเสนอราคา Home card','ต้องการสร้างใบเสนอราคาหรือไม่ ?','createQuotation')" style="min-width: 130px; margin: 10px;" disabled>สร้างใบเสนอราคา</button>
+                }
+                <hr class="col-xs-12" style="margin: 0; margin-top: 10px;">
+            </div>
+        </div>
+        <div class="box-body " id="Received-Quotation-detail" hidden>
+            <div id="DivOfferPrice" style="padding-left: 10px;">
+                <div class="row mb-1">
+                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                        <div class="form-group">
+                            <label class="control-label">รหัสใบเสนอราคา</label>
+                            <div class="row">
+                                <div style="padding-right: 0">
+                                    <select class="form-control" id="ddlQuotationGoodsName" onchange="onChangeQuotationGoodsName()" style="width: auto"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                        <div class="form-group">
+                            <label class="control-label">ผู้เปิดใบเสนอราคา</label>
+                            <div class="controls">
+                                <label class="control-label text-primary" id="txtQuotationCreatedBy"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                        <div class="form-group">
+                            <label class="control-label">วันที่เปิดใบเสนอราคา</label>
+                            <div class="controls text-danger">
+                                <label class="control-label text-primary" id="txtQuotationCreatedDate"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                        <div class="form-group">
+                            <label class="control-label">สถานะการอนุมัติ</label>
+                            <div class="controls">
+                                <label class="control-label text-primary" id="txtQuotationApproveStatus"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                        <div class="form-group">
+                            <label class="control-label">สถานะการชำระ</label>
+                            <div class="controls">
+                                <label class="control-label text-danger" id="txtQuotationPaymentStatus" style="color: red"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                        <div class="form-group">
+                            <label class="control-label">ออกรายงาน</label>
+                            <div id="DivGenQuotationPDF" style="display: none">
+                                <div class="controls text-danger">
+                                    <span class="cursor-pointer" onclick="genQuotation()"><label class="control-label text-primary cursor-pointer">ใบเสนอราคา (ลูกค้า):</label> <i class="fa fa-print fa-lg cursor-pointer" style="color:brown"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-0">
+                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                        <div class="form-group">
+                            <label class="control-label">หมายเหตุ</label>
+                            <div class="controls">
+                                <label class="control-label text-primary" id="txtQuotationRemark"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                        @* TODO สามารถยกเลิกได้แม้อนุมัติไปแล้ว*@
+                        <div class="form-group">
+                            <label class="control-label">ลูกค้าขอเปลี่ยนแปลง / ยกเลิก</label>
+                            <div class="controls">
+                                <div class="input-group">
+                                    <span class="input-group-addon" style="background-color: whitesmoke">
+                                        <input type="checkbox" name="flagChangeRequest" id="flagChangeRequest" onchange="onchangeflagChangeRequest()">
+                                    </span>
+                                    <select class="form-control" id="DdlCustomerCancelQuotationReason" disabled style="width: 80%;"> </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4 " id="DivQuotationApprove">
+                        <div class="col-xs-12 col-sm-12 col-lg-9" style="padding-left: 0px">
+                            <div class="form-group">
+                                <label class="control-label">การอนุมัติ</label>
+                                <div id="DivApprove">
+                                    <button id="btnApprove" class="btn btn-success" onclick="openModalConfirmWOR('หน้าต่างยืนยันการอนุมัติ', 'ต้องการอนุมัติใบเสนอราคา นี้หรือไม่?', 'saveApproveQuotation')">&nbsp;&nbsp;อนุมัติ&nbsp;&nbsp;</button>
+                                    <button id="btnReject" class="btn btn-danger" onclick="openModalConfirmWithReason('หน้าต่างยืนยันการไม่อนุมัติ', 'กรุณากรอกเหตุผลการไม่อนุมัติ!', 'saveRejectQuotation', true)">ไม่อนุมัติ</button>
+                                </div>
+                                <div id="DivApplyApprove" style="display : none;">
+                                    <button id="btnRequestApproval" class="btn btn-success" onclick="openModalConfirmWOR('หน้าต่างยืนยันการขออนุมัติ', 'ต้องการส่งอนุมัตินี้หรือไม่?', 'applyApproveQuotation')">&nbsp;&nbsp;ส่งอนุมัติ&nbsp;&nbsp;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row " style="margin: 0px;">
+                    <div class="div-quotation-item-detail form-group">
+                        <table class="table table-striped table-bordered table-hover  quotation-item-detail " id="InformTable" style="margin-bottom: 0px; width:100% ">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="5%">ลำดับ</th>
+                                    <th class="text-center">รายการ</th>
+                                    <th class="text-center" width="10%">จำนวน</th>
+                                    <th class="text-center" width="20%">ราคา</th>
+                                </tr>
+                            </thead>
+                            <tbody id="preQuotationItemDetailTBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Optional Package : -->
+                <div id="divOptionalPackageBox" class="row " style="margin: 0px;">
+                    <div class="div-quotation-item-detail form-group">
+                        <b>บริการเสริม : </b>
+                        <table class="table table-striped table-bordered table-hover  quotation-item-detail " id="tbTable_OptionalPackage" style="margin-bottom: 0px; width:100% ">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="5%">ลำดับ</th>
+                                    <th class="text-center">รายการ</th>
+                                    <th class="text-center" width="10%">จำนวน</th>
+                                    <th class="text-center" width="20%">ราคา</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbDetailTBody_OptionalPackage"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Optional Package : -->
+
+                <div id="DivChargeDetail" class="mb-1"> </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <hr class="col-xs-12" style="margin: 0; margin-top: 10px;">
+                        <button type="button" class="btn btn-success" id="btnSaveQuotation" onclick="saveQuotationPanel()" style="min-width: 130px; margin-top: 10px;">บันทึก</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*ยกเลิกรายการขอรับบริการ HomeCard*@
+    <div class="row">
+        <div class="col-xs-12">
+            <hr class="col-xs-12" style="margin: 0;">
+            <button type="button" class="btn btn-danger" id="btncancel" onclick="openModalConfirmWithReason('หน้าต่างยืนยัน ยกเลิกรายการ.', 'กรุณากรอกเหตุผล ขอยกเลิกรายการ !!!', 'cancelHomeCardRequest', true)" style="min-width: 130px;">ยกเลิกรายการ</button>
+        </div>
+    </div>
+    @*Modal Extended Appointment*@
+    <div tabindex="-1" class="modal fade" id="modalExtendedAppointment" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius:6px;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">เลื่อนวันที่นัดหมายตรวจสอบ</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-5  text-right">
+                                    <h5><label class="control-label">วันที่นัดหมายตรวจสอบ(ใหม่): </label></h5>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="bootstrap-datepicker">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" class="form-control datepicker" data-val="true" data-val-date="The field Extended Appointment must be a date." id="ExtendedReceiveAppointmentDate"
+                                                   name="ExtendedReceiveAppointmentDate" style="width:100%;" onkeypress="return false">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-5  text-right">
+                                    <h5><label class="control-label text-left">เวลา: </label></h5>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="bootstrap-timepicker">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                            <input class="form-control timepicker" id="ExtendedReceiveAppointmentTimeForm" name="ExtendedReceiveAppointmentTimeForm" style="width:100%;" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-5 text-right">
+                                    <h5><label class="control-label">ถึง: </label></h5>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="bootstrap-timepicker">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                            <input class="form-control timepicker" id="ExtendedReceiveAppointmentTimeTo" name="ExtendedReceiveAppointmentTimeTo" style="width:100%;" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 mb-2">
+                            <div class="row">
+                                <div class="col-xs-5 text-right">
+                                    <label class="control-label"> หมายเหตุ HC: </label>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <textarea class="form-control" cols="30" rows="2" data-val="true" id="txtExtendRemark" name="txtExtendRemark" maxlength="512"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if (@UserDetail.Role == @EnumConfiguration.Role.CallCentre.ToString())
+                        {
+                        <div class="col-xs-12 mb-2">
+                            <div class="row">
+                                <div class="col-xs-5 text-right">
+                                    <label class="control-label"> หมายเหตุ CC: </label>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="bootstrap-timepicker">
+                                        <div class="input-group">
+                                            <textarea class="form-control" cols="30" rows="2" data-val="true" id="txtExtendRemarkCC" name="txtExtendRemarkCC" style="width:100%;" type="text" maxlength="512"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-5 text-right">
+                                    <label class="control-label"> สถานะ: </label>
+                                </div>
+                                <div class="col-xs-6 text-left">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="confirmFlagTrue" name="rdoConfirm" value="true">
+                                        <label class="form-check-label" for="confirmFlagTrue">อนุมัติ</label>&nbsp;
+                                        <input class="form-check-input" type="radio" id="confirmFlagFalse" name="rdoConfirm" value="false">
+                                        <label class="form-check-label" for="confirmFlagFalse">ไม่อนุมัติ</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <button type="button" class="btn btn-default" id="btnUpdateExtended" onclick="saveModalExtendedAppointment()"><i class="fa fa-floppy-o"> </i> บันทึก</button>
+                            <button type="button" class="btn btn-default" id="btnCancelxtended" data-dismiss="modal"><i class="fa fa-remove"> </i> ยกเลิก</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Extended Appointment History*@
+    <div tabindex="-1" class="modal fade" id="modalExtendedAppointmentHistory" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="border-radius:6px;">
+                <div class="modal-header bg-light-blue">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">ประวัติการขอเลื่อนนัด</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <form class="widget-content">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped" id="tbExtendedHistory">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">
+                                                    ลำดับ
+                                                </th>
+                                                <th class="text-center">
+                                                    สถานะ
+                                                </th>
+                                                <th class="text-center">
+                                                    ผู้ขอเลื่อน
+                                                </th>
+                                                <th class="text-center">
+                                                    วันเดิม
+                                                </th>
+                                                <th class="text-center">
+                                                    วันใหม่
+                                                </th>
+
+                                                <th class="text-center">
+                                                    หมายเหตุ HC
+                                                </th>
+                                                <th class="text-center">
+                                                    หมายเหตุ CC
+                                                </th>
+                                                <th class="text-center">
+                                                    ผู้อนุมัติ CC
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyExtendedAppointmentHistory">
+                                            <tr>
+                                                <td class="text-center Bold text-danger" colspan="9">ไม่มีข้อมูล</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Modal Confirm With Reason *@
+    <div tabindex="-1" class="modal fade" id="modalConfirmWithReason" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+        <div class="modal-dialog modal-dialog-centered" style="margin-top: 25vh">
+            <div class="modal-content" style="border-radius: 6px;">
+                <div class="modal-header bg-light-blue" style="border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="confirmTitle"></h4>
+                </div>
+                <div class="modal-body " style="padding-bottom: 0">
+                    <div class="row form-group">
+                        <div style="margin: 0 5%">
+                            <label id="confirmTxtReason"></label><label style="color: crimson" id="confirmStarReason">*</label>
+                            <input class="form-control" type="text" value="" id="confirmReason" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="background-color:whitesmoke; text-align:center; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; padding: 10px">
+                    <button type="button" class="btn btn-success" id="confirmBtn" onclick="" style="margin-right: 5px">ยืนยัน</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Modal Confirm การสร้างQuotation*@
+    <div tabindex="-1" class="modal fade" id="modalConfirm" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+        <div class="modal-dialog modal-dialog-centered" style="margin-top: 25vh">
+            <div class="modal-content" style="border-radius: 6px;">
+                <div class="modal-header bg-light-blue" style="border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="confirmTitleWOR"></h4>
+                </div>
+                <div class="modal-body " style="padding-bottom: 0">
+                    <div class="row form-group">
+                        <div style="margin: 0 5%; text-align: center">
+                            <label id="confirmTxt"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="background-color:whitesmoke; text-align:center; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; padding: 10px">
+                    <button type="button" class="btn btn-success" id="confirmBtnWOR" onclick="" style="margin-right: 5px">ยืนยัน</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+@section Script{
+    <script>
+        @{var homeCardDisabled = System.Configuration.ConfigurationManager.AppSettings["EnableHomeCard"] == "true" ? "false" : "true";}
+        if (@homeCardDisabled)
+        {
+            @* เช็คการตั้งค่าว่าเปิดฟังก์ชันโฮมการ์ดหรือไม่ถ้าไม่เปิดให้ออกจากหน้านี้ทันที *@
+            window.location.href = '@Url.Action("Index", "Home")';
+        }
+
+        @* ประกาศตัวแปร *@
+        var baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+        $.unitId = getUrlVars()["unitId"] || sessionStorage.unitId;
+        var RequestID = getUrlVars()["homeCardRequestId"] || sessionStorage.homeCardRequestId;
+        var unitCode = getUrlVars()["unitCode"] || sessionStorage.unitCode;
+        console.log($.unitId);
+        console.log(RequestID);
+        console.log(unitCode);
+        $.operationPrice = 0;
+        $.vatPrice = 0;
+        $.netPrice = 0;
+
+        @* เช็คว่ามีการส่ง unitId และ projectCode มาหรือไม่ ถ้าไม่มีการส่งมาให้ออกจากหน้านี้ *@
+        if (!$.unitId || !RequestID) {
+            window.location.href = '@Url.Action("Index", "Home")';
+        }
+        @* ฟังก์ชันนี้จะถูกทำงานตอนโหลดหน้านี้เสร็จครั้งเดียว *@
+        window.onload = async function init() {
+            @* ซ่อน Vat ตาม config *@
+            if (@hideVat) {
+                $('table#request-homecard tfoot tr:not(:last)').hide();
+        }
+        await GetParameterToJS(baseUrl, $.unitId,unitCode, RequestID, '@UserDetail.UserID', '@UserDetail.Role' ,'@UserDetail.CodeName');
+        //Get HC panel
+        await GetHCpanel();
+        //get QuotationPanel
+        await getQuotationPanel();
+        @* select 2 *@
+        $('.select2.without-search').select2({ minimumResultsForSearch: -1 });
+        @* initialize date picker *@
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true
+        });
+        $('.timepicker').timepicker({
+            showMeridian: false,
+            defaultTime: false
+        });
+        @* ซ่อน url parameter  *@
+        window.history.replaceState({}, '', 'Member');
+        @* เก็บ unitId กับ projectCode ไว้ใน session*@
+        sessionStorage.unitId = $.unitId;
+        sessionStorage.projectCode = $.projectCode;
+        sessionStorage.homeCardRequestId = RequestID;
+        sessionStorage.unitCode = unitCode;
+        }
+
+        function getUrlVars() 
+        {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(var i = 0; i < hashes.length; i++)
+            {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+    </script>
+    <script src="~/Scripts/js/HomeCardMember.js"></script>
+}
+@section AddToHead{
+    <style>
+        .content .box-title > .fa {
+            font-size: 18px;
+            margin-right: 5px;
+        }
+
+        .text-indianred {
+            color: indianred;
+        }
+
+        .homecard-control::before {
+            content: "0";
+            color: transparent;
+        }
+
+        p.homecard-control span.label {
+            display: inline-table;
+            text-transform: uppercase;
+            min-width: 80px;
+            font-size: 90%;
+        }
+
+        .delete-row {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 47px;
+            cursor: pointer;
+        }
+
+        #request-homecard tbody .label {
+            display: inline-block;
+            text-transform: uppercase;
+            min-width: 80px;
+            font-size: 90%;
+        }
+
+        .input-group-addon {
+            border-top-right-radius: 4px !important;
+            border-bottom-right-radius: 4px !important;
+            padding-top: 4px;
+            border-color: #ccc !important;
+        }
+
+        input.homecard-addon {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        span.homecard-addon {
+            display: inline-block;
+            height: 30px;
+            padding-top: 6px;
+            padding-left: 10px;
+            padding-right: 24px;
+            position: relative;
+            bottom: 2px;
+        }
+
+        .bootstrap-timepicker-widget table td input {
+            width: 70px;
+        }
+
+        input.form-control {
+            line-height: 2.5;
+        }
+
+        .input-group-addon {
+            border-top-left-radius: 4px !important;
+            border-top-right-radius: 0px !important;
+            border-bottom-left-radius: 4px !important;
+            border-bottom-right-radius: 0px !important;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+    </style>
+}

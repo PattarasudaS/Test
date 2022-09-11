@@ -1,0 +1,2978 @@
+﻿@using HomeCare_4_0.Common
+@using HomeCare_4_0.ClassLib
+@{
+    ViewBag.Title = "ManageMasterCost";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+
+<link rel="stylesheet" href="~/assets/plugins/datatables/dataTables.bootstrap-1.10.12.min.css" />
+<link rel="stylesheet" href="~/assets/plugins/datatables/responsive.bootstrap.min.css" />
+<style>
+
+    div.dataTables_wrapper {
+        width: auto;
+        margin: 0 auto;
+    }
+
+    .project-status-filter {
+        border: 0;
+        box-shadow: none;
+        position: relative;
+        bottom: 6.5px;
+        right: 11px;
+    }
+
+    .input-field input[type='text'] {
+        /* color: #fff;*/
+        /*font-size: 1.1em;*/
+        height: 28px;
+        border-bottom: 1px solid #9e9e9e !important;
+        box-shadow: 0 1px 0 0 #fff !important;
+    }
+
+    input:not([type]).validate + label, input[type=text]:not(.browser-default).validate + label, input[type=password]:not(.browser-default).validate + label, input[type=email]:not(.browser-default).validate + label, input[type=url]:not(.browser-default).validate + label, input[type=time]:not(.browser-default).validate + label, input[type=date]:not(.browser-default).validate + label, input[type=datetime]:not(.browser-default).validate + label, input[type=datetime-local]:not(.browser-default).validate + label, input[type=tel]:not(.browser-default).validate + label, input[type=number]:not(.browser-default).validate + label, input[type=search]:not(.browser-default).validate + label, textarea.materialize-textarea.validate + label {
+        width: 100%
+    }
+
+    input:not([type]), input[type=text]:not(.browser-default), input[type=password]:not(.browser-default), input[type=email]:not(.browser-default), input[type=url]:not(.browser-default), input[type=time]:not(.browser-default), input[type=date]:not(.browser-default), input[type=datetime]:not(.browser-default), input[type=datetime-local]:not(.browser-default), input[type=tel]:not(.browser-default), input[type=number]:not(.browser-default), input[type=search]:not(.browser-default), textarea.materialize-textarea {
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid #9e9e9e;
+        border-radius: 0;
+        outline: none;
+        height: 3rem;
+        width: 100%;
+        font-size: 16px;
+        margin: 0 0 8px 0;
+        padding: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        -webkit-box-sizing: content-box;
+        box-sizing: content-box;
+        -webkit-transition: border .3s, -webkit-box-shadow .3s;
+        transition: border .3s, -webkit-box-shadow .3s;
+        transition: box-shadow .3s, border .3s;
+        transition: box-shadow .3s, border .3s, -webkit-box-shadow .3s;
+    }
+
+    .input-field label {
+        font-family: 'Sarabun', sans-serif;
+        font-size: 1em;
+        /* color: #fff;*/
+    }
+
+        .input-field label.active {
+            font-size: 1em !important;
+            color: #fff !important;
+        }
+
+    .input-field input[type='text']:focus + label {
+        /*        color: #fff !important;*/
+    }
+
+    .input-field input[type='text']:focus {
+        border-bottom: 1px solid rgb(8, 131, 224);
+        box-shadow: 0 1px 0 0 #6bbbc7 !important;
+    }
+
+    .input-field > label > span > i {
+        color: rgba(58, 133, 191, 0.75);
+        position: absolute;
+        top: -10px;
+        left: 0;
+        font-size: 1rem;
+        cursor: text;
+        -webkit-transition: color .2s ease-out, -webkit-transform .2s ease-out;
+        transition: color .2s ease-out, -webkit-transform .2s ease-out;
+        transition: transform .2s ease-out, color .2s ease-out;
+        transition: transform .2s ease-out, color .2s ease-out, -webkit-transform .2s ease-out;
+        -webkit-transform-origin: 0% 100%;
+        transform-origin: 0% 100%;
+        text-align: initial;
+        -webkit-transform: translateY(12px);
+        transform: translateY(12px);
+    }
+
+    .td-click {
+        cursor: pointer;
+    }
+
+    body {
+        padding-right: 0px !important;
+    }
+
+    .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+        color: #0661d0 !important;
+    }
+
+    .navigation {
+        color: #0661d0;
+        font-weight: 300;
+        font-size: inherit;
+    }
+
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        border-radius: 13px;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: 500 !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+
+
+
+    li.select2-selection__choice {
+        background-color: #6bbbc7 !important;
+    }
+
+    .select2-selection__choice {
+        height: fit-content;
+    }
+
+    /* .row.spece-line {
+        margin-top: 8px;
+    }*/
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        box-sizing: border-box;
+        list-style: none;
+        margin: 0;
+        padding: 0 5px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        padding: 0 5px;
+    }
+
+    ul.select2-selection__rendered > span.select2-selection__clear {
+        position: absolute;
+        right: 0;
+        margin: 3px 5px;
+    }
+
+    .select2-search--inline, .select2-search__field {
+        width: 100% !important;
+    }
+
+    .select2-search__field {
+        margin-top: 0 !important;
+    }
+
+    input[type=file] {
+        display: block !important;
+        right: 1px;
+        top: 1px;
+        height: 34px;
+        opacity: 0;
+        width: 100%;
+        background: none;
+        position: absolute;
+        overflow: hidden;
+        z-index: 2;
+    }
+
+    .control-fileupload {
+        display: block;
+        border: 1px solid #d6d7d6;
+        background: #FFF;
+        border-radius: 4px;
+        width: 100%;
+        height: 36px;
+        line-height: 36px;
+        padding: 0px 10px 2px 10px;
+        overflow: hidden;
+        position: relative;
+        /* File upload button */
+    }
+
+        .control-fileupload:before,
+        .control-fileupload input,
+        .control-fileupload label {
+            cursor: pointer !important;
+        }
+
+        .control-fileupload:before {
+            /* inherit from boostrap btn styles */
+            padding: 4px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            color: #333333;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+            vertical-align: middle;
+            cursor: pointer;
+            background-color: #f5f5f5;
+            background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e6e6e6));
+            background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
+            background-repeat: repeat-x;
+            border: 1px solid #cccccc;
+            border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+            border-bottom-color: #b3b3b3;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+            -webkit-transition: color 0.2s ease;
+            transition: color 0.2s ease;
+            /* add more custom styles*/
+            content: 'Browse';
+            display: block;
+            position: absolute;
+            z-index: 1;
+            top: 2px;
+            right: 2px;
+            line-height: 20px;
+            text-align: center;
+        }
+
+        .control-fileupload:hover:before,
+        .control-fileupload:focus:before {
+            background-color: #e6e6e6;
+            color: #333333;
+            text-decoration: none;
+            background-position: 0 -15px;
+            -webkit-transition: background-position 0.2s ease-out;
+            transition: background-position 0.2s ease-out;
+        }
+
+        .control-fileupload label {
+            line-height: 24px;
+            color: #999999;
+            font-size: 14px;
+            font-weight: normal;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            position: relative;
+            z-index: 1;
+            margin-right: 90px;
+            margin-bottom: 0px;
+            cursor: text;
+        }
+</style>
+
+<div class="row">
+    <div class="content">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">จัดการข้อมูลราคากลาง</h3>
+            </div>
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-6 col-lg-12 text-left">
+                        <button type="button" class="btn btn-primary" id="btnMasterCostTemplate"><i class="fa fa-file-text-o"></i> Template ข้อมูลราคากลาง </button>
+                    </div>
+                </div>
+
+                <ul class="nav nav-tabs">
+                    <li id="tab-repairType" class="active disabled" disabled="true"><a data-toggle="tab" href="#repairType">หมวดงานซ่อม</a></li>
+                    <li id="tab-repairDetail" class="disabled"><a data-toggle="tab" href="#repairDetail">รายละเอียดที่ซ่อม</a></li>
+                    <li id="tab-problem" class="disabled"><a data-toggle="tab" href="#problem">ลักษณะปัญหา</a></li>
+                    <li id="tab-repairMethod" class="disabled"><a data-toggle="tab" href="#repairMethod">วิธีการซ่อม</a></li>
+                    <li id="tab-repairDetailOTS" class="disabled"><a data-toggle="tab" href="#repairDetailOTS">รายละเอียดที่ซ่อม (OTS)</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <!--Repair Type-->
+                    <div id="repairType" class="tab-pane fade in active">
+                        <div class="container-fluid" style="margin-top:40px;">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-3" style="padding-left:30px;">
+                                <div class="row pull-left">
+                                    <label>ประเภทระบบ </label>
+                                    <select class="col-lg-12 form-control select2" id="searchSystemId" name="searchSystemId" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทระบบ --">
+                                        <option selected>Please select</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-3">
+                                <label>ประเภทข้อมูลราคากลาง</label>
+                                <select class="col-lg-12 form-control select2" id="searchUnitPriceType" name="searchUnitPriceType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทราคา --">
+                                </select>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                <label>สถานะการใช้งาน</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="search-status-all" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ทั้งหมด</button>
+                                    <button name="search-status-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="search-status-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-2" style="padding-right:30px;">
+                                <div class="row pull-right">
+                                    <label style="height:15px;"></label>
+                                    <div class="controls ">
+                                        <button type="button" class="btn btn-primary btn-rounded" id="btnAddRepairType">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                            เพิ่ม
+                                        </button>&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12 mt-5 " style="margin-top:30px;">
+                                <div class="table-responsive ">
+                                    <table class="table  table-striped table-bordered " id="repairType-list" style="margin-bottom: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">#</th>
+                                                <th class="text-center">หมวดงานซ่อม</th>
+                                                <th class="text-center">ประเภทระบบ</th>
+                                                <th class="text-center">ประเภทข้อมูลราคากลาง</th>
+                                                <th class="text-center">สถานะการใช้งาน</th>
+                                                <th class="text-center">แก้ไข</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--Repair Detail-->
+                    <div id="repairDetail" class="tab-pane fade">
+                        <div class="container-fluid" style="margin-top:25px;">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12" style="padding-left:30px;">
+                                <div class="row pull-left">
+                                    <div class="controls navigation">
+                                        <label>หมวดงานซ่อม : <span class="nevRepairType navigation"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="margin-top:20px;">
+                                <label>สถานะการใช้งาน</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="search-detail-all" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ทั้งหมด</button>
+                                    <button name="search-detail-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="search-detail-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="padding-right:30px;margin-top:20px;">
+                                <div class="row pull-right">
+                                    <label style="height:15px;"></label>
+                                    <div class="controls ">
+                                        <button type="button" class="btn btn-warning btn-rounded" id="btnBackRepairType" onclick="backTab('repairType','tab-repairDetail')">
+                                            <i class="fa fa-backward" aria-hidden="true"></i>
+                                            ย้อนกลับ
+                                        </button>&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-primary btn-rounded" id="btnAddRepairDetail">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                            เพิ่ม
+                                        </button>&nbsp;
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12" style="margin-top:30px;">
+                                <div class="table-responsive ">
+                                    <table class="table  table-striped table-bordered " id="repairDetail-list" style="margin-bottom: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">#</th>
+                                                <th class="text-center">รายละเอียดที่ซ่อม</th>
+                                                <th class="text-center">สถานะการใช้งาน</th>
+                                                <th class="text-center">แก้ไข</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--Problem-->
+                    <div id="problem" class="tab-pane fade">
+                        <div class="container-fluid" style="margin-top:25px;">
+                            <div class="form-group col-xs-12 col-md-8 col-lg-12" style="padding-left:30px;">
+                                <div class="row pull-left">
+                                    <div class="controls navigation">
+                                        <label>หมวดงานซ่อม : <span class="nevRepairType navigation"></span></label>
+                                        <label>>> <span class="nevRepairDetail navigation"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="margin-top:20px;">
+                                <label>สถานะการใช้งาน</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="search-problem-all" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ทั้งหมด</button>
+                                    <button name="search-problem-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="search-problem-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="padding-right:30px;margin-top:20px;">
+                                <div class="row pull-right">
+                                    <label style="height:15px;"></label>
+                                    <div class="controls ">
+                                        <button type="button" class="btn btn-warning btn-rounded" id="btnBackRepairDetail" onclick="backTab('repairDetail','tab-problem')">
+                                            <i class="fa fa-backward" aria-hidden="true"></i>
+                                            ย้อนกลับ
+                                        </button>&nbsp;
+                                        <button type="button" class="btn btn-primary btn-rounded" id="btnAddProblem">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                            เพิ่ม
+                                        </button>&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12" style="margin-top:30px;">
+                                <div class="table-responsive ">
+                                    <table class="table  table-striped table-bordered " id="problem-list" style="margin-bottom: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">#</th>
+                                                <th class="text-center">ลักษณะปัญหา</th>
+                                                <th class="text-center">สถานะการใช้งาน</th>
+                                                <th class="text-center">แก้ไข</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--Repair Method-->
+                    <div id="repairMethod" class="tab-pane fade">
+                        <div class="container-fluid" style="margin-top:25px;">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12" style="padding-left:30px;">
+                                <div class="row pull-left">
+                                    <div class="controls navigation">
+                                        <label>หมวดงานซ่อม : <span class="nevRepairType navigation"></span></label>
+                                        <label>>> <span class="nevRepairDetail navigation"></span></label>
+                                        <label>>> <span class="nevRepairProblem navigation"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-3" style="padding-left:30px;margin-top:20px;">
+                                <div class="row pull-left">
+                                    <label>ประเภทราคา </label>
+                                    <select class="col-lg-12 form-control select2" id="searchPriceType" name="searchPriceType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทราคา --">
+                                        <option selected="selected" value="">Please select</option>
+                                        <option value="ค่าแรง">ค่าแรง</option>
+                                        <option value="เหมา">เหมา</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-5" style="margin-top:20px;">
+                                <label>สถานะการใช้งาน</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="search-method-all" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ทั้งหมด</button>
+                                    <button name="search-method-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="search-method-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4" style="padding-right:30px;margin-top:20px;">
+                                <div class="row pull-right">
+                                    <label style="height:15px;"></label>
+                                    <div class="controls ">
+                                        <button type="button" class="btn btn-warning btn-rounded" id="btnBackRepairProblem" onclick="backTab('problem', 'tab-repairMethod');">
+                                            <i class="fa fa-backward" aria-hidden="true"></i>
+                                            ย้อนกลับ
+                                        </button>&nbsp;
+                                        <button type="button" class="btn btn-warning btn-rounded" id="btnBackRepairProblem" onclick="backTab('repairType', 'tab-repairMethod');">
+                                            <i class="fa fa-backward" aria-hidden="true"></i>
+                                            หมวดงานซ่อม
+                                        </button>&nbsp;
+                                        <button type="button" class="btn btn-primary btn-rounded" id="btnAddRepairMethod">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                            เพิ่ม
+                                        </button>&nbsp;
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12" style="margin-top:30px;">
+                                <div class="table-responsive ">
+                                    <table class="table  table-striped table-bordered " id="method-list" style="margin-bottom: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">#</th>
+                                                <th class="text-center">วิธีการซ่อม</th>
+                                                <th class="text-center">ราคา ค่าของ</th>
+                                                <th class="text-center">ราคา ค่าแรง</th>
+                                                <th class="text-center">หน่วย</th>
+                                                <th class="text-center">ประเภทราคา</th>
+                                                <th class="text-center">หมายเหตุ</th>
+                                                <th class="text-center">สถนะการใช้งาน</th>
+                                                <th class="text-center">แก้ไข</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!--Repair OTS-->
+                    <div id="repairDetailOTS" class="tab-pane fade">
+                        <div class="container-fluid" style="margin-top:40px;">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12" style="padding-left:30px;">
+                                <div class="row pull-left">
+                                    <div class="controls navigation">
+                                        <label>หมวดงานซ่อม : <span class="nevRepairType navigation"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="margin-top:20px;">
+                                <label>สถานะการใช้งาน</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="search-OTS-all" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ทั้งหมด</button>
+                                    <button name="search-OTS-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="search-OTS-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6" style="padding-right:30px;margin-top:20px;">
+                                <div class="row pull-right">
+                                    <div class="controls ">
+                                        <button type="button" class="btn btn-warning btn-rounded" id="btnOTSBackRepairType" onclick="backTab('repairType','tab-repairDetailOTS')">
+                                            <i class="fa fa-backward" aria-hidden="true"></i>
+                                            ย้อนกลับ
+                                        </button>&nbsp;
+                                        <button type="button" class="btn btn-primary btn-rounded" id="btnAddRepairDetailOTS">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                            เพิ่ม
+                                        </button>&nbsp;
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12 " style="margin-top:30px;">
+                                <div class="table-responsive ">
+                                    <table class="table  table-striped table-bordered " id="detailOTS-list" style="margin-bottom: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">#</th>
+                                                <th class="text-center">รายละเอียดที่ซ่อม</th>
+                                                <th class="text-center">ราคาเหมา (ลูกค้า)</th>
+                                                <th class="text-center">ค่าแรง (ลูกค้า)</th>
+                                                <th class="text-center">ราคาเหมา (ผู้รับเหมา)</th>
+                                                <th class="text-center">ค่าแรง (ผู้รับเหมา)</th>
+                                                <th class="text-center">หน่วย</th>
+                                                <th class="text-center">สถนะการใช้งาน</th>
+                                                <th class="text-center">แก้ไข</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal Add Repair Type Form -->
+<div class="modal fade" id="modalFrmRepairTypeAction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form id="frmRepairType">
+            <input type="hidden" id="frmRepairTypeActionEvent" name="frmRepairTypeActionEvent" />
+            <input type="hidden" id="repairTypeId" name="repairTypeId" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-wrench" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">เพิ่มหมวดงานที่ซ่อม</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+                        <div class="form-row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-3">
+                                <label>หมวดงานซ่อม<span style="color: #ff0000;"> *</span></label>
+                                <div class="input-field">
+                                    <input class="form-control input-sm  mt-10" id="repairType-name" name="repairType-name" type="text" maxlength="250" />
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-3">
+                                <label>ประเภทระบบ </label>
+                                <select class="col-lg-12 form-control select2" id="searchHCType" name="searchHCType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทระบบ --">
+                                    <option selected>Please select</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-3" id="dvRepairType">
+                                <label>ประเภทงานซ่อม </label>
+                                <select class="col-lg-12 form-control select2" id="searchRepairType" name="searchRepairType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทระบบ --">
+                                    <option selected>Please select</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-3">
+                                <label>สถานะ</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="status-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="status-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group col-xs-12 col-md-6 col-lg-12">
+                        <button type="button" class="btn btn-primary btn-rounded" id="btnSaveRepairType">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            บันทึก
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+<!-- Modal Add Repair Detail Form -->
+<div class="modal fade" id="modalFrmRepairDetailAction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div id="frmRepairDetailAction">
+            <input type="hidden" id="frmRepairDetailActionEvent" name="frmRepairDetailActionEvent" />
+            <input type="hidden" id="repairTypeId" name="repairTypeId" />
+            <input type="hidden" id="repairDetailId" name="repairDetailId" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">เพิ่มรายละเอียดที่ซ่อม</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+                        <div class="form-row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-7">
+                                <label>รายละเอียดที่ซ่อม<span style="color: #ff0000;"> *</span></label>
+                                <div class="input-field">
+                                    <input class="form-control input-sm " id="repairDetail" name="repairDetail" type="text" maxlength="250" />
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-5">
+                                <label>สถานะ</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="status-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="status-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group col-xs-12 col-md-6 col-lg-12">
+                        <button type="button" class="btn btn-primary btn-rounded" id="btnSaveDetail">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            บันทึก
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal Add Problem Form -->
+<div class="modal fade" id="modalFrmProblemAction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div id="frmProblemAction">
+            <input type="hidden" id="frmProblemActionEvent" name="frmProblemActionEvent" />
+            <input type="hidden" id="detailId" name="detailId" />
+            <input type="hidden" id="problemId" name="problemId" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">เพิ่มลักษณะปัญหา</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+                        <div class="form-row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-7">
+                                <label>ลักษณะปัญหา<span style="color: #ff0000;"> *</span></label>
+                                <div class="input-field">
+                                    <input class="form-control input-sm " id="problemDetail" name="problemDetail" type="text" maxlength="250" />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-5">
+                                <label>สถานะ</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="status-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="status-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group col-xs-12 col-md-6 col-lg-12">
+                        <button type="button" class="btn btn-primary btn-rounded" id="btnSaveProblem">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            บันทึก
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Add Repair Method Form -->
+<div class="modal fade" id="modalFrmRepairMethodAction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div id="frmRepairMethodAction">
+            <input type="hidden" id="frmMethodActionEvent" name="frmMethodActionEvent" />
+            <input type="hidden" id="problemId" name="problemId" />
+            <input type="hidden" id="methodId" name="methodId" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">เพิ่มวิธีการซ่อม</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+                        <div class="form-row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                <label>วิธีการซ่อม<span style="color: #ff0000;"> *</span></label>
+                                <div class="input-field">
+                                    <input class="form-control input-sm " id="repairMethod" name="repairMethod" type="text" maxlength="250" />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                <label>ประเภทราคา<span style="color: #ff0000;"> *</span></label>
+                                <select class="col-lg-12 form-control select2" id="priceType" name="priceType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทราคา --">
+                                    <option selected="selected" value="">Please select</option>
+                                    <option value="ค่าแรง">ค่าแรง</option>
+                                    <option value="เหมา">เหมา</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                <label>สถานะ</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="status-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="status-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+                        <div class="form-row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                <label>ราคา ค่าของ<span style="color: #ff0000;" id="reqprice"> *</span></label>
+                                <div class="input-field">
+                                    <input class="form-control input-sm allownumeric" id="price" name="price" type="text" maxlength="250" />
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                <label>ราคา ค่าแรง<span style="color: #ff0000;" id="reqwage"> *</span></label>
+                                <div class="input-field">
+                                    <input class="form-control input-sm  allownumeric" id="wage" name="wage" type="text" maxlength="250" />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                <label>หน่วย<span style="color: #ff0000;"> *</span></label>
+                                <div class="input-field">
+                                    <input class="form-control input-sm " name="unit" type="text" maxlength="50" />
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-8">
+                                <label>หมายเหตุ </label>
+                                <textarea class="form-control" id="remark" name="remark" maxlength="200"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group col-xs-12 col-md-6 col-lg-12">
+                        <button type="button" class="btn btn-primary btn-rounded" id="btnSaveMethod">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            บันทึก
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Add Repair OTS Form -->
+<div class="modal fade" id="modalFrmRepairDetailOTSAction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div id="frmRepairDetailOTSAction">
+            <input type="hidden" id="frmOTSActionEvent" name="frmOTSActionEvent" />
+            <input type="hidden" id="repairTypeId" name="repairTypeId" />
+            <input type="hidden" id="repairDetailId" name="repairDetailId" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<span name="titleForm">เพิ่มรายละเอียดที่ซ่อม (OTS)</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+                        <div class="form-row">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label>รายละเอียดที่ซ่อม<span style="color: #ff0000;"> *</span></label>
+                                <div class="input-field">
+                                    <input class="form-control input-sm " id="repairDetailOTS" name="repairDetailOTS" type="text" maxlength="250" />
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label>หน่วย<span style="color: #ff0000;"> *</span></label>
+                                <div class="input-field">
+                                    <input class="form-control input-sm " name="unit" type="text" maxlength="50" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label>ราคาเหมา (ลูกค้า)</label>
+                            <div class="input-field">
+                                <input class="form-control input-sm allownumeric" id="CustPackage" name="CustPackage" type="text" maxlength="250" />
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label>ค่าแรง (ลูกค้า)</label>
+                            <div class="input-field">
+                                <input class="form-control input-sm allownumeric" id="CustWage" name="CustWage" type="text" maxlength="250" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label>ราคาเหมา (ผู้รับเหมา)</label>
+                            <div class="input-field">
+                                <input class="form-control input-sm allownumeric " id="VendorPackage" name="VendorPackage" type="text" maxlength="250" />
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label>ค่าแรง (ผู้รับเหมา)</label>
+                            <div class="input-field">
+                                <input class="form-control input-sm  allownumeric" id="VendorWage" name="VendorWage" type="text" maxlength="250" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label>สถานะ</label>
+                            <div class="btn-group form-control project-status-filter" style="margin-top:13px;">
+                                <button name="status-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                <button name="status-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label>หมายเหตุ :</label>
+                            <textarea class="form-control" id="remark" name="remark" maxlength="200"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group col-xs-12 col-md-6 col-lg-12">
+                        <button type="button" class="btn btn-primary btn-rounded" id="btnSaveDetailOTS">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            บันทึก
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--  Modal Insert Success -->
+<div class="modal fade" id="modalInsertRoleSuccess" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="z-index:2000;">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">ยืนยันการ บันทึก</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa fa-check fa-2x" aria-hidden="true" style="color: #32CD32;"></i>
+                <span id="lbTxtSuccess"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">ตกลง</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  Modal Role warning -->
+<div class="modal fade" id="modalRoleWarning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="z-index:2000;">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">แจ้งเตือน</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true" style="color:#FFCC00;"></i>
+                <span id="lbTxtWarning"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Add Repair Method Form -->
+<div class="modal fade" id="modalTemplate" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div id="frmTemplate">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">จัดการ Template ข้อมูลราคากลาง</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="container"></div>
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">ดาวน์โหลด Template</legend>
+                        <div class="row" style="padding-left:15px; padding-right:15px;">
+                            <div class="form-row">
+                                <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                    <label>ประเภทระบบ</label>
+                                    <select class="col-lg-12 form-control select2" id="systemTypeTemplate" name="systemTypeTemplate" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทราคา --">
+                                        <option selected="selected" value="">Please select</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                    <label>ประเภทข้อมูลราคากลาง</label>
+                                    <select class="col-lg-12 form-control select2" id="priceTypeTemplate" name="priceTypeTemplate" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทราคา --">
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                    <label>ประเภทหมวดงาน</label>
+                                    <select class="form-control select2 selectpicker" multiple="multiple" id="categoryTypeTemplate" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทราคา --">
+                                    </select>
+
+                                </div>
+
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-xs-12 col-md-6 col-lg-12" style="text-align:center;">
+                                    <button type="button" class="btn btn-primary" id="btnTemplateExport">
+                                        <i class="icon-download icon-white"></i> ดาวน์โหลด
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">อัพโหลด Template</legend>
+                        <div class="row" style="padding-left:15px; padding-right:15px;">
+                            <div class="form-row">
+                                <div class="form-group col-xs-12 col-md-6 col-lg-8">
+                                    <span class="control-fileupload">
+                                        <label for="fileInput">Choose a file :</label>
+                                        <input type="file" id="fileInputemplate" name="fileInputemplate" accept=".xls,.xlsx" />
+
+                                    </span>
+
+                                </div>
+                                <div class="form-group col-xs-12 col-md-6 col-lg-2">
+                                    <button type="button" class="btn btn-primary btn-block" id="btnTemplateImport">
+                                        <i class="icon-upload icon-white"></i> Upload
+                                    </button>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section script {
+    <script type="text/javascript">
+        const baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+        let table, tableDetail, tableProblem, tableMethod;
+        let btnStatusValue = null;
+        let btnSearchStatusValue = null;
+        let btnSearchDetailStatus = null;
+        let btnSearchProblemStatus = null;
+        let btnSearchMethodStatus = null;
+        let btnSearchOTSStatus = null;
+        let arrRepairType = [];
+        let arrRepairDetail = [];
+        let arrRepairProblem = [];
+        let arrRepairMethod = [];
+        let repairTypeId = 0;
+        var currentPage = 0;
+        let rTypeId = 0;
+        let rDetailId = 0;
+        let rProblemId = 0;
+        let rMethodId = 0;
+        let rTypeOTSId = 0;
+        $(document).ready(async function () {
+           await page.loading();
+           await ajaxGet(baseUrl + '/homecare/api/v1/User/@UserDetail.UserID/Permission', response => {
+                if (response) {
+                    if (!response.data.length) {
+                        noPermissionAlert();
+                    } else if (!response.data.find(a => a.permissionDescription === 'ManageMasterCost')) {
+                        noPermissionAlert();
+                    } else {
+                        init();
+                        page.loaded();
+                    }
+                }
+            });
+
+            page.loaded();
+
+            $('input[type=file]').on('change',function () {
+                var t = $(this).val();
+                var labelText = 'File : ' + t.substr(12, t.length);
+                $(this).prev('label').text(labelText);
+               
+            });
+        });
+        async function init() {
+            table = $('#repairType-list').DataTable({
+                "columnDefs": [
+                    {
+                        "searchable": false,
+                        "orderable": false,
+                        "targets": 0
+                    },
+                    {
+                        "targets": 1,
+                        "render": function (value, type, row, meta) {
+                            return `<a class=" td-click" id="id_${value.index}" onclick="onClickGotoRepairDetail(${value.list1Id},${value.systemId},'${value.list1Desc}');">${value.list1Desc}</a>`;
+                        }
+                    },
+                    {
+
+                        "targets": 2,
+                        "render": function (data, type, row, meta) {
+                            return `<td class="text-left">${data}</td>`;
+
+
+                        },
+                        "className": "text-center"
+                    },
+                    {
+
+                        "targets": 3,
+                        "render": function (data, type, row, meta) {
+                            return `<td class="text-left">${data}</td>`;
+
+
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 4,
+                        "render": function (data, type, row, meta) {
+                            if (data === true) {
+                                return `<td class=text-center"> <i class="fa fa-check-circle fa-lg" aria-hidden="true" style="color:#58C89E;"  ></i></td>`;
+                            } else {
+                                return `<td class="text-center"> <i class="fa fa-minus-circle fa-lg" aria-hidden="true" style="color:#CE494D;"></i></td>`;
+                            }
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 5,
+                        "render": function (value, type, row, meta) {
+                            return `<a href="#" onclick="onClickEditRepairType(${value.list1Id},${value.systemId})"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>`;
+                        },
+                        "className": "text-center"
+                    }
+                ],
+                "order": [[0, 'asc']],
+                "language": {
+                    "search": "ค้นหา : ",
+                    "lengthMenu": "แสดง _MENU_ รายการ",
+                    "emptyTable": "ไม่พบข้อมูล",
+                    "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoFiltered": "",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+
+                }
+
+            });
+            table.on('order.dt search.dt', function () {
+                table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }).draw();
+            tableDetail = $('#repairDetail-list').DataTable({
+                "columnDefs": [
+                    {
+                        "searchable": false,
+                        "orderable": false,
+                        "targets": 0
+                    },
+                    {
+                        "targets": 1,
+                        "render": function (value, type, row, meta) {
+
+                            return `<a class=" td-click" id="id_${value.index}" onclick="onClickGotoProblem(${value.list2Id},'${value.list2Desc}');">${value.list2Desc}</a>`;
+                        }
+                    },
+                    {
+                        "targets": 2,
+                        "render": function (data, type, row, meta) {
+                            if (data === true) {
+                                return `<td class=text-center"> <i class="fa fa-check-circle fa-lg" aria-hidden="true" style="color:#58C89E;"  ></i></td>`;
+                            } else {
+                                return `<td class="text-center"> <i class="fa fa-minus-circle fa-lg" aria-hidden="true" style="color:#CE494D;"></i></td>`;
+                            }
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 3,
+                        "render": function (value, type, row, meta) {
+                            return `<a href="#" onclick="onClickEditRepairDetail(${value.list2Id})"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>`;
+                        },
+                        "className": "text-center"
+                    }
+                ],
+                "order": [[0, 'asc']],
+                "language": {
+                    "search": "ค้นหา : ",
+                    "lengthMenu": "แสดง _MENU_ รายการ",
+                    "emptyTable": "ไม่พบข้อมูล",
+                    "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoFiltered": "",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+
+                }
+
+            });
+            tableDetail.on('order.dt search.dt', function () {
+                tableDetail.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }).draw();
+            tableProblem = $('#problem-list').DataTable({
+                "columnDefs": [
+                    {
+                        "searchable": false,
+                        "orderable": false,
+                        "targets": 0
+                    },
+                    {
+                        "targets": 1,
+                        "render": function (value, type, row, meta) {
+
+                            return `<a class=" td-click" id="id_${value.index}" onclick="onClickGotoRepairMethod(${value.list3Id},'${value.list3Desc}');">${value.list3Desc}</a>`;
+                        }
+                    },
+                    {
+                        "targets": 2,
+                        "render": function (data, type, row, meta) {
+                            if (data === true) {
+                                return `<td class=text-center"> <i class="fa fa-check-circle fa-lg" aria-hidden="true" style="color:#58C89E;"  ></i></td>`;
+                            } else {
+                                return `<td class="text-center"> <i class="fa fa-minus-circle fa-lg" aria-hidden="true" style="color:#CE494D;"></i></td>`;
+                            }
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 3,
+                        "render": function (value, type, row, meta) {
+                            return `<a href="#" onclick="onClickEditProblem(${value.list3Id})"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>`;
+                        },
+                        "className": "text-center"
+                    }
+                ],
+                "order": [[0, 'asc']],
+                "language": {
+                    "search": "ค้นหา : ",
+                    "lengthMenu": "แสดง _MENU_ รายการ",
+                    "emptyTable": "ไม่พบข้อมูล",
+                    "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoFiltered": "",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+
+                }
+
+            });
+            tableProblem.on('order.dt search.dt', function () {
+                tableProblem.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }).draw();
+            tableMethod = $('#method-list').DataTable({
+                "columnDefs": [
+                    {
+                        "searchable": false,
+                        "orderable": false,
+                        "targets": 0
+                    },
+                    {
+                        "targets": 1,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-left">${value.list4Desc}</td>`;
+                            //return `<a class=" td-click" id="id_${value.index}" onclick="onClickGotoRepairMethod(${value.list4Id});">${value.list4Desc}</a>`;
+                        }
+                    },
+                    {
+                        "targets": 2,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-right">${parseFloat(value).toFixed(2)}</td>`;
+                        },
+                        "className": "text-right"
+                    },
+                    {
+                        "targets": 3,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-right">${parseFloat(value).toFixed(2)}</td>`;
+                        },
+                        "className": "text-right"
+                    },
+                    {
+                        "targets": 4,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-left">${value}</td>`;
+                        }
+                    },
+                    {
+                        "targets": 5,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-center">${value}</td>`;
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 6,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-left">${value}</td>`;
+                        }
+                    },
+                    {
+                        "targets": 7,
+                        "render": function (data, type, row, meta) {
+                            if (data === true) {
+                                return `<td class=text-center"> <i class="fa fa-check-circle fa-lg" aria-hidden="true" style="color:#58C89E;"  ></i></td>`;
+                            } else {
+                                return `<td class="text-center"> <i class="fa fa-minus-circle fa-lg" aria-hidden="true" style="color:#CE494D;"></i></td>`;
+                            }
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 8,
+                        "render": function (value, type, row, meta) {
+                            return `<a href="#" onclick="onClickEditMethod(${value.list4Id})"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>`;
+                        },
+                        "className": "text-center"
+                    }
+                ],
+                "order": [[0, 'asc']],
+                "language": {
+                    "search": "ค้นหา : ",
+                    "lengthMenu": "แสดง _MENU_ รายการ",
+                    "emptyTable": "ไม่พบข้อมูล",
+                    "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoFiltered": "",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+
+                }
+
+            });
+            tableMethod.on('order.dt search.dt', function () {
+                tableMethod.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }).draw();
+            tableDetailOTS = $('#detailOTS-list').DataTable({
+                "columnDefs": [
+                    {
+                        "searchable": false,
+                        "orderable": false,
+                        "targets": 0
+                    },
+                    {
+                        "targets": 1,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-left">${value}</td>`;
+                        }
+                    },
+                    {
+                        "targets": 2,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-right">${parseFloat(value).toFixed(2)}</td>`;
+                        },
+                        "className": "text-right"
+                    },
+                    {
+                        "targets": 3,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-right">${parseFloat(value).toFixed(2)}</td>`;
+                        },
+                        "className": "text-right"
+                    },
+                    {
+                        "targets": 4,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-right">${parseFloat(value).toFixed(2)}</td>`;
+                        },
+                        "className": "text-right"
+                    },
+                    {
+                        "targets": 5,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-right">${parseFloat(value).toFixed(2)}</td>`;
+                        },
+                        "className": "text-right"
+                    },
+                    {
+                        "targets": 6,
+                        "render": function (value, type, row, meta) {
+                            return `<td class="text-left">${value}</td>`;
+                        }
+                    },
+                    {
+                        "targets": 7,
+                        "render": function (data, type, row, meta) {
+                            if (data === true) {
+                                return `<td class=text-center"> <i class="fa fa-check-circle fa-lg" aria-hidden="true" style="color:#58C89E;"  ></i></td>`;
+                            } else {
+                                return `<td class="text-center"> <i class="fa fa-minus-circle fa-lg" aria-hidden="true" style="color:#CE494D;"></i></td>`;
+                            }
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 8,
+                        "render": function (value, type, row, meta) {
+                            return `<a href="#" onclick="onClickEditDetailOTS(${value.list2Id})"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>`;
+                        },
+                        "className": "text-center"
+                    }
+                ],
+                "order": [[0, 'asc']],
+                "language": {
+                    "search": "ค้นหา : ",
+                    "lengthMenu": "แสดง _MENU_ รายการ",
+                    "emptyTable": "ไม่พบข้อมูล",
+                    "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoFiltered": "",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+
+                }
+
+            });
+            tableDetailOTS.on('order.dt search.dt', function () {
+                tableDetailOTS.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }).draw();
+            ////set button initial
+            $('button[name=status-visible]').removeClass('btn-default');
+            $('button[name=status-visible]').addClass('btn-success');
+            $('button[name=status-disable]').removeClass('btn-danger');
+            $('button[name=status-disable]').addClass('btn-default');
+            $('button[name=search-status-all]').removeClass('btn-default');
+            $('button[name=search-status-all]').addClass('btn-info');
+            $('button[name=search-status-visible]').removeClass('btn-success');
+            $('button[name=search-status-visible]').addClass('btn-default');
+            $('button[name=search-status-disable]').removeClass('btn-danger');
+            $('button[name=search-status-disable]').addClass('btn-default');
+            btnStatusValue = true;
+            btnSearchStatusValue = null;
+            initDropdownRepairType();
+            await initDropdownPriceType();
+            $('#searchUnitPriceType').val('2').trigger('change.select2');
+            await initDropdownHCType();
+            await initDropdownCategoryType();
+            $('#frmRepairType [name="searchHCType"]').val('1').trigger('change');
+            $('#searchSystemId').val('1').trigger('change');
+            $('#systemTypeTemplate').val('1').trigger('change.select2');
+            $('#searchPriceType').val('ค่าแรง').trigger('change.select2');
+            $('#tab-repairDetail').hide();
+            $('#tab-problem').hide();
+            $('#tab-repairMethod').hide();
+            $('#tab-repairDetailOTS').hide();
+
+        }
+        $('#frmRepairType [name="searchHCType"]').change(function () {
+            let val = $('#frmRepairType [name="searchHCType"]').val();
+            if (val !== '1') {
+                $('#dvRepairType').css('display', 'block');
+            }
+            else {
+                $('#dvRepairType').css('display', 'none');
+            }
+        });
+        $('#priceType').change(function () {
+            let priceType = $('#frmRepairMethodAction [name="priceType"]').val();
+
+            if (priceType === 'เหมา') {
+                $('#frmRepairMethodAction [name="price"]').prop('disabled', false);
+                $('#reqprice').css('display', 'inline');
+            } else if (priceType === 'ค่าแรง') {
+                $('#frmRepairMethodAction [name="price"]').prop('disabled', true);
+                $('#frmRepairMethodAction [name="price"]').val('0');
+                $('#reqprice').css('display', 'none');
+            }
+
+        });
+
+        $('#searchSystemId').change(async function () {
+            await page.loading();
+            await initRepairTypeTable();
+            page.loaded();
+        });
+        $('#searchUnitPriceType').change(async function () {
+            await page.loading();
+            await initRepairTypeTable();
+            page.loaded();
+        });
+        $('#searchPriceType').change(async function () {
+            await page.loading();
+            await initRepairMethodTable();
+            page.loaded();            
+        });
+        $('#btnSaveRepairType').click(async function (event) {
+            event.preventDefault();
+            let action = $('#frmRepairType [name="frmRepairTypeActionEvent"]').val();
+            let systemId = $('#frmRepairType [name="searchHCType"]').val();
+            let listDesc = $('#frmRepairType [name="repairType-name"]').val();
+            let id = $('#frmRepairType [name="repairTypeId"]').val();
+            let RepairType = $('#searchRepairType').val();
+
+            if (listDesc === "") {
+                showModalLineApprveWarning('กรุณาระบุหมวดงานซ่อม');
+                $('#frmRepairType [name="repairType-name"]').focus();
+                return false;
+            }
+            if (systemId === '2' && RepairType === "") {
+                showModalLineApprveWarning('กรุณาระบุประเภทงานซ่อม');                
+                return false;
+            }
+            var data = {
+                TabId: 1,
+                Id: action === 'edit' ? id : 0,
+                ListId: Number(systemId) === 1?0: $('#frmRepairType [name="searchRepairType"]').val(),
+                ListDesc: listDesc,
+                SystemId: systemId,
+                UnitType: $('#searchUnitPriceType').val(),
+                IsActive: btnStatusValue,
+                UserLogon : '@UserDetail.CodeName'
+            }
+
+           
+            if (action === 'insert') {
+                let dupplicate = arrRepairType.filter(e => e.list1Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, "") && e.systemId === Number(systemId));
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มหมวดงานซ่อมซ้ำกันได้');
+                    return false;
+                }
+                await InsertMasterCost(data);
+                $('#modalFrmRepairTypeAction').modal('hide');
+                await page.loading();
+                await initRepairTypeTable();
+                page.loaded();
+            }
+            else if (action === 'edit') {             
+                let dupplicate = arrRepairType.filter(e => e.list1Id !== Number(id) && e.list1Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, "") && e.systemId === Number(systemId) && e.isActive === true && btnStatusValue === true);
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มหมวดงานซ่อมซ้ำกันได้');
+                    return false;
+                }
+                await UpdateMasterCost(data);
+                $('#modalFrmRepairTypeAction').modal('hide');
+                await page.loading();
+                await initRepairTypeTable();
+                page.loaded();
+            }
+        });
+
+        $('#btnSaveDetail').click(async function (event) {
+            event.preventDefault();
+            let action = $('#frmRepairDetailAction [name="frmRepairDetailActionEvent"]').val();
+            let listId = $('#frmRepairDetailAction [name="repairTypeId"]').val();
+            let listDesc = $('#frmRepairDetailAction [name="repairDetail"]').val();
+            let Id = $('#frmRepairDetailAction [name="repairDetailId"]').val();
+
+            if (listDesc === "") {
+                showModalLineApprveWarning('กรุณาระบุรายละเอียดงานที่ซ่อม');
+                return false;
+            }
+            var data = {
+                TabId: 2,
+                Id: action === 'edit' ? Id : 0,
+                ListId: listId,
+                ListDesc: listDesc,
+                IsActive: btnStatusValue,
+                UserLogon : '@UserDetail.CodeName'
+            }
+
+            if (action === 'insert') {
+                let dupplicate = arrRepairDetail.filter(e => e.list2Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, ""));
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มรายละเอียดงานที่ซ่อมซ้ำกันได้');
+                    return false;
+                }
+                await InsertMasterCost(data);
+                $('#modalFrmRepairDetailAction').modal('hide');
+                await page.loading();
+                await initRepairDetailTable(listId);
+                page.loaded();                             
+
+            }
+            else if (action === 'edit') {               
+                let dupplicate = arrRepairDetail.filter(e => e.list2Id !== Number(Id) && e.list2Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, "") && e.active === true && btnStatusValue === true);
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มรายละเอียดงานที่ซ่อมซ้ำกันได้');
+                    return false;
+                }
+                await UpdateMasterCost(data);
+                $('#modalFrmRepairDetailAction').modal('hide');
+                await page.loading();
+                await initRepairDetailTable(listId);
+                page.loaded();              
+               
+            }
+        });
+
+        $('#btnSaveProblem').click(async function (event) {
+            event.preventDefault();
+
+            let action = $('#frmProblemAction [name="frmProblemActionEvent"]').val();
+            let listDesc = $('#frmProblemAction [name="problemDetail"]').val();
+            let Id = $('#frmProblemAction [name="problemId"]').val();
+            let listId = $('#frmProblemAction [name="detailId"]').val();
+
+            if (listDesc === "") {
+                showModalLineApprveWarning('กรุณาระบุลักษณะปัญหา');
+                return false;
+            }
+            var data = {
+                TabId: 3,
+                Id: action === 'edit' ? Id: 0,
+                ListId: listId,
+                ListDesc: listDesc ,
+                IsActive: btnStatusValue,
+                UserLogon : '@UserDetail.CodeName'
+            }
+
+
+            if (action === 'insert') {
+                let dupplicate = arrRepairProblem.filter(e => e.list3Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, ""));
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มลักษณะปัญหาซ้ำกันได้');
+                    return false;
+                }
+                await InsertMasterCost(data);
+                $('#modalFrmProblemAction').modal('hide');
+                await page.loading();
+                await initProblemTable(listId);
+                page.loaded();
+              
+                
+            }
+            else if (action === 'edit') {              
+                let dupplicate = arrRepairProblem.filter(e => e.list3Id !== Number(Id) && e.list3Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, "") && e.active === true && btnStatusValue === true);
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มลักษณะปัญหาซ้ำกันได้');
+                    return false;
+                }
+                await UpdateMasterCost(data);
+                $('#modalFrmProblemAction').modal('hide');
+                await page.loading();
+                await initProblemTable(listId);
+                page.loaded();              
+               
+            }
+
+
+        });
+
+        $('#btnSaveMethod').click(async function (event) {
+            event.preventDefault();
+            let action = $('#frmRepairMethodAction [name="frmMethodActionEvent"]').val();
+            let listDesc = $('#frmRepairMethodAction [name="repairMethod"]').val();
+            let Id = $('#frmRepairMethodAction [name="methodId"]').val();
+            let listId = $('#frmRepairMethodAction [name="problemId"]').val();
+            let priceType = $('#frmRepairMethodAction [name="priceType"]').val();
+            let unit =  $('#frmRepairMethodAction [name="unit"]').val();
+
+            if (listDesc === "") {
+                showModalLineApprveWarning('กรุณาระบุวิธีการซ่อม');
+                return false;
+            }
+            if (priceType === "") {
+                showModalLineApprveWarning('กรุณาระบุประเภทราคา');
+                return false;
+            }
+            if (priceType === "เหมา") {
+
+                if ($('#frmRepairMethodAction [name="price"]').val() === "") {
+                    showModalLineApprveWarning('กรุณาระบุราคา ค่าของ');
+                    return false;
+                }
+                if ($('#frmRepairMethodAction [name="wage"]').val() === "") {
+                    showModalLineApprveWarning('กรุณาระบุราคา ค่าแรง');
+                    return false;
+                }
+
+            }
+            if (priceType === "ค่าแรง") {
+
+                if ($('#frmRepairMethodAction [name="wage"]').val() === "") {
+                    showModalLineApprveWarning('กรุณาระบุราคา ค่าแรง');
+                    return false;
+                }
+
+            }
+            if (unit === "") {
+                showModalLineApprveWarning('กรุณาระบุหน่วย');
+                return false;
+            }
+             var data = {
+                 TabId: 4,
+                 Id: action === 'edit' ? Id  : 0,
+                 ListId: listId,
+                 ListDesc: listDesc ,
+                 Unit: unit,
+                 CustPackage: $('#frmRepairMethodAction [name="price"]').val(),
+                 CustWage: $('#frmRepairMethodAction [name="wage"]').val(),
+                 PriceType: priceType,
+                 Remark: $('#frmRepairMethodAction [name="remark"]').val(),
+                 IsActive: btnStatusValue,
+                 UserLogon : '@UserDetail.CodeName'
+            }
+
+            if (action === 'insert') {
+                let dupplicate = arrRepairMethod.filter(e => e.list4Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, ""));
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มวิธีการซ่อมซ้ำกันได้');
+                    return false;
+                }
+                await InsertMasterCost(data);
+                $('#modalFrmRepairMethodAction').modal('hide');
+                await page.loading();
+                await initRepairMethodTable(listId);
+                page.loaded();               
+              
+            }
+            else if (action === 'edit') {             
+                let dupplicate = arrRepairMethod.filter(e => e.list4Id !== Number(Id) && e.list4Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, "") && e.active === true && btnStatusValue === true);
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มวิธีการซ่อมซ้ำกันได้');
+                    return false;
+                }
+                await UpdateMasterCost(data);
+                $('#modalFrmRepairMethodAction').modal('hide');
+                await page.loading();
+                await initRepairMethodTable(listId);
+                page.loaded();               
+               
+            }
+
+
+        });
+
+        $('#btnSaveDetailOTS').click(async function (event) {
+            event.preventDefault();
+            let action = $('#frmRepairDetailOTSAction [name="frmOTSActionEvent"]').val();
+            let listId = $('#frmRepairDetailOTSAction [name="repairTypeId"]').val();
+            let listDesc = $('#frmRepairDetailOTSAction [name="repairDetailOTS"]').val();
+            let Id = $('#frmRepairDetailOTSAction [name="repairDetailId"]').val();
+            let unit = $('#frmRepairDetailOTSAction [name="unit"]').val();
+            if (listDesc === "") {
+                showModalLineApprveWarning('กรุณาระบุรายละเอียดงาน');
+                return false;
+            }
+            if (unit === "") {
+                showModalLineApprveWarning('กรุณาระบุหน่วย');
+                return false;
+            }
+            var data = {
+                TabId: 5,
+                Id: action === 'edit' ?  Id : 0,
+                ListId: listId,
+                ListDesc: listDesc,
+                CustPackage: $('#frmRepairDetailOTSAction [name="CustPackage"]').val(),
+                CustWage: $('#frmRepairDetailOTSAction [name="CustWage"]').val(),
+                VendorPackage: $('#frmRepairDetailOTSAction [name="VendorPackage"]').val(),
+                VendorWage: $('#frmRepairDetailOTSAction [name="VendorWage"]').val(),
+                Unit: $('#frmRepairDetailOTSAction [name="unit"]').val(),
+                Remark: $('#frmRepairDetailOTSAction [name="remark"]').val(),
+                IsActive: btnStatusValue,
+                UserLogon : '@UserDetail.CodeName'
+            }
+
+
+            if (action === 'insert') {
+                let dupplicate = arrRepairDetail.filter(e => e.list2Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, ""));
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มรายละเอียดงานที่ซ่อมซ้ำกันได้');
+                    return false;
+                }
+                await InsertMasterCost(data);
+                $('#modalFrmRepairDetailOTSAction').modal('hide');
+                await page.loading();
+                await initRepairDetailOTSTable(listId);
+                page.loaded();
+                
+            }
+            else if (action === 'edit') {               
+                let dupplicate = arrRepairDetail.filter(e => e.list2Id !== Number(Id) && e.list2Desc.replace(/\s/g, "") === listDesc.replace(/\s/g, "") && e.active === true && btnStatusValue === true);
+                if (dupplicate.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มรายละเอียดงานที่ซ่อมซ้ำกันได้');
+                    return false;
+                }
+                await UpdateMasterCost(data);
+                $('#modalFrmRepairDetailOTSAction').modal('hide');
+                await page.loading();
+                await initRepairDetailOTSTable(listId);
+                page.loaded();             
+              
+
+            }
+
+        });
+
+        $('#btnAddProblem').click(function () {
+            clearForm('problem');
+            $('#frmProblemAction [name = "titleForm"]').text('เพิ่มลักษณะปัญหา');
+            $('#frmProblemAction [name="frmProblemActionEvent"]').val('insert').trigger('change');
+            $('#modalFrmProblemAction').modal({ backdrop: 'static', keyboard: false, show: true });
+        });
+
+        $('#btnAddRepairType').click(function () {
+            clearForm('repairType');
+            $('#frmRepairType [name = "titleForm"]').text('เพิ่มหมวดงานที่ซ่อม');
+            $('#frmRepairType [name="frmRepairTypeActionEvent"]').val('insert').trigger('change');
+            $('#modalFrmRepairTypeAction').modal({ backdrop: 'static', keyboard: false, show: true });
+        });
+
+        $('#btnAddRepairDetail').click(function () {
+            clearForm('repairDetail');
+            $('#frmRepairDetailAction [name = "titleForm"]').text('เพิ่มรายละเอียดที่ซ่อม');
+            $('#frmRepairDetailAction [name="frmRepairDetailActionEvent"]').val('insert').trigger('change');
+            $('#modalFrmRepairDetailAction').modal({ backdrop: 'static', keyboard: false, show: true });
+        });
+
+        $('#btnAddRepairMethod').click(function () {
+            clearForm('repairMethod');
+            $('#frmRepairMethodAction [name = "titleForm"]').text('เพิ่มวิธีการซ่อม');
+            $('#frmRepairMethodAction [name="frmMethodActionEvent"]').val('insert').trigger('change');
+            $('#modalFrmRepairMethodAction').modal({ backdrop: 'static', keyboard: false, show: true });
+        });
+
+        $('#btnAddRepairDetailOTS').click(function () {
+            clearForm('repairDetailOTS');
+            $('#frmRepairDetailOTSAction [name = "titleForm"]').text('เพิ่มรายละเอียดที่ซ่อม (OTS)');
+            $('#frmRepairDetailOTSAction [name="frmOTSActionEvent"]').val('insert').trigger('change');
+            $('#modalFrmRepairDetailOTSAction').modal({ backdrop: 'static', keyboard: false, show: true });
+        });
+
+        $('#tab-repairType').click(function (event) {
+            if ($(this).hasClass('disabled')) { return false; }
+        });
+        $('#tab-repairDetail').click(function (event) {
+            if ($(this).hasClass('disabled')) { return false; }
+        });
+        $('#tab-repairDetailOTS').click(function (event) {
+            if ($(this).hasClass('disabled')) { return false; }
+        });
+        $('#tab-repairMethod').click(function (event) {
+            if ($(this).hasClass('disabled')) { return false; }
+        });
+        $('#tab-problem').click(function (event) {
+            if ($(this).hasClass('disabled')) { return false; }
+        });
+
+        $(".allownumeric").on("keypress keyup blur", function (event) {
+            var charC = (event.which) ? event.which : event.keyCode;
+
+            if (charC == 46) {
+                if (event.target.value.indexOf('.') === -1) {
+                    return true;
+                } else {
+                    event.preventDefault();
+                }
+            } else {
+                if (charC > 31 && (charC < 48 || charC > 57))
+                    event.preventDefault();
+            }
+            if (event.target.value.indexOf(".") > -1) {
+
+                if (event.target.value.split('.')[0].length <= 6 && event.target.value.split('.')[1].length < 2) {
+                    return true;
+                }
+                else
+                {
+                    event.preventDefault();
+                }
+
+            } else if (event.target.value.indexOf(".") === -1 &&  event.target.value.length >= 6) {
+
+                event.preventDefault();
+            }
+
+            return true;
+
+        });
+
+        $('#btnMasterCostTemplate').click(function () {
+            $('#frmTemplate [name="systemTypeTemplate"]').val('1').trigger('change.select2');
+            $('#frmTemplate [name="priceTypeTemplate"]').val('2').trigger('change.select2');
+            initDropdownCategoryType();
+            $('input[type=file]').val('').trigger('change');
+            $('#modalTemplate').modal({ backdrop: 'static', keyboard: false, show: true });
+        });
+
+        $('#systemTypeTemplate').change(function () {          
+
+            initDropdownCategoryType();
+        });
+        $('#btnTemplateImport').click(async function () {
+
+            if ($('input[type=file]').val() === '') {
+                modalWaring("กรุณาเลือกไฟล์ในการอัพโหลด");
+                return false;
+
+            }
+            var inputFile = $('#fileInputemplate')[0].files[0];
+         
+            var form_data = new FormData();
+            form_data.append('fileInput', inputFile);          
+            form_data.append('UserLogon', '@UserDetail.CodeName');
+
+            await ImportMasterCost(form_data);
+            await page.loading();
+            await initRepairTypeTable();
+            if (rTypeId !== 0) {
+                await initRepairDetailTable(rTypeId);
+            }
+            if (rTypeOTSId !== 0) {
+               await initRepairDetailOTSTable(rTypeOTSId);
+            }
+            if (rDetailId != 0) {
+                await initProblemTable(rDetailId);
+            }
+            if (rProblemId !== 0) {
+                await initRepairMethodTable(rProblemId);
+            }
+
+            page.loaded();
+        });
+
+        $('#btnTemplateExport').click(async function () {
+            if ($('#categoryTypeTemplate').val().length === 0) {
+                modalWaring("กรุณาระบุประเภทหมวดงาน");
+                return false;
+            }
+
+            let catNoArr = [];
+            let cateNo;
+
+            if ($('#categoryTypeTemplate').val().length > 0) {
+                catNoArr = $('#categoryTypeTemplate').val();
+                for (var m of catNoArr) {
+                    cateNo += m.trim() + ",";
+                }
+
+            }
+           
+            let data = {
+                SystemType: $('#systemTypeTemplate').val(),
+                PriceType: $('#priceTypeTemplate').val(),
+                CategoryType: $('#categoryTypeTemplate').val().toString()
+            }
+
+            exportMasterCostTemplate(data);
+        });
+        function ImportMasterCost(data) {
+            return new Promise(async function (resolve, reject) {
+                page.loading();
+                await ajaxPostFormData(`${baseUrl}/homecare/api/v1/Admin/ImportMasterCost`, data, response => {
+                    if (response) {
+                        if (response.data.result) {
+                            page.loaded();
+                            showModalLineApprveSuccess('บันทึกสำเร็จ');
+                            $('input[type=file]').val('').trigger('change');
+                            resolve(true);
+                        } else {
+                            page.loaded();
+                            showModalLineApprveWarning(response.data.msg);
+                            $('input[type=file]').val('').trigger('change');
+                            resolve(true);
+                        }
+
+                    } else {
+                        page.loaded();
+                        showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                        resolve(false);
+                    }
+
+                });
+            });
+
+
+        }
+        async function exportMasterCostTemplate(data) {
+            page.loading();
+            var param = `SystemType=${data.SystemType}&PriceType=${data.PriceType}&CategoryType=${data.CategoryType}`
+         
+            await ajaxGetFile(`${baseUrl}/homecare/api/v1/Admin/ExportTemplteMasterCost?${param}`, response => {
+
+                 response.blob().then(b => {
+                    //var fileURL = URL.createObjectURL(b);
+                    //window.open(fileURL, "_blank");
+                    const url = window.URL.createObjectURL(b);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+
+                    var filename = "@System.Configuration.ConfigurationManager.AppSettings["MasterCostTemplate"].ToString()";
+                    a.download = filename.replace("#date", dateFormatyyyymmdd());;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+
+                });
+                 page.loaded();
+             });
+             page.loaded();
+        }
+
+        function InsertMasterCost(data) {
+            return new Promise(async function(resolve, reject){
+                await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/InsertMasterCost`, data, response => {
+                    if (response) {
+                        showModalLineApprveSuccess('บันทึกสำเร็จ');
+                        resolve(true);
+
+                    } else {
+                        showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                        resolve(true);
+                    }
+                });
+            });
+            
+        }
+
+        function UpdateMasterCost(data) {
+            return new Promise(async function (resolve, reject) {
+                await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/UpdateMasterCost`, data, response => {              
+                    if (response) {
+                        showModalLineApprveSuccess('บันทึกสำเร็จ');
+                        resolve(true);
+
+                    } else {
+                        showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                        resolve(true);
+                    }
+                });
+            });
+        }
+
+        async function initDropdownHCType() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetHcSystemList`, response => {
+                if (response) {
+                    var ddlHCType = $('#searchHCType');
+                    var ddlSearchHC = $('#searchSystemId');
+                    var ddlHCTypeTemplate = $('#systemTypeTemplate');
+
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        if (Value.id !== 3 || Value.description !== 'แจ้งซ่อมรายปี') {
+                            option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                        }
+
+                    });
+                    ddlHCType.empty().html(option);
+                    ddlSearchHC.empty().html(option);
+                    ddlHCTypeTemplate.empty().html(option);
+                }
+            });
+        }
+
+        async function initDropdownRepairType() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetRepairTypeList`, response => {
+                if (response) {
+                    var ddlRepairType = $('#searchRepairType');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddlRepairType.empty().html(option);
+
+                }
+            });
+        }
+
+        function initRepairTypeTable() {
+            currentPage = table.page();
+            table.rows().remove().draw(false);
+            arrRepairType = [];
+            let data = {
+                SystemId: $('#searchSystemId').val(),
+                IsActive: btnSearchStatusValue,
+                Unit: $('#searchUnitPriceType').val()
+
+            }
+         
+            return new Promise(async function (resolve, reject) {
+                await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/GetWorkCategoryMasterModel`, data, response => {
+                                  
+                    if (response) {                       
+                        arrRepairType = response.data;
+                        table.rows().remove().draw(false);
+                        $.each(response.data, function (index, value) {
+                            value.index = index;
+                            table.row.add([
+                                `${index + 1}`,
+                                value,
+                                `${value.systemDesc}`,
+                                value.typeDesc,
+                                value.isActive,
+                                value
+                            ]).page(currentPage).draw(false);
+                        });
+                        resolve(true);
+                    } else {
+                        resolve(true);
+                    }
+                 
+                   
+                });
+            })
+
+        }
+
+        function initRepairDetailTable(listId) {
+            tableDetail.rows().remove().draw();
+            arrRepairDetail = [];
+            let id = listId === null || listId === undefined || listId === 0 ? $('#frmRepairDetailAction [name="repairTypeId"]').val() : listId;
+
+            let data = {
+                List1Id: id,
+                IsActive: btnSearchDetailStatus
+            }
+          
+            return new Promise(async function (resolve, reject) {
+                await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/GetMasterCostDetail`, data, response => {
+                  
+                    if (response) {
+                        tableDetail.rows().remove().draw();
+                        arrRepairDetail = response.data;
+                        $.each(response.data, function (index, value) {
+                            value.index = index;
+                            tableDetail.row.add([
+                                `${index + 1}`,
+                                value,
+                                value.active,
+                                value
+                            ]).draw();
+                        });
+                        resolve(true);
+                    } else {
+                        resolve(true);
+                    }
+                 
+
+                });
+            });
+        
+        }
+
+        function initRepairDetailOTSTable(listId) {
+            tableDetailOTS.rows().remove().draw();
+            arrRepairDetail = [];
+
+            let id = listId === null || listId === undefined || listId === 0 ? $('#frmRepairDetailOTSAction [name="repairTypeId"]').val() : listId;
+
+            let data = {
+                List1Id: id,
+                IsActive: btnSearchOTSStatus
+            }
+         
+            return new Promise(async function (resolve, reject) {
+                await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/GetMasterCostDetailOTS`, data, response => {                  
+                    if (response) {
+                        tableDetailOTS.rows().remove().draw();
+                        arrRepairDetail = response.data;
+                        $.each(response.data, function (index, value) {
+                            value.index = index;
+                            tableDetailOTS.row.add([
+                                `${index + 1}`,
+                                value.list2Desc,
+                                value.customerPackage,
+                                value.customerWage,
+                                value.vendorPackage,
+                                value.vendorWage,
+                                value.unit,
+                                value.active,
+                                value
+                            ]).draw();
+                        });
+                        resolve(true);
+                    } else {
+                        resolve(true);
+                    }
+                                       
+                });
+            });
+      
+       
+
+        }
+
+        function initProblemTable(listId) {
+            tableProblem.rows().remove().draw();
+            arrRepairProblem = [];
+            let id = listId === null || listId === undefined || listId === 0 ? $('#frmProblemAction [name="detailId"]').val() : listId;
+
+            let data = {
+                List2Id: id,
+                IsActive: btnSearchProblemStatus
+            }
+         
+            return new Promise(async function (resolve, reject) {
+                await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/GetMasterCostProblem`, data, response => {
+                
+                    if (response) {
+                        tableProblem.rows().remove().draw();
+                        arrRepairProblem = response.data;
+                        $.each(response.data, function (index, value) {
+                            value.index = index;
+                            tableProblem.row.add([
+                                `${index + 1}`,
+                                value,
+                                value.active,
+                                value
+                            ]).draw();
+                        });
+                        resolve(true);
+                    } else {
+                        resolve(true);
+                    }                   
+
+                });
+            });
+         
+
+        }
+
+        function initRepairMethodTable(listId) {
+            tableMethod.rows().remove().draw();
+            arrRepairMethod = [];
+            let id = listId === null || listId === undefined || listId === 0 ? $('#frmRepairMethodAction [name="problemId"]').val() : listId;
+
+            let data = {
+                List3Id: id,
+                IsActive: btnSearchMethodStatus,
+                PriceType: $('#searchPriceType').val()
+            }         
+            return new Promise(async function (resolve, reject) {
+                await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/GetMasterCostMethod`, data, response => {                                  
+                    if (response) {
+                        tableMethod.rows().remove().draw();
+                        arrRepairMethod = response.data;
+                        $.each(response.data, function (index, value) {
+                            value.index = index;
+                            tableMethod.row.add([
+                                `${index + 1}`,
+                                value,
+                                `${value.goodsPrice}`,
+                                `${value.wagePerUnit}`,
+                                `${value.unit}`,
+                                `${value.priceType}`,
+                                `${value.remark}`,
+                                value.active,
+                                value
+                            ]).draw();
+                        });
+                        resolve(true);
+                    } else {
+                        resolve(true);
+                    }
+                   
+                });
+            });
+       
+        }
+
+        async function initDropdownPriceType() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetPriceTypeList`, response => {            
+                if (response) {
+                    let ddlPriceType = $('#priceTypeTemplate');
+                    let ddlSearchUnitPriceType = $('#searchUnitPriceType');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddlPriceType.empty().html(option);
+                    ddlSearchUnitPriceType.empty().html(option);
+                }
+            });
+        }
+        async function initDropdownCategoryType() {
+            var name = $('#systemTypeTemplate').val() == "" ?  1: $('#systemTypeTemplate').val();
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetCategoryTypeList?name=${name}`, response => {
+                if (response) {
+                    $("#categoryTypeTemplate option").remove();
+                    $.each(response.data, function (Index, Value) {
+                        $("#categoryTypeTemplate").append($("<option></option>").val(Value.id).html(Value.description));
+                    });
+
+                }
+
+            });
+        }
+        async function onClickGotoRepairDetail(list1Id, systemId, desc) {
+
+
+            $('.nevRepairType').text(desc);
+            if (systemId === 1) {
+                $('button[name=search-detail-all]').removeClass('btn-default');
+                $('button[name=search-detail-all]').addClass('btn-info');
+                $('button[name=search-detail-visible]').removeClass('btn-success');
+                $('button[name=search-detail-visible]').addClass('btn-default');
+                $('button[name=search-detail-disable]').removeClass('btn-danger');
+                $('button[name=search-detail-disable]').addClass('btn-default');
+                btnSesrchDetailStatus = null;
+                $('#frmRepairDetailAction [name="repairTypeId"]').val(list1Id).trigger('change');
+                await page.loading();
+                await initRepairDetailTable(list1Id);
+                page.loaded();              
+                activaTab('repairDetail', 'tab-repairDetail');
+                rTypeId = list1Id;
+            } else {
+                $('button[name=search-OTS-all]').removeClass('btn-default');
+                $('button[name=search-OTS-all]').addClass('btn-info');
+                $('button[name=search-OTS-visible]').removeClass('btn-success');
+                $('button[name=search-OTS-visible]').addClass('btn-default');
+                $('button[name=search-OTS-disable]').removeClass('btn-danger');
+                $('button[name=search-OTS-disable]').addClass('btn-default');
+                btnSesrchOTSStatus = null;
+                $('#frmRepairDetailOTSAction [name="repairTypeId"]').val(list1Id).trigger('change');
+                await page.loading();
+                await initRepairDetailOTSTable(list1Id);
+                page.loaded();
+                
+                activaTab('repairDetailOTS', 'tab-repairDetailOTS');
+                rTypeOTSId = list1Id;
+            }
+
+        }
+
+        async function onClickGotoProblem(list2Id,desc) {
+            $('button[name=search-problem-all]').removeClass('btn-default');
+            $('button[name=search-problem-all]').addClass('btn-info');
+            $('button[name=search-problem-visible]').removeClass('btn-success');
+            $('button[name=search-problem-visible]').addClass('btn-default');
+            $('button[name=search-problem-disable]').removeClass('btn-danger');
+            $('button[name=search-problem-disable]').addClass('btn-default');
+            btnSesrchProblemStatus = null;
+            $('.nevRepairDetail').text(desc);
+            $('#frmProblemAction [name="detailId"]').val(list2Id).trigger('change');
+            await page.loading();
+            await initProblemTable(list2Id);
+            page.loaded();
+        
+            activaTab('problem', 'tab-problem');
+            rDetailId = list2Id;
+
+        }
+
+        async function onClickGotoRepairMethod(list3Id, desc) {
+            $('button[name=search-method-all]').removeClass('btn-default');
+            $('button[name=search-method-all]').addClass('btn-info');
+            $('button[name=search-method-visible]').removeClass('btn-success');
+            $('button[name=search-method-visible]').addClass('btn-default');
+            $('button[name=search-method-disable]').removeClass('btn-danger');
+            $('button[name=search-method-disable]').addClass('btn-default');
+            btnSesrchMethodStatus = null;
+            $('.nevRepairProblem').text(desc);
+            $('#frmRepairMethodAction [name="problemId"]').val(list3Id).trigger('change');
+            await page.loading();
+            await initRepairMethodTable(list3Id);
+            page.loaded();
+            
+            activaTab('repairMethod', 'tab-repairMethod');
+            rProblemId = list3Id;
+        }
+
+        async function filterByVisibility(element) {
+
+            if (element.name === 'status-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=status-visible]').removeClass('btn-success');
+                    $('button[name=status-visible]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnStatusValue = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnStatusValue = null;
+                }
+            } else if (element.name === 'status-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=status-disable]').removeClass('btn-danger');
+                    $('button[name=status-disable]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnStatusValue = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnStatusValue = null;
+                }
+            } else if (element.name === 'search-status-all') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-status-visible]').removeClass('btn-success');
+                    $('button[name=search-status-visible]').addClass('btn-default');
+                    $('button[name=search-status-disable]').removeClass('btn-danger');
+                    $('button[name=search-status-disable]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-info');
+                    btnSearchStatusValue = null;
+                } else {
+                    $(element).removeClass('btn-info');
+                    $(element).addClass('btn-default');
+                    btnSearchStatusValue = null;
+                }
+
+                await page.loading();
+                await initRepairTypeTable();
+                page.loaded();
+               
+
+            } else if (element.name === 'search-status-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-status-visible]').removeClass('btn-success');
+                    $('button[name=search-status-visible]').addClass('btn-default');
+                    $('button[name=search-status-all]').removeClass('btn-info');
+                    $('button[name=search-status-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnSearchStatusValue = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnSearchStatusValue = null;
+                }
+                await page.loading();
+                await initRepairTypeTable();
+                page.loaded();
+            } else if (element.name === 'search-status-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-status-disable]').removeClass('btn-danger');
+                    $('button[name=search-status-disable]').addClass('btn-default');
+                    $('button[name=search-status-all]').removeClass('btn-info');
+                    $('button[name=search-status-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnSearchStatusValue = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnSearchStatusValue = null;
+                }
+                await page.loading();
+                await initRepairTypeTable();
+                page.loaded();
+            } else if (element.name === 'search-detail-all') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-detail-visible]').removeClass('btn-success');
+                    $('button[name=search-detail-visible]').addClass('btn-default');
+                    $('button[name=search-detail-disable]').removeClass('btn-danger');
+                    $('button[name=search-detail-disable]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-info');
+                    btnSearchDetailStatus = null;
+                } else {
+                    $(element).removeClass('btn-info');
+                    $(element).addClass('btn-default');
+                    btnSearchDetailStatus = null;
+                }
+                await page.loading();
+                await initRepairDetailTable();
+                page.loaded();
+               
+            } else if (element.name === 'search-detail-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-detail-visible]').removeClass('btn-success');
+                    $('button[name=search-detail-visible]').addClass('btn-default');
+                    $('button[name=search-detail-all]').removeClass('btn-info');
+                    $('button[name=search-detail-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnSearchDetailStatus = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnSearchDetailStatus = null;
+                }
+                await page.loading();
+                await initRepairDetailTable();
+                page.loaded();
+               
+            } else if (element.name === 'search-detail-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-detail-disable]').removeClass('btn-danger');
+                    $('button[name=search-detail-disable]').addClass('btn-default');
+                    $('button[name=search-detail-all]').removeClass('btn-info');
+                    $('button[name=search-detail-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnSearchDetailStatus = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnSearchDetailStatus = null;
+                }
+                await page.loading();
+                await initRepairDetailTable();
+                page.loaded();
+               
+            }else if (element.name === 'search-problem-all') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-problem-visible]').removeClass('btn-success');
+                    $('button[name=search-problem-visible]').addClass('btn-default');
+                    $('button[name=search-problem-disable]').removeClass('btn-danger');
+                    $('button[name=search-problem-disable]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-info');
+                    btnSearchProblemStatus = null;
+                } else {
+                    $(element).removeClass('btn-info');
+                    $(element).addClass('btn-default');
+                    btnSearchProblemStatus = null;
+                }
+                await page.loading();
+                await initProblemTable();
+                page.loaded();
+                
+            } else if (element.name === 'search-problem-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-problem-visible]').removeClass('btn-success');
+                    $('button[name=search-problem-visible]').addClass('btn-default');
+                    $('button[name=search-problem-all]').removeClass('btn-info');
+                    $('button[name=search-problem-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnSearchProblemStatus = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnSearchProblemStatus = null;
+                }
+                await page.loading();
+                await initProblemTable();
+                page.loaded();
+            } else if (element.name === 'search-problem-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-problem-disable]').removeClass('btn-danger');
+                    $('button[name=search-problem-disable]').addClass('btn-default');
+                    $('button[name=search-problem-all]').removeClass('btn-info');
+                    $('button[name=search-problem-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnSearchProblemStatus = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnSearchProblemStatus = null;
+                }
+                await page.loading();
+                await initProblemTable();
+                page.loaded();
+            }else if (element.name === 'search-method-all') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-method-visible]').removeClass('btn-success');
+                    $('button[name=search-method-visible]').addClass('btn-default');
+                    $('button[name=search-method-disable]').removeClass('btn-danger');
+                    $('button[name=search-method-disable]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-info');
+                    btnSearchMethodStatus = null;
+                } else {
+                    $(element).removeClass('btn-info');
+                    $(element).addClass('btn-default');
+                    btnSearchMethodStatus = null;
+                }
+                await page.loading();
+                await initRepairMethodTable();
+                page.loaded();
+               
+            } else if (element.name === 'search-method-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-method-visible]').removeClass('btn-success');
+                    $('button[name=search-method-visible]').addClass('btn-default');
+                    $('button[name=search-method-all]').removeClass('btn-info');
+                    $('button[name=search-method-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnSearchMethodStatus = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnSearchMethodStatus = null;
+                }
+                await page.loading();
+                await initRepairMethodTable();
+                page.loaded();               
+            } else if (element.name === 'search-method-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-method-disable]').removeClass('btn-danger');
+                    $('button[name=search-method-disable]').addClass('btn-default');
+                    $('button[name=search-method-all]').removeClass('btn-info');
+                    $('button[name=search-method-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnSearchMethodStatus = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnSearchMethodStatus = null;
+                }
+                await page.loading();
+                await initRepairMethodTable();
+                page.loaded();               
+            }else if (element.name === 'search-OTS-all') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-OTS-visible]').removeClass('btn-success');
+                    $('button[name=search-OTS-visible]').addClass('btn-default');
+                    $('button[name=search-OTS-disable]').removeClass('btn-danger');
+                    $('button[name=search-OTS-disable]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-info');
+                    btnSearchOTSStatus = null;
+                } else {
+                    $(element).removeClass('btn-info');
+                    $(element).addClass('btn-default');
+                    btnSearchOTSStatus = null;
+                }
+                await page.loading();
+                await initRepairDetailOTSTable();
+                page.loaded();
+               
+            } else if (element.name === 'search-OTS-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-OTS-visible]').removeClass('btn-success');
+                    $('button[name=search-OTS-visible]').addClass('btn-default');
+                    $('button[name=search-OTS-all]').removeClass('btn-info');
+                    $('button[name=search-OTS-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnSearchOTSStatus = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnSearchOTSStatus = null;
+                }
+                await page.loading();
+                await initRepairDetailOTSTable();
+                page.loaded()
+            } else if (element.name === 'search-OTS-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-OTS-disable]').removeClass('btn-danger');
+                    $('button[name=search-OTS-disable]').addClass('btn-default');
+                    $('button[name=search-OTS-all]').removeClass('btn-info');
+                    $('button[name=search-OTS-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnSearchOTSStatus = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnSearchOTSStatus = null;
+                }
+                await page.loading();
+                await initRepairDetailOTSTable();
+                page.loaded()
+            }
+
+
+        }
+
+        function onClickEditRepairType(listId, SystemId) {
+
+            $('#frmRepairType [name = "titleForm"]').text('แก้ไขหมวดงานที่ซ่อม');
+            let row = arrRepairType.filter(e => e.list1Id === listId && e.systemId === SystemId);
+            if (row.length > 0) {
+                $('#frmRepairType [name="repairType-name"]').val(row[0].list1Desc);
+                $('#frmRepairType [name="searchHCType"]').val(row[0].systemId).trigger('change');
+                $('#frmRepairType [name="searchHCType"]').prop('disabled', true).trigger('change');
+                $('#frmRepairType [name="searchRepairType"]').val(row[0].repairTypeId).trigger('change');
+                $('#frmRepairType [name="frmRepairTypeActionEvent"]').val('edit').trigger('change');
+                $('#frmRepairType [name="repairTypeId"]').val(listId).trigger('change');
+                if (row[0].isActive) {
+                    $('button[name=status-disable]').removeClass('btn-danger');
+                    $('button[name=status-disable]').addClass('btn-default');
+                    $('button[name=status-visible]').addClass('btn-success');
+                    btnStatusValue = true;
+                } else {
+                    $('button[name=status-visible]').removeClass('btn-success');
+                    $('button[name=status-visible]').addClass('btn-default');
+                    $('button[name=status-disable]').addClass('btn-danger');
+                    btnStatusValue = false;
+                }
+                $('#modalFrmRepairTypeAction').modal({ backdrop: 'static', keyboard: false, show: true });
+            }
+        }
+
+        function onClickEditRepairDetail(list2Id) {
+
+            $('#frmRepairDetailAction [name = "titleForm"]').text('แก้ไขรายละเอียดที่ซ่อม');
+            let row = arrRepairDetail.filter(e => e.list2Id === list2Id);
+            if (row.length > 0) {
+                $('#frmRepairDetailAction [name="repairDetail"]').val(row[0].list2Desc);
+                $('#frmRepairDetailAction [name="frmRepairDetailActionEvent"]').val('edit').trigger('change');
+                $('#frmRepairDetailAction [name="repairDetailId"]').val(list2Id).trigger('change');
+                if (row[0].active) {
+                    $('#frmRepairDetailAction  button[name=status-disable]').removeClass('btn-danger');
+                    $('#frmRepairDetailAction  button[name=status-disable]').addClass('btn-default');
+                    $('#frmRepairDetailAction  button[name=status-visible]').addClass('btn-success');
+                    btnStatusValue = true;
+                } else {
+                    $('#frmRepairDetailAction  button[name=status-visible]').removeClass('btn-success');
+                    $('#frmRepairDetailAction  button[name=status-visible]').addClass('btn-default');
+                    $('#frmRepairDetailAction  button[name=status-disable]').addClass('btn-danger');
+                    btnStatusValue = false;
+                }
+                $('#modalFrmRepairDetailAction').modal({ backdrop: 'static', keyboard: false, show: true });
+            }
+        }
+
+        function onClickEditProblem(list3Id) {
+
+            $('#frmProblemAction [name = "titleForm"]').text('แก้ไขลักษณะปัญหา');
+            let row = arrRepairProblem.filter(e => e.list3Id === list3Id);
+            if (row.length > 0) {
+                $('#frmProblemAction [name="problemDetail"]').val(row[0].list3Desc);
+                $('#frmProblemAction [name="problemId"]').val(row[0].list3Id).trigger('change');
+                $('#frmProblemAction [name="frmProblemActionEvent"]').val('edit').trigger('change');
+
+                if (row[0].active) {
+                    $('#frmProblemAction  button[name=status-disable]').removeClass('btn-danger');
+                    $('#frmProblemAction  button[name=status-disable]').addClass('btn-default');
+                    $('#frmProblemAction  button[name=status-visible]').addClass('btn-success');
+                    btnStatusValue = true;
+                } else {
+                    $('#frmProblemAction  button[name=status-visible]').removeClass('btn-success');
+                    $('#frmProblemAction  button[name=status-visible]').addClass('btn-default');
+                    $('#frmProblemAction  button[name=status-disable]').addClass('btn-danger');
+                    btnStatusValue = false;
+                }
+                $('#modalFrmProblemAction').modal({ backdrop: 'static', keyboard: false, show: true });
+            }
+        }
+
+        function onClickEditMethod(list4Id) {
+
+            $('#frmRepairMethodAction [name = "titleForm"]').text('แก้ไขวิธีการซ่อม');
+            let row = arrRepairMethod.filter(e => e.list4Id === list4Id);
+            if (row.length > 0) {
+                $('#frmRepairMethodAction [name="repairMethod"]').val(row[0].list4Desc);
+                $('#frmRepairMethodAction [name="methodId"]').val(row[0].list4Id).trigger('change');
+                $('#frmRepairMethodAction [name="frmMethodActionEvent"]').val('edit').trigger('change');
+                $('#frmRepairMethodAction [name="priceType"]').val(row[0].priceType).trigger('change');
+                $('#frmRepairMethodAction [name="remark"]').val(row[0].remark).trigger('change');
+                $('#frmRepairMethodAction [name="price"]').val(row[0].goodsPrice).trigger('change');
+                $('#frmRepairMethodAction [name="wage"]').val(row[0].wagePerUnit).trigger('change');
+                $('#frmRepairMethodAction [name="unit"]').val(row[0].unit).trigger('change');
+                if (row[0].active) {
+                    $('#frmRepairMethodAction  button[name=status-disable]').removeClass('btn-danger');
+                    $('#frmRepairMethodAction  button[name=status-disable]').addClass('btn-default');
+                    $('#frmRepairMethodAction  button[name=status-visible]').addClass('btn-success');
+                    btnStatusValue = true;
+                } else {
+                    $('#frmRepairMethodAction  button[name=status-visible]').removeClass('btn-success');
+                    $('#frmRepairMethodAction  button[name=status-visible]').addClass('btn-default');
+                    $('#frmRepairMethodAction  button[name=status-disable]').addClass('btn-danger');
+                    btnStatusValue = false;
+                }
+                $('#modalFrmRepairMethodAction').modal({ backdrop: 'static', keyboard: false, show: true });
+            }
+        }
+
+        function onClickEditDetailOTS(list2Id) {
+
+            $('#frmRepairDetailOTSAction [name = "titleForm"]').text('แก้ไขรายละเอียดที่ซ่อม (OTS)');
+            let row = arrRepairDetail.filter(e => e.list2Id === list2Id);
+            if (row.length > 0) {
+                $('#frmRepairDetailOTSAction [name="repairDetailOTS"]').val(row[0].list2Desc);
+                $('#frmRepairDetailOTSAction [name="repairDetailId"]').val(row[0].list2Id).trigger('change');
+                $('#frmRepairDetailOTSAction [name="frmOTSActionEvent"]').val('edit').trigger('change');
+                $('#frmRepairDetailOTSAction [name="CustPackage"]').val(row[0].customerPackage).trigger('change');
+                $('#frmRepairDetailOTSAction [name="CustWage"]').val(row[0].customerWage).trigger('change');
+                $('#frmRepairDetailOTSAction [name="unit"]').val(row[0].unit).trigger('change');
+                $('#frmRepairDetailOTSAction [name="remark"]').val(row[0].remark).trigger('change');
+                $('#frmRepairDetailOTSAction [name="VendorPackage"]').val(row[0].vendorPackage).trigger('change');
+                $('#frmRepairDetailOTSAction [name="VendorWage"]').val(row[0].vendorWage).trigger('change');
+                if (row[0].active) {
+                    $('#frmRepairDetailOTSAction  button[name=status-disable]').removeClass('btn-danger');
+                    $('#frmRepairDetailOTSAction  button[name=status-disable]').addClass('btn-default');
+                    $('#frmRepairDetailOTSAction  button[name=status-visible]').addClass('btn-success');
+                    btnStatusValue = true;
+                } else {
+                    $('#frmRepairDetailOTSAction  button[name=status-visible]').removeClass('btn-success');
+                    $('#frmRepairDetailOTSAction  button[name=status-visible]').addClass('btn-default');
+                    $('#frmRepairDetailOTSAction  button[name=status-disable]').addClass('btn-danger');
+                    btnStatusValue = false;
+                }
+                $('#modalFrmRepairDetailOTSAction').modal({ backdrop: 'static', keyboard: false, show: true });
+            }
+        }
+
+        function showModalLineApprveWarning(msg) {
+            $('#modalRoleWarning').modal('show');
+            $('#lbTxtWarning').text(msg);
+        }
+
+        function showModalLineApprveSuccess(msg) {
+            $('#modalInsertRoleSuccess').modal('show');
+            $('#lbTxtSuccess').text(msg);
+        }
+
+        function activaTab(tab,actTab) {
+            $('#tab-repairType').attr('class', 'disabled');
+            $('#' + actTab).show();
+            $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+        }
+
+        function backTab(tab, inactTab) {
+            if (tab === 'repairType')
+            {
+                $('#tab-repairDetail').hide();
+                $('#tab-problem').hide();
+                rTypeId = 0;
+                rTypeOTSId = 0;
+                rDetailId = 0;
+                rProblemId = 0;
+            }
+            $('#' + inactTab).hide();
+            $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+            if (tab === 'problem') {
+                rProblemId = 0;
+            } else if (tab === 'repairDetail') {
+                rDetailId = 0;
+            }
+
+        }
+
+        function clearForm(tab) {
+            if (tab === 'repairType') {
+                $('#frmRepairType [name="repairType-name"]').val('').trigger('change');
+                $('#frmRepairType [name="searchHCType"]').val('').trigger('change');
+                $('#frmRepairType [name="searchHCType"]').prop('disabled', false).trigger('change');
+                $('#frmRepairType [name="searchRepairType"]').val('').trigger('change');
+                $('#frmRepairType [name="frmRepairTypeActionEvent"]').val('insert').trigger('change');
+                $('#frmRepairType [name="repairTypeId"]').val('').trigger('change');
+                $('button[name=status-disable]').removeClass('btn-danger');
+                $('button[name=status-disable]').addClass('btn-default');
+                $('button[name=status-visible]').addClass('btn-success');
+                btnStatusValue = true;
+                $('#frmRepairType [name="searchHCType"]').val('1').trigger('change');
+
+            } else if (tab === 'repairDetail') {
+                $('#frmRepairDetailAction [name="repairDetail"]').val('').trigger('change');
+                $('#frmRepairDetailAction [name="frmRepairDetailActionEvent"]').val('insert').trigger('change');
+                $('#frmRepairDetailAction [name="repairDetailId"]').val('').trigger('change');
+                $('#frmRepairDetailAction  button[name=status-disable]').removeClass('btn-danger');
+                $('#frmRepairDetailAction  button[name=status-disable]').addClass('btn-default');
+                $('#frmRepairDetailAction  button[name=status-visible]').addClass('btn-success');
+                btnStatusValue = true;
+
+            } else if (tab === 'problem') {
+                $('#frmProblemAction [name="problemDetail"]').val('');
+                $('#frmProblemAction [name="problemId"]').val('').trigger('change');
+                $('#frmProblemAction [name="frmProblemActionEvent"]').val('insert').trigger('change');
+                $('#frmProblemAction  button[name=status-disable]').removeClass('btn-danger');
+                $('#frmProblemAction  button[name=status-disable]').addClass('btn-default');
+                $('#frmProblemAction  button[name=status-visible]').addClass('btn-success');
+                btnStatusValue = true;
+
+            } else if (tab === 'repairMethod') {
+                $('#frmRepairMethodAction [name="repairMethod"]').val('');
+                $('#frmRepairMethodAction [name="methodId"]').val('').trigger('change');
+                $('#frmRepairMethodAction [name="frmMethodActionEvent"]').val('insert').trigger('change');
+                $('#frmRepairMethodAction [name="priceType"]').val('').trigger('change');
+                $('#frmRepairMethodAction [name="remark"]').val('').trigger('change');
+                $('#frmRepairMethodAction [name="price"]').val('').trigger('change');
+                $('#frmRepairMethodAction [name="wage"]').val('').trigger('change');
+                $('#frmRepairMethodAction [name="unit"]').val('').trigger('change');
+                $('#frmRepairMethodAction  button[name=status-disable]').removeClass('btn-danger');
+                $('#frmRepairMethodAction  button[name=status-disable]').addClass('btn-default');
+                $('#frmRepairMethodAction  button[name=status-visible]').addClass('btn-success');
+                btnStatusValue = true;
+
+            } else if (tab === 'repairDetailOTS') {
+                $('#frmRepairDetailOTSAction [name="repairDetailOTS"]').val('');
+                $('#frmRepairDetailOTSAction [name="repairDetailId"]').val('').trigger('change');
+                $('#frmRepairDetailOTSAction [name="frmOTSActionEvent"]').val('insert').trigger('change');
+                $('#frmRepairDetailOTSAction [name="CustPackage"]').val('').trigger('change');
+                $('#frmRepairDetailOTSAction [name="CustWage"]').val('').trigger('change');
+                $('#frmRepairDetailOTSAction [name="unit"]').val('').trigger('change');
+                $('#frmRepairDetailOTSAction [name="remark"]').val('').trigger('change');
+                $('#frmRepairDetailOTSAction [name="VendorPackage"]').val('').trigger('change');
+                $('#frmRepairDetailOTSAction [name="VendorWage"]').val('').trigger('change');
+                $('#frmRepairDetailOTSAction  button[name=status-disable]').removeClass('btn-danger');
+                $('#frmRepairDetailOTSAction  button[name=status-disable]').addClass('btn-default');
+                $('#frmRepairDetailOTSAction  button[name=status-visible]').addClass('btn-success');
+                btnStatusValue = true;
+
+            }
+        }
+
+        function noPermissionAlert() {
+            modalWaring('คุณไม่มีสิทธิในการเข้าถึงหน้านี้ ขออภัยครับ');
+            $('#warningModal').on('hidden.bs.modal', function () {
+                window.location.href = '@Url.Content("~/")';
+            });
+        }
+        function dateFormatyyyymmdd() {
+            var x = new Date();
+            var y = x.getFullYear().toString();
+            var m = (x.getMonth() + 1).toString();
+            var d = x.getDate().toString();
+            (d.length == 1) && (d = '0' + d);
+            (m.length == 1) && (m = '0' + m);
+            var yyyymmdd = y + m + d;
+            return yyyymmdd;
+        }
+
+    </script>
+}

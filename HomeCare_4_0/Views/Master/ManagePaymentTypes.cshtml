@@ -1,0 +1,1417 @@
+﻿@using HomeCare_4_0.Common
+@using HomeCare_4_0.ClassLib
+@{
+    ViewBag.Title = "ManagePaymentTypes";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+
+<style>
+    .project-status-filter {
+        border: 0;
+        box-shadow: none;
+        position: relative;
+        bottom: 6.5px;
+        right: 11px;
+    }
+
+    .btn-group .btn {
+        min-width: 85.5px;
+    }
+
+    .btn-rounded {
+        font-family: Raleway-SemiBold;
+        font-size: 13px;
+        /*        color: rgba(58, 133, 191, 0.75);*/
+        letter-spacing: 1px;
+        line-height: 15px;
+        border: 2px solid rgba(58, 133, 191, 0.75);
+        border-radius: 40px;
+        /*        background: transparent;*/
+        transition: all 0.3s ease 0s;
+    }
+
+        .btn-rounded :hover {
+            color: #FFF;
+            background: rgba(58, 133, 191, 0.75);
+            border: 2px solid rgba(58, 133, 191, 0.75);
+        }
+
+    .onoffswitch {
+        position: relative;
+        width: 70px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        margin: 0 auto;
+    }
+
+    .onoffswitch-checkbox {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .onoffswitch-label {
+        display: block;
+        overflow: hidden;
+        cursor: pointer;
+        /*  border: 2px solid #999999;*/
+        border-radius: 20px;
+    }
+
+    .onoffswitch-inner {
+        display: block;
+        width: 200%;
+        margin-left: -100%;
+        transition: margin 0.3s ease-in 0s;
+    }
+
+        .onoffswitch-inner:before, .onoffswitch-inner:after {
+            display: block;
+            float: left;
+            width: 50%;
+            height: 25px;
+            padding: 0;
+            line-height: 25px;
+            font-size: 12px;
+            color: white;
+            font-family: Trebuchet, Arial, sans-serif;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        .onoffswitch-inner:before {
+            content: "ON";
+            padding-right: 9px;
+            background-color: #58C89E;
+            color: #FFFFFF;
+        }
+
+        .onoffswitch-inner:after {
+            content: "OFF";
+            padding-right: 9px;
+            background-color: #CE494D;
+            color: #FFFFFF;
+            text-align: right;
+        }
+
+    .onoffswitch-switch {
+        display: block;
+        width: 18px;
+        margin: 3.5px;
+        background: #FFFFFF;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 41px;
+        border: 1px solid #999999;
+        border-radius: 20px;
+        transition: all 0.3s ease-in 0s;
+    }
+
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+        margin-left: 0;
+    }
+
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+        right: 0px;
+    }
+
+    .checkbox {
+        margin-left: 0px !important;
+    }
+
+    .td-click {
+        cursor: pointer;
+    }
+
+    body {
+        padding-right: 0px !important;
+    }
+
+
+    .checkbox {
+        width: auto;
+        /*        width: 100%;*/
+        margin: 0px auto !important;
+        position: relative;
+        display: block;
+    }
+
+
+        .checkbox label {
+            position: relative;
+            min-height: 34px;
+            display: inline-block;
+            /*  padding-left: 40px;*/
+            margin-bottom: 0;
+            font-weight: normal;
+            cursor: pointer;
+            margin-right: 40px;
+        }
+
+            .checkbox label span {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .checkbox label:before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                margin: 4px;
+                width: 22px;
+                height: 22px;
+                transition: transform 0.28s ease;
+                border: 1px solid rgba(141, 140, 140, 0.60);
+                background-color: #FFF;
+                /*  background-color: #CE494D;*/
+                border-radius: 16px;
+            }
+
+            .checkbox label:after {
+                content: "";
+                display: block;
+                width: 10px;
+                height: 5px;
+                border-bottom: 2px solid #FFF;
+                border-left: 2px solid #FFF;
+                transform: rotate(-45deg) scale(0);
+                transition: transform ease 0.25s;
+                position: absolute;
+                top: 12px;
+                left: 10px;
+                border-radius: 16px;
+            }
+
+        .checkbox input[type="checkbox"] {
+            width: auto;
+            opacity: 0.00000001;
+            position: absolute;
+            left: 0;
+            margin-left: -20px;
+        }
+
+            .checkbox input[type="checkbox"]:checked ~ label:before {
+                border: 2px solid #58C89E;
+                background-color: #58C89E;
+                color: #FFF;
+            }
+
+            .checkbox input[type="checkbox"]:checked ~ label:after {
+                transform: rotate(-45deg) scale(1);
+            }
+
+            .checkbox input[type="checkbox"]:focus + label::before {
+                outline: 0;
+            }
+
+            .checkbox input[type="checkbox"]:after {
+                transform: rotate(-45deg) scale(1);
+            }
+
+    .modal-checkbox {
+        position: relative;
+        min-height: 34px;
+        /* display: block; */
+        /* padding-left: 40px; */
+        /* margin-bottom: 10px; */
+        font-weight: normal;
+        cursor: pointer;
+        padding-right: 16px;
+    }
+
+
+    .table > tbody > tr > td {
+        vertical-align: middle;
+        align-items: center;
+        align-content: center;
+    }
+
+    .dataTables_empty {
+        text-align: center;
+    }
+
+    .input-group {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex !important;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .input-group-prepend {
+        margin-right: -1px;
+    }
+
+    prepend {
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+    .input-group-text {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: .375rem .75rem;
+        margin-bottom: 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 2.5;
+        color: #495057;
+        text-align: center;
+        white-space: nowrap;
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+    }
+
+    .popover {
+        max-width: none;
+    }
+
+    .popover-title {
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    .dataTables_scrollBody {
+    }
+</style>
+
+
+
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">จัดการประเภทค่าใช้จ่าย</h3>
+    </div>
+    <div class="content">
+        <div class="box-body">
+
+            <div class="row">
+                <div class="form-group  col-xs-12 col-md-6 col-lg-3 " style="padding-right:0px;">
+                    <label>ประเภทค่าใช้จ่าย</label>
+                    <div class="btn-group form-control project-status-filter">
+                        <button name="payType-all" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ทั้งหมด</button>
+                        <button name="payType-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">มีค่าใช้จ่าย</button>
+                        <button name="payType-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ไม่มีค่าใช้จ่าย</button>
+
+                    </div>
+
+                </div>
+                <div class="form-group col-xs-12 col-md-6 col-lg-3">
+                    <label>สถานะการใช้งาน</label>
+                    <div class="btn-group form-control project-status-filter">
+                        <button name="status-all" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ทั้งหมด</button>
+                        <button name="status-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                        <button name="status-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+                    </div>
+                </div>
+
+                <div class="form-group col-xs-12 col-md-6 col-lg-3">
+                    <label>ประเภทระบบ HC </label>
+                    <select class="col-lg-12 form-control select2" id="searchHCType" name="searchHCType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทระบบ --">
+                        <option selected>Please select</option>
+                    </select>
+                </div>
+                <div class="form-group col-xs-12 col-md-6 col-lg-3">
+                    <label style="height: 15px"></label>
+                    <div class="controls ">
+                        <button type="button" class="btn btn-primary btn-rounded" id="btnAddPaymentTypeConfig">
+                            <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                            เพิ่มประเภทค่าใช้จ่าย
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-xs-12 col-md-6 col-lg-12 " style="margin-top:4rem;">
+                    <div class="" style="padding-top:15px;">
+                        <table class="table table-striped  table-bordered " id="paymentConfig-list" style="margin-bottom: 0;">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="min-width:4%;">ลำดับ</th>
+                                    <th class="text-center" style="min-width:7%;">ประเภท</th>
+                                    <th class="text-center" style="min-width:18%;">รายละเอียด</th>
+                                    <th class="text-center" style="min-width:8%;">GL Account</th>
+                                    <th class="text-center" style="min-width:8%;">WBS</th>
+                                    <th class="text-center" style="min-width:9%;">Warranty Expired</th>
+                                    <th class="text-center" style="min-width:9%;">Retention</th>
+                                    <th class="text-center" style="min-width:9%;">PoolBudget</th>
+                                    <th class="text-center" style="min-width:9%;">W/HoldingTax</th>
+                                    <th class="text-center" style="min-width:9%;">สถานะการใช้งาน</th>
+                                    <th class="text-center" style="min-width:9%;">ประเภทระบบ HC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6 col-lg-12 text-center" style="margin-top:2rem;">
+                    <button type="button" class="btn btn-primary" onclick="onClickUpdatePaymentTypeAll()">
+                        <i class="fa fa-check-circle" aria-hidden="true"></i>
+                        บันทึก
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Modal Add Form -->
+<div class="modal fade" id="modalPaymentTypesForm" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div id="frmAddPaymentTypes">
+            <input type="hidden" id="frmPaymentTypesEvent" name="frmPaymentTypesEvent" />
+            <input type="hidden" id="PaymentId" name="PaymentId" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">เพิ่มประเภทค่าใช้จ่าย</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group  col-xs-12 col-md-6 col-lg-6">
+                            <label>ประเภท HC:<span style="color: #ff0000;"> *</span></label>
+                            <select class="col-lg-12 form-control select2" id="HcSystemsId" name="HcSystemsId" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภท --">
+                                <option selected>Please select</option>
+                            </select>
+
+                        </div>
+                        <div class="form-group  col-xs-12 col-md-6 col-lg-6">
+                            <label>ประเภทค่าใช้จ่าย :<span style="color: #ff0000;"> *</span></label>
+                            <select class="col-lg-12 form-control select2" id="PaymentType" name="PaymentType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภท --">
+                                <option selected>Please select</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group  col-xs-12 col-md-12 col-lg-12">
+                            <label>กรอกรายละเอียด :<span style="color: #ff0000;"> *</span></label>
+                            <textarea class="form-control" id="PaymentDesc" name="PaymentDesc" maxlength="100"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row payTypeY">
+                        <div class="form-group col  col-xs-12 col-md-12 col-lg-12">
+                            <label>GL Account :<span style="color: #ff0000;"> *</span></label>
+                            <input type="text" class="form-control" id="GLAccount" name="GLAccount" maxlength="20" />
+                        </div>
+                    </div>
+
+                    <div class="row payTypeY">
+                        <div class="form-group  col-xs-12 col-md-6 col-lg-4">
+                            <label>WBS :<span style="color: #ff0000;" id="reqwbs"> *</span></label>
+                            <input type="text" class="form-control" id="prefix-wbs" name="prefix-wbs" allownumeric maxlength="10" />
+
+                        </div>
+                        <div class="form-group  col-xs-12 col-md-6 col-lg-1 " style="width:auto;padding-left:0px;padding-right:0px;">
+                            <label style="margin-top:27px;">-</label>
+                        </div>
+                        <div class="form-group  col-xs-12 col-md-6 col-lg-5">
+                            <input type="text" class="form-control " style="margin:24px 0 1px 0" id="wbs-acc" name="wbs-acc" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group  col-xs-12 col-md-12 col-lg-12">
+                            <div class="table-responsive ">
+                                <table class="table  table-striped table-bordered " style="margin-bottom: 0;">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Warranty Expired</th>
+                                            <th class="text-center">Retention</th>
+                                            <th class="text-center">PoolBudget</th>
+                                            <th class="text-center">W/HoldingTax</th>
+                                            <th class="text-center">สถานะการใช้งาน</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" id="cbWarrantyExpired" name="cbWarrantyExpired" value="" onclick="onChangeStatus(this)" />
+                                                    <label for="cbWarrantyExpired" style="padding-right: 0; margin-left: 2em;"></label>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" id="cbRetention" name="cbRetention" value="" onclick="onChangeStatus(this)" />
+                                                    <label for="cbRetention" style="padding-right: 0; margin-left: 2em;"></label>
+                                                </div>
+                                            </td>
+                                            <td class="text-center ">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" id="cbPoolBudget" name="cbPoolBudget" value="" onclick="onChangeStatus(this)" />
+                                                    <label for="cbPoolBudget" style="padding-right: 0; margin-left: 2em;"></label>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" id="cbWHoldingTax" name="cbWHoldingTax" value="" onclick="onChangeStatus(this)" />
+                                                    <label for="cbWHoldingTax" style="padding-right: 0; margin-left: 2em;"></label>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="onoffswitch">
+                                                    <input type="checkbox" name="cbStatus" class="onoffswitch-checkbox" id="cbStatus" onclick="onChangeStatus(this)" />
+                                                    <label class="onoffswitch-label" for="cbStatus">
+                                                        <span class="onoffswitch-inner"></span>
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnSumbit-frmPaymentConfig">บันทึก</button>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--  Modal Insert Success -->
+<div class="modal fade" id="modalInsertSuccess" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">ยืนยันการ บันทึก</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa fa-check fa-2x" aria-hidden="true" style="color: #32CD32;"></i>
+                <span id="lbTxtSuccess"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">ตกลง</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  Modal Role warning -->
+<div class="modal fade" id="modalWarning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">แจ้งเตือน</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true" style="color:#FFCC00;"></i>
+                <span id="lbTxtWarning"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popover-content" style="display:none;">
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-lg-12">
+            <div class="form-group  col-xs-12 col-md-6 col-lg-3">
+                <input type="text" class="form-control input-sm" id="name" name="name" allownumeric maxlength="10" />
+
+            </div>
+            <div class="form-group  col-xs-12 col-md-6 col-lg-1 ">
+                <label class="label">-</label>
+            </div>
+            <div class="form-group  col-xs-12 col-md-6 col-lg-5">
+                <input type="text" class="form-control input-sm" id="glaccount" name="glaccount" />
+            </div>
+            <div class="form-group  col-xs-12 col-md-6 col-lg-2">
+                <button type="button" class="btn btn-primary input-sm" id="save">ตกลง</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript" src="~/assets/plugins/jQuery/validation/jquery.validate.min.js"></script>
+<script type="text/javascript" src="~/assets/plugins/datatables/jquery.dataTables-1.10.12.min.js"></script>
+<script type="text/javascript" src="~/assets/plugins/datatables/dataTables.bootstrap-1.10.12.min.js"></script>
+<script src="~/assets/plugins/jQueryUI/toggle/lc_switch.min.js"></script>
+<script src="~/assets/plugins/popper/popper.min.js"></script>
+@section script{
+    <script type="text/javascript">
+        const baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+        var table;
+        let btnStatusValue = null;
+        let btnPayTypeValue = '';
+        let arrData = [];
+        let dataUpdate = [];
+        let arrUpdateMulti = [];
+
+        $(document).ready(async function () {
+            await page.loading();
+            await ajaxGet(baseUrl + '/homecare/api/v1/User/@UserDetail.UserID/Permission', response => {
+                if (response) {
+                    if (!response.data.length) {
+                        noPermissionAlert();
+                    } else if (!response.data.find(a => a.permissionDescription === 'ManagePaymentTypes')) {
+                        noPermissionAlert();
+                    } else {
+
+                        page.loaded();
+                       // initPage();
+
+                    }
+                }
+            });
+
+            initDropdownHCType();
+            initDropdownPaymentType();
+
+            table = $('#paymentConfig-list').DataTable({
+                "columnDefs": [
+                    {
+                        "searchable": false,
+                        "orderable": false,
+                        "targets": 0,
+                        "className": "text-center"
+                    },
+                    {
+
+                        "targets": 1,
+                        "render": function (data, type, row, meta) {
+                            return `<td class="text-left">${data}</td>`;
+                        }
+                    },
+                    {
+                        "targets": 2,
+                        "render": function (value, type, row, meta) {
+                            return `<a class=" td-click" id="id_${value.index}" onclick="onClickEditPaymentType(${value.paymentId})" >${value.paymentDesc}</a>`;
+                        }
+                    },
+                    {
+
+                        "targets": 3,
+                        "render": function (data, type, row, meta) {
+                            return `<td class="text-left">${data}</td>`;
+                        }
+                    },
+                    {
+
+                        "targets": 4,
+                        "render": function (value, type, row, meta) {
+                            let wbs = "";
+                            if (value.wbs === "") {
+                                wbs = "0000-" + value.glAccount;
+                            } else {
+                                wbs = value.wbs;
+                            }
+                            return `<span class="text-left" id="tbwbs_${value.paymentId}" name="tbwbs_${value.paymentId}">${value.wbs}</span>`;
+                            //let str = value.wbs.split('-');
+                            //return `<span id="swbs_${value.index}">
+                            //        <input type="text" class="form-control" id="tbwbs_${value.index}" name="tbwbs_${value.index}" value="${str[0]}" allownumeric maxlength="10" style="width:70px;"/>
+                            //            -${value.glAccount}</span>`;
+                        },
+                        "className": "text-left "
+                    },
+                    {
+
+                        "targets": 5,
+                        "render": function (value, type, row, meta) {
+                            return `<div class="checkbox">
+                                        <input type="checkbox" id="warrantyExpired_${value.index}"value="${value.warrantyExpired}" ${value.warrantyExpired === true ? 'checked' : ''} onclick="updatePaymentConfig(${value.paymentId},this)" />
+                                        <label for="warrantyExpired_${value.index}">
+                                        </label>
+                                    <div>`;
+                        },
+                        "className": "text-center "
+                    },
+                    {
+
+                        "targets": 6,
+                        "render": function (value, type, row, meta) {
+                            return `<div class="checkbox">
+                                        <input type="checkbox" id="retention_${value.index}"value="${value.retention}" ${value.retention === true ? 'checked' : ''} onclick="updatePaymentConfig(${value.paymentId},this)" />
+                                        <label for="retention_${value.index}"></label>
+                                    <div>`;
+                        },
+                        "className": "text-center "
+                    },
+                    {
+
+                        "targets": 7,
+                        "render": function (value, type, row, meta) {
+
+                            return `<div class="checkbox">
+                                        <input type="checkbox" id="poolBudget_${value.index}" name="poolBudget" value="${value.poolBudget}" ${value.poolBudget === true ? 'checked' : ''} onclick="updateStatusPoolBudgetConfig(${value.paymentId},this)" />
+                                        <label for="poolBudget_${value.index}"></label>
+                                    <div>`;
+
+                        },
+                        "className": "text-center "
+                    },
+                    {
+
+                        "targets": 8,
+                        "render": function (value, type, row, meta) {
+                            return `<div class="checkbox">
+                                        <input type="checkbox" id="holdingTax_${value.index}"  value="${value.holdingTax}" ${value.holdingTax === true ? 'checked' : ''} onclick="updatePaymentConfig(${value.paymentId},this)" >
+                                        <label for="holdingTax_${value.index}"></label>
+                                    </div>`;
+                        },
+                        "className": "text-center "
+                    },
+                    {
+
+                        "targets": 9,
+                        "render": function (value, type, row, meta) {
+                            return `
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="isactive_${value.index}"  class="onoffswitch-checkbox" id="isactive_${value.index}" value="${value.active}" ${value.active === true ? 'checked' : ''} onclick="updatePaymentConfig(${value.paymentId},this)" />
+                                    <label class="onoffswitch-label" for="isactive_${value.index}">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>`;
+                        },
+                        "className": "text-center "
+                    },
+                    {
+
+                        "targets": 10,
+                        "render": function (data, type, row, meta) {
+                            return `<td class="text-left">${data}</td>`;
+                        }
+                    }
+                ],
+                "scrollX": true,
+                "order": [[0, 'asc']],
+                "language": {
+                    "search": "ค้นหา : ",
+                    "lengthMenu": "แสดง _MENU_ รายการ",
+                    "emptyTable": "ไม่พบข้อมูล",
+                    "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoFiltered": "",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+
+                }
+
+            });
+            table.on('order.dt search.dt', function () {
+                table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }).draw();
+
+            ////set button initial
+            $('button[name=payType-visible]').removeClass('btn-success');
+            $('button[name=payType-visible]').addClass('btn-default');
+            $('button[name=payType-disable]').removeClass('btn-danger');
+            $('button[name=payType-disable]').addClass('btn-default');
+            $('button[name=payType-all]').removeClass('btn-default');
+            $('button[name=payType-all]').addClass('btn-info');
+
+            $('button[name=status-visible]').removeClass('btn-success');
+            $('button[name=status-visible]').addClass('btn-default');
+            $('button[name=status-disable]').removeClass('btn-danger');
+            $('button[name=status-disable]').addClass('btn-default');
+            $('button[name=status-all]').removeClass('btn-default');
+            $('button[name=status-all]').addClass('btn-info');
+            btnStatusValue = null;
+            btnPayTypeValue = null;
+
+            $('#frmAddPaymentTypes [name="PaymentType"]').change(function () {           
+                if ($('#frmAddPaymentTypes [name="PaymentType"]').val() === 'N') {
+                    $('.payTypeY').css('display', 'none');
+                } else {
+                    $('.payTypeY').css('display', 'block');
+                }
+            });
+
+            $(".dataTables_scrollBody").css("position", "");
+
+            page.loaded();
+    
+
+        });
+
+
+        $('#GLAccount').on("keypress keyup blur", function (event) {
+            if( $('#frmAddPaymentTypes [name="frmPaymentTypesEvent"]').val()==='insert') {
+                $('#wbs-acc').val($('#GLAccount').val());
+
+            }
+
+        });
+
+        $('#btnAddPaymentTypeConfig').click(function () {
+            clearModalAddPaymentConfig();
+            $('#frmAddPaymentTypes [name="frmPaymentTypesEvent"]').val('insert');
+            $('#modalPaymentTypesForm').modal({ backdrop: 'static', keyboard: false, show: true });
+        });
+
+        $('#btnSumbit-frmPaymentConfig').click(function () {
+
+            if ($('#frmAddPaymentTypes [name="HcSystemsId"]').val() === "") {
+                showModalWarning('กรุณาระบุประเภท HC');
+                return false;
+            }
+            if ($('#frmAddPaymentTypes [name="PaymentType"]').val() === "") {
+                showModalWarning('กรุณาระบุประเภทค่าใช้จ่าย');
+                return false;
+            }
+            if ($('#frmAddPaymentTypes [name="PaymentDesc"]').val() === "") {
+                showModalWarning('กรุณากรอกรายละเอียดประเภทค่าใช้จ่าย');
+                $('#frmAddPaymentTypes [name="PaymentDesc"]').focus();
+                return false;
+            }
+            if ($('#frmAddPaymentTypes [name="cbPoolBudget"]').val() === "true") {
+                if ($('#frmAddPaymentTypes [name="PaymentType"]').val() !== "N") {
+                    if ($('#frmAddPaymentTypes [name="prefix-wbs"]').val() === "") {
+                        showModalWarning('กรุณาระบุ WBS');
+                        $('#frmAddPaymentTypes [name="prefix-wbs"]').focus();
+                        return false;
+                    }
+                }
+            }
+            if ($('#frmAddPaymentTypes [name="GLAccount"]').val() === "") {
+                if ($('#frmAddPaymentTypes [name="PaymentType"]').val() !== "N") {
+                    showModalWarning('กรุณาระบุ GL Account');
+                    $('#frmAddPaymentTypes [name="GLAccount"]').focus();
+                    return false;
+                }
+            }
+             let paymentId = $('#frmAddPaymentTypes [name="PaymentId"]').val();
+             let payTypeId = $('#frmAddPaymentTypes [name="PaymentType"]').val();
+             let payTypeDesc = $('#frmAddPaymentTypes [name="PaymentDesc"]').val().replace(/\s/g, "");
+             let hcSystemId = $('#frmAddPaymentTypes [name="HcSystemsId"]').val();
+             let dupplicate = arrData.filter(e => e.paymentType === payTypeId && e.paymentDesc.replace(/\s/g, "") === payTypeDesc.replace(/\s/g, "")
+                 && e.hcSystemsId === hcSystemId && e.paymentId !== Number(paymentId));
+             if (dupplicate.length > 0) {
+                 showModalWarning('ไม่สามารถเพิ่มประเภทค่าใช้จ่ายซ้ำกันได้');
+             } else {
+                 onClickSubmitPaymentConfig();
+             }
+
+        });
+        $('#searchHCType').change(function () {
+            onSearchPaymentConfig();
+        });
+
+        async function initDropdownHCType() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetHcSystemList`, response => {
+               // console.log(response);
+                if (response) {
+                    var ddlHCType = $('#searchHCType');
+                    var ddlHcSystemsId = $('#HcSystemsId');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddlHCType.empty().html(option);
+                    ddlHcSystemsId.empty().html(option);
+                }
+                $('#searchHCType').val("1").trigger('change');
+            });
+
+
+        }
+        async function initDropdownPaymentType() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetPaymentTypeList`, response => {
+                if (response) {
+                    var ddlPaymentType = $('#PaymentType');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.code}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddlPaymentType.empty().html(option);
+
+                }
+            });
+        }
+        async function onSearchPaymentConfig() {
+            arrUpdateMulti = [];
+            arrData = [];
+            table.rows().remove().draw();
+            var data = {
+                PaymentType: btnPayTypeValue,
+                isActive: btnStatusValue,
+                HcSystemsId: $('#searchHCType').val() === "" ? "0" : $('#searchHCType').val()
+            }
+
+            await page.loading();
+            await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/GetPaymentConfigList`, data, response => {
+               console.log(response);
+
+                if (response) {
+                    arrData = response.data;
+                    if (response.data.length == 0) {
+
+                    } else {
+                        $.each(response.data, function (index, value) {
+                            value.index = index;
+                            table.row.add([
+                                ` ${index + 1}`,
+                                `${value.paymentTypeDesc}`,
+                                value,
+                                `${value.glAccount}`,
+                                value,
+                                value,
+                                value,
+                                value,
+                                value,
+                                value,
+                                `${value.hcSystemDesc}`
+                            ]).draw();
+
+                        });
+                    }
+                    page.loaded();
+                }
+                page.loaded();
+            });
+        }
+        async function onInsertPaymentConfig() {
+            let prefixWbs = $('#frmAddPaymentTypes [name="prefix-wbs"]').val() === '' ? '0000' : $('#frmAddPaymentTypes [name="prefix-wbs"]').val();
+            let glAcc = $('#frmAddPaymentTypes [name="GLAccount"]').val();
+            let wbsAcc = $('#frmAddPaymentTypes [name="wbs-acc"]').val() === '' ? glAcc : $('#frmAddPaymentTypes [name="wbs-acc"]').val()
+            let paymentType = $('#frmAddPaymentTypes [name="PaymentType"]').val();
+            let wbs = paymentType === 'N' ?  null : prefixWbs + '-' + wbsAcc;
+            var data = {
+                PaymentId: 0,
+                hcSystems: $('#frmAddPaymentTypes [name="HcSystemsId"]').val(),
+                paymentType: $('#frmAddPaymentTypes [name="PaymentType"]').val(),
+                paymentDesc: $('#frmAddPaymentTypes [name="PaymentDesc"]').val(),
+                glAccount: glAcc,
+                warrantyExp: $('#frmAddPaymentTypes [name="cbWarrantyExpired"]').val(),
+                retention: $('#frmAddPaymentTypes [name="cbRetention"]').val(),
+                poolBudget: $('#frmAddPaymentTypes [name="cbPoolBudget"]').val(),
+                holdingTax: $('#frmAddPaymentTypes [name="cbWHoldingTax"]').val(),
+                isActive: $('#frmAddPaymentTypes [name="cbStatus"]').val(),
+                wbs: wbs,
+                userLogin: '@UserDetail.CodeName',
+
+            }
+
+            await page.loading();
+            await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/InsertPaymentConfig`, data, response => {
+                //console.log(response);
+                if (response) {
+                    if (response.data.status) {
+                        page.loaded();
+                        showModalSuccess(response.data.msg);
+                        $('#modalPaymentTypesForm').modal('hide');
+                        clearModalAddPaymentConfig();
+                        onSearchPaymentConfig();
+                    } else {
+                        page.loaded();
+                        showModalWarning(response.data.msg);
+
+                    }
+                } else {
+                    page.loaded();
+                    showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                }
+            });
+        }
+        async function onUpdatePaymentConfig() {
+            let arrUpdate = [];
+            let glAcc = $('#frmAddPaymentTypes [name="GLAccount"]').val();
+            let prefixWbs = $('#frmAddPaymentTypes [name="prefix-wbs"]').val() === '' ? '0000' : $('#frmAddPaymentTypes [name="prefix-wbs"]').val();
+            let wbsAcc = $('#frmAddPaymentTypes [name="wbs-acc"]').val() === '' ? glAcc : $('#frmAddPaymentTypes [name="wbs-acc"]').val()
+            let paymentType = $('#frmAddPaymentTypes [name="PaymentType"]').val();
+            let wbs = paymentType === 'N' ? null : prefixWbs + '-' + wbsAcc;
+            //wbs-acc
+            var data = {
+                PaymentId: $('#frmAddPaymentTypes [name="PaymentId"]').val(),
+                hcSystems: $('#frmAddPaymentTypes [name="HcSystemsId"]').val(),
+                paymentType: $('#frmAddPaymentTypes [name="PaymentType"]').val(),
+                paymentDesc: $('#frmAddPaymentTypes [name="PaymentDesc"]').val(),
+                glAccount: glAcc,
+                warrantyExp: $('#frmAddPaymentTypes [name="cbWarrantyExpired"]').val(),
+                retention: $('#frmAddPaymentTypes [name="cbRetention"]').val(),
+                poolBudget: $('#frmAddPaymentTypes [name="cbPoolBudget"]').val(),
+                holdingTax: $('#frmAddPaymentTypes [name="cbWHoldingTax"]').val(),
+                isActive: $('#frmAddPaymentTypes [name="cbStatus"]').val(),
+                wbs : wbs,
+                userLogin: '@UserDetail.CodeName',
+
+            }
+            arrUpdate.push(data);
+            //console.log(arrUpdate);
+            await page.loading();
+            await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/UpdatePaymentConfig`, arrUpdate, response => {
+              //  console.log(response);
+                if (response) {
+                    if (response.data.status) {
+                        page.loaded();
+                        showModalSuccess(response.data.msg);
+                        $('#modalPaymentTypesForm').modal('hide');
+                        clearModalAddPaymentConfig();
+                        onSearchPaymentConfig();
+                    } else {
+                        page.loaded();
+                        showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+
+                    }
+                } else {
+                    page.loaded();
+                    showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                }
+            });
+        }
+        async function onClickUpdatePaymentTypeAll() {
+            console.log(arrUpdateMulti);
+            if (arrUpdateMulti.length > 0) {
+                await page.loading();
+                await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/UpdatePaymentConfig`, arrUpdateMulti, response => {
+                   // console.log(response);
+                    if (response) {
+                        if (response.data.status) {
+                            page.loaded();
+                            showModalSuccess(response.data.msg);
+                            $('#modalPaymentTypesForm').modal('hide');
+                            clearModalAddPaymentConfig();
+                            onSearchPaymentConfig();
+                        } else {
+                            page.loaded();
+                            showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+
+                        }
+                    } else {
+                        page.loaded();
+                        showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                    }
+                });
+            }
+
+        }
+
+        function filterByVisibility(element) {
+            if (element.name === 'payType-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=payType-disable]').removeClass('btn-danger');
+                    $('button[name=payType-disable]').addClass('btn-default');
+                    $('button[name=payType-all]').removeClass('btn-info');
+                    $('button[name=payType-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnPayTypeValue = 'Y';
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnPayTypeValue = null;
+                }
+            } else if (element.name === 'payType-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=payType-visible]').removeClass('btn-success');
+                    $('button[name=payType-visible]').addClass('btn-default');
+                    $('button[name=payType-all]').removeClass('btn-info');
+                    $('button[name=payType-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnPayTypeValue = 'N';
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnPayTypeValue = null;
+                }
+            } else if (element.name === 'payType-all') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=payType-visible]').removeClass('btn-success');
+                    $('button[name=payType-visible]').addClass('btn-default');
+                    $('button[name=payType-disable]').removeClass('btn-danger');
+                    $('button[name=payType-disable]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-info');
+                    btnPayTypeValue = null;
+                } else {
+                    $(element).removeClass('btn-info');
+                    $(element).addClass('btn-default');
+                    btnPayTypeValue = null;
+                }
+            } else if (element.name === 'status-all') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=status-visible]').removeClass('btn-success');
+                    $('button[name=status-visible]').addClass('btn-default');
+                    $('button[name=status-disable]').removeClass('btn-danger');
+                    $('button[name=status-disable]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-info');
+                    btnStatusValue = null;
+                } else {
+                    $(element).removeClass('btn-info');
+                    $(element).addClass('btn-default');
+                    btnStatusValue = null;
+                }
+            } else if (element.name === 'status-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=status-visible]').removeClass('btn-success');
+                    $('button[name=status-visible]').addClass('btn-default');
+                    $('button[name=status-all]').removeClass('btn-info');
+                    $('button[name=status-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnStatusValue = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnStatusValue = null;
+                }
+            } else if (element.name === 'status-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=status-disable]').removeClass('btn-danger');
+                    $('button[name=status-disable]').addClass('btn-default');
+                    $('button[name=status-all]').removeClass('btn-info');
+                    $('button[name=status-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnStatusValue = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnStatusValue = null;
+                }
+            }
+            onSearchPaymentConfig();
+
+        }
+        function onClickEditPaymentType(value) {
+
+            const row = arrData.filter(e => e.paymentId === Number(value));
+            $('#frmAddPaymentTypes [name="frmPaymentTypesEvent"]').val('edit').trigger('change');
+            $('#frmAddPaymentTypes [name="titleForm"]').text('แก้ไขประเภทค่าใช้จ่าย').trigger('change');
+            if (row.length > 0) {
+                $('#frmAddPaymentTypes [name="PaymentId"]').val(row[0].paymentId).trigger('change');
+                $('#frmAddPaymentTypes [name="HcSystemsId"]').val(row[0].hcSystemsId.toString()).trigger('change.select2');
+                $('#frmAddPaymentTypes [name="PaymentType"]').val(row[0].paymentType).trigger('change');
+                $('#frmAddPaymentTypes [name="PaymentDesc"]').val(row[0].paymentDesc).trigger('change');
+                $('#frmAddPaymentTypes [name="GLAccount"]').val(row[0].glAccount).trigger('change');
+                $('#frmAddPaymentTypes [name="wbs-acc"]').val(row[0].glAccount).trigger('change');
+                $('#frmAddPaymentTypes [name="cbWarrantyExpired"]').val(row[0].warrantyExpired.toString()).trigger('change');
+                if (row[0].warrantyExpired) {
+                    $('#frmAddPaymentTypes [name="cbWarrantyExpired"]').prop("checked", true);
+                } else {
+                    $('#frmAddPaymentTypes [name="cbWarrantyExpired"]').prop("checked", false);
+                }
+
+                $('#frmAddPaymentTypes [name="cbRetention"]').val(row[0].retention.toString()).trigger('change');
+                if (row[0].retention) {
+                    $('#frmAddPaymentTypes [name="cbRetention"]').prop("checked", true);
+                } else {
+                    $('#frmAddPaymentTypes [name="cbRetention"]').prop("checked", false);
+                }
+
+                $('#frmAddPaymentTypes [name="cbPoolBudget"]').val(row[0].poolBudget.toString()).trigger('change');
+                if (row[0].poolBudget) {
+                    $('#frmAddPaymentTypes [name="cbPoolBudget"]').prop("checked", true);
+                    $('#reqwbs').css('display', 'inline');
+                } else {
+                    $('#frmAddPaymentTypes [name="cbPoolBudget"]').prop("checked", false);
+                    $('#reqwbs').css('display', 'none');
+                }
+
+
+                $('#frmAddPaymentTypes [name="cbWHoldingTax"]').val(row[0].holdingTax.toString()).trigger('change');
+                if (row[0].holdingTax) {
+                    $('#frmAddPaymentTypes [name="cbWHoldingTax"]').prop("checked", true);
+                } else {
+                    $('#frmAddPaymentTypes [name="cbWHoldingTax"]').prop("checked", false);
+                }
+
+                $('#frmAddPaymentTypes [name="cbStatus"]').val(row[0].active.toString()).trigger('change');
+                if (row[0].active) {
+                    $('#frmAddPaymentTypes [name="cbStatus"]').prop("checked", true);
+                } else {
+                    $('#frmAddPaymentTypes [name="cbStatus"]').prop("checked", false);
+                }
+
+                if (row[0].wbs.toString() !== "") {
+                    let sWbs = row[0].wbs.toString();
+                    $('#frmAddPaymentTypes [name="prefix-wbs"]').val(sWbs.split('-')[0]).trigger('change');
+                    if (sWbs.indexOf('-') > -1) {
+                        $('#frmAddPaymentTypes [name="wbs-acc"]').val(sWbs.substring(sWbs.indexOf('-') + 1)).trigger('change');
+                    }
+
+                } else {
+                    $('#frmAddPaymentTypes [name="prefix-wbs"]').val('0000').trigger('change');
+
+                }
+                $('#modalPaymentTypesForm').modal({ backdrop: 'static', keyboard: false, show: true });
+            }
+        }
+        function onClickSubmitPaymentConfig() {
+            let action = $('#frmAddPaymentTypes [name="frmPaymentTypesEvent"]').val();
+           // console.log(action);
+            if (action === 'edit') {
+                onUpdatePaymentConfig();
+            } else {
+                onInsertPaymentConfig();
+            }
+        }
+
+        function updatePaymentConfig(id, ele) {
+
+            $(ele).val(ele.checked ? "true" : "false");
+            var data = {
+                       PaymentId: id,
+                       hcSystems: null,
+                       paymentType: null,
+                       paymentDesc: null,
+                       glAccount: null,
+                       wbs: $(ele).closest("tr").find('td:eq(4) span').text(),
+                       warrantyExp: $(ele).closest("tr").find('td:eq(5) input').val(),
+                       retention:  $(ele).closest("tr").find('td:eq(6) input').val(),
+                       poolBudget: $(ele).closest("tr").find('td:eq(7) input').val(),
+                       holdingTax: $(ele).closest("tr").find('td:eq(8) input').val(),
+                       isActive: $(ele).closest("tr").find('td:eq(9) input').val(),
+                       userLogin: '@UserDetail.CodeName',
+
+                }
+                onSubmitDataChange(id, data);
+
+        }
+        function updateStatusPoolBudgetConfig(id,ele) {
+
+            $(ele).val(ele.checked ? "true" : "false");
+            $(this).attr("checked", $(ele).val());
+            let glAccount = $(ele).closest("tr").find('td:eq(3)').text();
+            let strWbs = $(ele).closest("tr").find('td:eq(4)').text();
+           // console.log(strWbs);
+            let wbs = strWbs === "" ? "0000" : strWbs.split('-')[0];
+            let wbsAcc =  glAccount;
+            let chkOldwbs = arrData.filter(e => e.paymentId === id);
+            console.log(chkOldwbs);
+            if (chkOldwbs.length > 0) {
+                if (chkOldwbs[0].wbs.indexOf('-') > -1) {
+                    wbsAcc = chkOldwbs[0].wbs.toString().substring(chkOldwbs[0].wbs.indexOf('-') + 1);
+                } else {
+                    wbsAcc = "";
+                }
+
+            }
+
+           // console.log(ele.checked);
+            if (chkOldwbs.length > 0) {
+                if (chkOldwbs[0].paymentType === "Y") {
+                    if (ele.checked) {
+
+                        $(`#tbwbs_${id}`).popover({
+                            placement: 'auto',
+                            title: 'กรอก WBS',
+                            html: true,
+                            content: $('#popover-content').html(),
+                        }).popover('show');
+
+                        $(`#tbwbs_${id}`).on('shown.bs.popover', function () {
+                            var popover = $('#' + $(this).attr('aria-describedby'));
+
+                            $(".popover #name").val(wbs);
+                            $(".popover #glaccount").val(wbsAcc);
+
+                            popover.one('click', '#save', {
+                                '$select': popover.find('input'),
+                                '$input': $(this),
+                            }, function (event) {
+                                // `event.data.$select` === `popover.find('select')`, the <select> in the popover
+                                var selected = $(".popover #name").val();
+                                var selected2 = $(".popover #glaccount").val();
+                                selected = selected2 !== "" ? selected + "-" + selected2 : glAccount === "" ? selected : selected + "-" + glAccount;
+                                event.data.$input
+                                    .text(selected)// set the value of <input>
+                                    .popover('hide');// hide the popover
+
+                                var data = {
+                                    PaymentId: id,
+                                    hcSystems: null,
+                                    paymentType: null,
+                                    paymentDesc: null,
+                                    glAccount: null,
+                                    wbs: $(ele).closest("tr").find('td:eq(4) span').text(),
+                                    warrantyExp: $(ele).closest("tr").find('td:eq(5) input').val(),
+                                    retention: $(ele).closest("tr").find('td:eq(6) input').val(),
+                                    poolBudget: $(ele).closest("tr").find('td:eq(7) input').val(),
+                                    holdingTax: $(ele).closest("tr").find('td:eq(8) input').val(),
+                                    isActive: $(ele).closest("tr").find('td:eq(9) input').val(),
+                                    userLogin: '@UserDetail.CodeName',
+
+                                }
+                                onSubmitDataChange(id, data);
+                            });
+
+                        });
+                    } else {
+
+                        $(`#tbwbs_${id}`).popover('hide');
+                        let pWbs = "0000";
+                        let pWbsAcc = wbsAcc;
+
+                        pWbs = pWbsAcc === "" ? pWbs : pWbs + "-" + pWbsAcc;
+                        $(ele).closest("tr").find('td:eq(4) span').text(pWbs);
+                        var data = {
+                            PaymentId: id,
+                            hcSystems: null,
+                            paymentType: null,
+                            paymentDesc: null,
+                            glAccount: null,
+                            wbs: $(ele).closest("tr").find('td:eq(4) span').text(),
+                            warrantyExp: $(ele).closest("tr").find('td:eq(5) input').val(),
+                            retention: $(ele).closest("tr").find('td:eq(6) input').val(),
+                            poolBudget: $(ele).closest("tr").find('td:eq(7) input').val(),
+                            holdingTax: $(ele).closest("tr").find('td:eq(8) input').val(),
+                            isActive: $(ele).closest("tr").find('td:eq(9) input').val(),
+                            userLogin: '@UserDetail.CodeName',
+
+                        }
+                        onSubmitDataChange(id, data);
+                    }
+
+                } else {
+                    var data = {
+                                    PaymentId: id,
+                                    hcSystems: null,
+                                    paymentType: null,
+                                    paymentDesc: null,
+                                    glAccount: null,
+                                    wbs: $(ele).closest("tr").find('td:eq(4) span').text(),
+                                    warrantyExp: $(ele).closest("tr").find('td:eq(5) input').val(),
+                                    retention: $(ele).closest("tr").find('td:eq(6) input').val(),
+                                    poolBudget: $(ele).closest("tr").find('td:eq(7) input').val(),
+                                    holdingTax: $(ele).closest("tr").find('td:eq(8) input').val(),
+                                    isActive: $(ele).closest("tr").find('td:eq(9) input').val(),
+                                    userLogin: '@UserDetail.CodeName',
+
+                                }
+                         onSubmitDataChange(id, data);
+                }
+            } else {
+                var data = {
+                               PaymentId: id,
+                               hcSystems: null,
+                               paymentType: null,
+                               paymentDesc: null,
+                               glAccount: null,
+                               wbs: $(ele).closest("tr").find('td:eq(4) span').text(),
+                               warrantyExp: $(ele).closest("tr").find('td:eq(5) input').val(),
+                               retention: $(ele).closest("tr").find('td:eq(6) input').val(),
+                               poolBudget: $(ele).closest("tr").find('td:eq(7) input').val(),
+                               holdingTax: $(ele).closest("tr").find('td:eq(8) input').val(),
+                               isActive: $(ele).closest("tr").find('td:eq(9) input').val(),
+                               userLogin: '@UserDetail.CodeName',
+
+                             }
+                         onSubmitDataChange(id, data);
+            }
+
+        }
+        function onSubmitDataChange(id, data) {
+            let index = arrUpdateMulti.findIndex(e => e.PaymentId === id);
+
+            if (index !== -1) {
+                arrUpdateMulti.splice(index, 1);
+            }
+            arrUpdateMulti.push(data);
+            console.log(arrUpdateMulti);
+        }
+        function onChangeStatus(ele) {
+            $(ele).val(ele.checked ? "true" : "false");
+            if (ele.name === 'cbPoolBudget') {
+                if (ele.checked) {
+                    $('#reqwbs').css('display', 'inline');
+                    $('#frmAddPaymentTypes [name="prefix-wbs"]').val('');
+
+                }
+                else {
+                    $('#reqwbs').css('display', 'none');
+                    $('#frmAddPaymentTypes [name="prefix-wbs"]').val('0000');
+
+                }
+
+            }
+
+        }
+        function clearModalAddPaymentConfig() {
+            $('#frmAddPaymentTypes [name="titleForm"]').text('เพิ่มประเภทค่าใช้จ่าย').trigger('change');
+            $('#reqwbs').css('display', 'none');
+            $('#frmAddPaymentTypes [name="PaymentId"]').val('').trigger('change');
+            $('#frmAddPaymentTypes [name="HcSystemsId"]').val('1').trigger('change.select2');
+            $('#frmAddPaymentTypes [name="PaymentType"]').val('Y').trigger('change.select2');
+            $('#frmAddPaymentTypes [name="PaymentDesc"]').val('').trigger('change');
+            $('#frmAddPaymentTypes [name="GLAccount"]').val('').trigger('change');
+            $('#frmAddPaymentTypes [name="cbWarrantyExpired"]').val('false').trigger('change');
+            $('#frmAddPaymentTypes [name="cbWarrantyExpired"]').prop("checked", false);
+            $('#frmAddPaymentTypes [name="cbRetention"]').val('false').trigger('change');
+            $('#frmAddPaymentTypes [name="cbRetention"]').prop("checked", false);
+            $('#frmAddPaymentTypes [name="cbPoolBudget"]').val('false').trigger('change');
+            $('#frmAddPaymentTypes [name="cbPoolBudget"]').prop("checked", false);
+            $('#frmAddPaymentTypes [name="cbWHoldingTax"]').val('false').trigger('change');
+            $('#frmAddPaymentTypes [name="cbWHoldingTax"]').prop("checked", false);
+            $('#frmAddPaymentTypes [name="cbStatus"]').val('true').trigger('change');
+            $('#frmAddPaymentTypes [name="cbStatus"]').prop("checked", true);
+            $('#frmAddPaymentTypes [name="prefix-wbs"]').val('').trigger('change');
+            $('#frmAddPaymentTypes [name="wbs-acc"]').val('').trigger('change');
+        }
+        function showModalWarning(msg) {
+            $('#modalWarning').modal('show');
+            $('#lbTxtWarning').text(msg);
+        }
+        function showModalSuccess(msg) {
+            $('#modalInsertSuccess').modal('show');
+            $('#lbTxtSuccess').text(msg);
+        }
+        function validateFormPaymentType() {
+        }
+        function noPermissionAlert() {
+            modalWaring('คุณไม่มีสิทธิในการเข้าถึงหน้านี้ ขออภัยครับ');
+            $('#warningModal').on('hidden.bs.modal', function () {
+                window.location.href = '@Url.Content("~/")';
+            });
+        }
+
+    </script>
+}
+
+
+
+

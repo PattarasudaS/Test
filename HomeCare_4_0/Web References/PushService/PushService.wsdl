@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="testsend">
+        <s:complexType />
+      </s:element>
+      <s:element name="testsendResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="SendNotification">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="tns:PushData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PushData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="process" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="intno" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="gsber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="dept" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cnttype" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="doctype" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="intitem" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SendNotificationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="result" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="testsendSoapIn">
+    <wsdl:part name="parameters" element="tns:testsend" />
+  </wsdl:message>
+  <wsdl:message name="testsendSoapOut">
+    <wsdl:part name="parameters" element="tns:testsendResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendNotificationSoapIn">
+    <wsdl:part name="parameters" element="tns:SendNotification" />
+  </wsdl:message>
+  <wsdl:message name="SendNotificationSoapOut">
+    <wsdl:part name="parameters" element="tns:SendNotificationResponse" />
+  </wsdl:message>
+  <wsdl:message name="testsendHttpGetIn" />
+  <wsdl:message name="testsendHttpGetOut" />
+  <wsdl:message name="testsendHttpPostIn" />
+  <wsdl:message name="testsendHttpPostOut" />
+  <wsdl:portType name="PushServiceSoap">
+    <wsdl:operation name="testsend">
+      <wsdl:input message="tns:testsendSoapIn" />
+      <wsdl:output message="tns:testsendSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SendNotification">
+      <wsdl:input message="tns:SendNotificationSoapIn" />
+      <wsdl:output message="tns:SendNotificationSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="PushServiceHttpGet">
+    <wsdl:operation name="testsend">
+      <wsdl:input message="tns:testsendHttpGetIn" />
+      <wsdl:output message="tns:testsendHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="PushServiceHttpPost">
+    <wsdl:operation name="testsend">
+      <wsdl:input message="tns:testsendHttpPostIn" />
+      <wsdl:output message="tns:testsendHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PushServiceSoap" type="tns:PushServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="testsend">
+      <soap:operation soapAction="http://tempuri.org/testsend" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendNotification">
+      <soap:operation soapAction="http://tempuri.org/SendNotification" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PushServiceSoap12" type="tns:PushServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="testsend">
+      <soap12:operation soapAction="http://tempuri.org/testsend" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendNotification">
+      <soap12:operation soapAction="http://tempuri.org/SendNotification" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PushServiceHttpGet" type="tns:PushServiceHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="testsend">
+      <http:operation location="/testsend" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PushServiceHttpPost" type="tns:PushServiceHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="testsend">
+      <http:operation location="/testsend" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PushService">
+    <wsdl:port name="PushServiceSoap" binding="tns:PushServiceSoap">
+      <soap:address location="http://mobile-dev.sansiri.com/moaserverqas/PushService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="PushServiceSoap12" binding="tns:PushServiceSoap12">
+      <soap12:address location="http://mobile-dev.sansiri.com/moaserverqas/PushService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="PushServiceHttpGet" binding="tns:PushServiceHttpGet">
+      <http:address location="http://mobile-dev.sansiri.com/moaserverqas/PushService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="PushServiceHttpPost" binding="tns:PushServiceHttpPost">
+      <http:address location="http://mobile-dev.sansiri.com/moaserverqas/PushService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

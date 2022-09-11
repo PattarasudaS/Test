@@ -1,0 +1,135 @@
+﻿@model HomeCare_4_0.Models.GuaranteeViewModel
+@using HomeCare_4_0.Common
+@using HomeCare_4_0.ClassLib;
+@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <section class="content">
+
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <!-- /.box -->
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Search Guarantee Information</h3>
+                            <span>
+                                <button id="btnAddGuarantee" class="btn btn-default" onclick="@("window.open('" + @Url.Action("AddGuarantee", "Guarantee") + "/"+Model.ProjectID+"','_blank')");">
+                                    <i class="ace-icon fa fa-plus"></i>
+                                    เพิ่มรายการขอขยายประกัน
+                                </button>
+                            </span>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="tbSearchDetail" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="10%" class="text-center">No</th>
+                                        <th width="20%" class="text-center">แปลง</th>
+                                        <th width="30%" class="text-center">ใบขอขยายประกัน</th>
+                                        <th width="20%" class="text-center">จำนวนที่ขยาย</th>
+                                        <th width="20%" class="text-center">สถานะ</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+
+
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+
+            <!-- /.row -->
+        </section>
+    </div>
+    <div class="hr hr-16"></div>
+
+
+</body>
+</html>
+<script type="text/javascript">
+    $(function () {
+
+        init();
+        InitOverviewDataTable();
+
+        function init() {
+            pleaseWaitDialog();
+            var ProjectID = @Model.ProjectID;
+
+            var jsonObject = {
+                "ProjectID": ProjectID
+            };
+            $.ajax({
+
+                url: "@Url.Action("GetSearchGuarantee", "Guarantee")",
+                type: "POST",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+                    pleaseWaitDialogClose();
+                },
+                success: function (response) {
+                    $("#tbSearchDetail tbody tr").remove();
+                    var ReceiveJobText = "";
+                    var countRow = 0;
+                    jQuery.each(response, function (index, item) {
+
+                        countRow = countRow + 1;
+                        $("#tbSearchDetail tbody").append("<tr></tr>");
+                        $("#tbSearchDetail tbody tr:last").append("<td class=\"text-center\"><label name=\"lblNo\" id=\"lblNo\">" + (countRow) + "</label></td>");
+                        $("#tbSearchDetail tbody tr:last").append("<td class=\"text-left\"><label name=\"lblPLOT\" id=\"lblPLOT\">" + item.PLOT +"</label></td>");
+    
+                        var url ='@Url.Action("ApproveGuarantee", "Guarantee")?unitID=' + item.PLOT_ID+"&DocumentID="+ item.DOCUMENT_ID
+                        $("#tbSearchDetail tbody tr:last").append("<td class=\"text-left\"><a href='" + url + "'><u>" + item.DOCUMENT_NO + "</u></a></td>");
+                        $("#tbSearchDetail tbody tr:last").append("<td class=\"text-left\"><label name=\"lblTIME_EXTEND\" id=\"lblTIME_EXTEND\">" + item.TIME_EXTEND +"</label></td>");
+
+                        if (item.DOCUMENT_STATUS == 'อนุมัติ')
+                            $("#tbSearchDetail tbody tr:last").append("<td class=\"text-left\"><label name=\"lblWORKFLOW_STATUS\" id=\"lblWORKFLOW_STATUS\">" + item.DOCUMENT_STATUS + "</label></td>");
+                        else if (item.DOCUMENT_STATUS == 'ไม่อนุมัติ')
+                            $("#tbSearchDetail tbody tr:last").append("<td class=\"text-left\"><label style=\"color:red\" name=\"lblWORKFLOW_STATUS\" id=\"lblWORKFLOW_STATUS\">" + item.DOCUMENT_STATUS + "</label></td>");
+                        else
+                            $("#tbSearchDetail tbody tr:last").append("<td class=\"text-left\"><label style=\"color:orange\" name=\"lblWORKFLOW_STATUS\" id=\"lblWORKFLOW_STATUS\">" + item.DOCUMENT_STATUS + "</label></td>");
+                    });
+
+                    pleaseWaitDialogClose();
+
+                }
+
+            });
+
+        }
+
+        function InitOverviewDataTable() {
+            oOverviewTable = $('#tbSearchDetail').dataTable(
+            {
+                "bPaginate": false,
+                "bJQueryUI": true,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bSort": false,
+                "bInfo": false,
+                "bAutoWidth": true,
+                "bProcessing": true
+            });
+        }
+
+    });
+</script>

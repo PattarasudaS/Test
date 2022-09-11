@@ -1,0 +1,142 @@
+﻿@model HomeCare_4_0.Models.SearchViewModel
+
+@*<link rel="stylesheet" href="~/Scripts/chosen/docsupport/style.css">
+    <link rel="stylesheet" href="~/Scripts/chosen/docsupport/prism.css">*@
+
+@*<link rel="stylesheet" href="~/Scripts/chosen/chosen.css">
+    <link href="~/Content/css/chosen.css" rel="stylesheet" />*@
+
+@Styles.Render("~/bundles/DropDown_chosen")
+
+@Scripts.Render("~/bundles/jquery_chosen")
+
+<div class="widget widget-nopad">
+    <div class="widget-header">
+        <i class="icon-user"></i>
+        <h3>ค้นหา ข้อมูล</h3>
+    </div>
+    <!-- /widget-header -->
+    <div class="widget-content">
+        <div class="row">
+
+            @using (Html.BeginForm("SearchData", "Tracker"))
+            {
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 PT" style="height:60px;">
+                    <label class="control-label PL_20">โครงการ</label>
+                    <div class="controls PL_20">
+                        @Html.DropDownListFor(m => m.ProJect_ID, ViewData[Cls_HC_Constance.HC_DDL_Project_Authen] as List<SelectListItem>, "Select Project", new { @class = "chosen-select" })
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 PT">
+                    <label class="control-label PL_20">แปลง</label>
+                    <div class="controls PL_20">
+                        @Html.DropDownListFor(m => m.Unit_ID, ViewData[Cls_HC_Constance.HC_DDL_Unit] as List<SelectListItem>, "Select Unit")
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 PT" style="height:60px;">
+                    <label class="control-label PL_20">สถานะใบงาน</label>
+                    <div class="controls PL_20">
+                        @Html.DropDownListFor(m => m.Process_Status_ID, ViewData[@Cls_HC_TM_Lookup_Type.HC_TM_Main_Process] as List<SelectListItem>, "Select Status", new { @class = "chosen-select" })
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 PT">
+                    <label class="control-label PL_20" for="Unit_Address">บ้านเลขที่</label>
+                    <div class="controls PL_20">
+                        @Html.TextBoxFor(m => m.Unit_Address)
+
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 PT">
+                    <label class="control-label PL_20" for="FirstName">ชื่อ</label>
+                    <div class="controls PL_20">
+                        @Html.TextBoxFor(m => m.FirstName)
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 PT">
+                    <label class="control-label PL_20" for="lastname">นามสกุล</label>
+                    <div class="controls PL_20">
+                        @Html.TextBoxFor(m => m.LastName)
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 PT">
+                    <label class="control-label PL_20" for="InformID">รหัสงานซ่อม</label>
+                    <div class="controls PL_20">
+                        @Html.TextBoxFor(m => m.Job_No)
+                    </div>
+                </div>
+
+
+                <div class="col-xs-12 col-sm-6 col-lg-12 PT">
+                    <label class="control-label PL_20" for="InformID"></label>
+                    <div class="controls PL_20 PB_20">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+    <!-- /widget-content -->
+</div>
+<!--<script src="~/Scripts/chosen/chosen.jquery.js" type="text/javascript"></script>
+<script src="~/Scripts/chosen/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>-->
+<script type="text/javascript">
+    var config = {
+        '.chosen-select': {},
+        '.chosen-select-deselect': { allow_single_deselect: true },
+        '.chosen-select-no-single': { disable_search_threshold: 10 },
+        '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+        '.chosen-select-width': { width: "95%" }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+
+    $(function () {
+        //$("[id*=Unit_ID]").chosen();
+
+
+        $('#ProJect_ID').change(function (e) {
+            var ddlProject = $("[id*=ProJect_ID]");
+            var jsonObject = {
+                "ID": ddlProject.val()
+            };
+
+            $.ajax({
+                url: "@Url.Action("GetUnitData", "Tracker")",
+                type: "POST",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+
+                },
+                success: function (response) {
+                    var Jdata = JSON.stringify(response);
+                    //obj = JSON.parse('{"data":[{"Unit_ID":"1","Unit_Code":"1414-1034"},{"Unit_ID":"2","Unit_Code":"1414-1035"}]}');
+                    obj = JSON.parse(Jdata);
+                    var ddlUnit_ID = $("[id*=Unit_ID]");
+                    ddlUnit_ID.empty().append('<option selected="selected" value="0">Please select</option>');
+                    $.each(obj.data, function (Index, Value) {
+                        ddlUnit_ID.append($("<option></option>").val(Value.Unit_ID).html(Value.Unit_Code));
+                    });
+
+                    //$("[id*=Unit_ID]").trigger("chosen:updated");
+                    //ddlUnit_ID.chosen();
+                }
+
+            });
+
+        });
+    });
+
+</script>
+

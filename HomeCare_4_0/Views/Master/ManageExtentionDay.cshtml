@@ -1,0 +1,139 @@
+﻿@using HomeCare_4_0.ClassLib
+@using HomeCare_4_0.Common
+@model HomeCare_4_0.Models.WorkSheetIndexViewModel
+@{
+    ViewBag.Title = "Manage Extention Day";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+@section AddToHead
+{
+    <style type="text/css">
+        fieldset.scheduler-border {
+            border: 1px groove #ddd !important;
+            padding: 0 1.4em 1.4em 1.4em !important;
+            margin: 0 0 1.5em 0 !important;
+            -webkit-box-shadow: 0px 0px 0px 0px #000;
+            box-shadow: 0px 0px 0px 0px #000;
+            border-radius: 13px;
+        }
+        form .error {
+            color: #ff0000;
+            font-weight: 300;
+            font-style: italic;
+            font-size: 1.2rem;
+        }
+    </style>
+
+
+}
+
+
+<div class="row" id="divRetentionPanel">
+    <div class="col-md-12 col-xs-12">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <a data-toggle="collapse" data-target="#Worksheet-Retention">
+                    <i class="fa fa-file"> </i>
+                    <h3 class="box-title"> จัดการ จำนวนวันหักเงินประกันผลงาน </h3>
+                </a>
+            </div>
+            <div class="box-body" id="Worksheet-Retention">
+                <fieldset class="scheduler-border">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                            <label>กรุณากรอกข้อมูลจำนวนวัน หักเงินประกันผลงาน(*) </label>
+                            <form class="form-inline">
+                                <input class="form-control" type="text" id="extentionDay" maxlength="3" style="text-align:right;width: 20%"> <label id="lblextentionDay">วัน</label>
+                            </form>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="btnSaveData"><i class="fa fa-save"> </i>บันทึก</button>
+                </fieldset>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Modal Insert Success -->
+<div class="modal fade" id="modalInsertRoleSuccess" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">ยืนยันการ บันทึก</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa fa-check fa-2x" aria-hidden="true" style="color: #32CD32;"></i>
+                <span id="lbTxtSuccess"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" data-dismiss="modal" onclick="redirectURL()">ตกลง</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+    var checkValidation = false;
+    $(document).ready(async function () {
+
+       await   ajaxGet(`${baseUrl}/homecare/api/v1/Admin/GetRetentionDay`, response => {
+                if (response) {
+                    if (!response.data.length) {
+
+                    } else {
+                        $('#extentionDay').val(response.data[0].retDayDesc);
+                    }
+                }
+            });
+
+    });
+    $('#btnSaveData').click(async function () {
+        var day = $('#extentionDay').val();
+        validateForm();
+        if (checkValidation == false) { return false; }
+
+        if (!confirm("ยืนยันบันทึกข้อมูล ?")) {
+            return false;
+        }
+
+        await ajaxGet(`${baseUrl}/homecare/api/v1/Admin/UpdateRetentionDay?day=${day}&user=${'@UserDetail.CodeName'}"`, response => {
+            if (response) {
+                if (response.data == "Sucess") {
+                    modalSuccess();
+                } else {
+                    modalWaring("บันทึกข้อมูลไม่สำเร็จกรุณาติดต่อผู้ดูแลระบบ!!")
+                }
+            }
+            
+        });
+    });
+
+    $('#extentionDay').bind('keyup blur', function () {
+        var thistext = $(this);
+        thistext.val(thistext.val().replace(/[^0-9]/g, ""));
+        $('.error').hide();
+
+
+    });
+
+    function validateForm() {
+        checkValidation = true;
+        $('.error').hide();
+
+        var day = $('#extentionDay').val();
+
+        if (day < 90) {
+            $('#lblextentionDay').after('<span class="error"> *กรุณาระบุจำนวณวันไม่น้อยกว่า 90* </span>');
+            checkValidation = false;
+        }
+    }
+
+
+</script>

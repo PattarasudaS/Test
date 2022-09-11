@@ -1,0 +1,550 @@
+﻿@model HomeCare_4_0.Models.InformIndexViewModel
+@using HomeCare_4_0.ClassLib;
+@using HomeCare_4_0.Common
+@{
+    ViewBag.Title = "InformAddDetail";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+
+<div class="main">
+    <div class="main-inner">
+        <div class="container">
+
+            <input type="hidden" value=@Model.Data_Customer.ID id="hdCustomerID" />
+            <input type="hidden" value=@Model.Data_Unit.PJ_ID id="hdProjectID" />
+            <input type="hidden" value=@Model.Data_Unit.PJ_Code id="hdProjectCode" />
+            <input type="hidden" value=@Model.Data_Unit.PJ_SSegment id="hdProjectSSegment" />
+            <input type="hidden" value=@Model.Data_Unit.Unit_ID id="hdUnitID" />
+            <input type="hidden" value=@Model.Data_Unit.Unit_Code id="hdUnitCode" />
+
+
+            <h2 class="page-header  text text-blue text-bold"><i class="fa fa-plus"> </i> เพิ่มรายการแจ้งซ่อม @Html.DisplayFor(m => m.Data_Unit.Unit_Code)</h2>
+            <div class="row">
+
+                <div class="col-md-12 col-xs-12">
+                    <div class="box box-default" id="Received-customer">
+                        <div class="box-header with-border">
+                            <a data-toggle="collapse" data-target="#Received-customer-detail">
+                                <i class="fa fa-user"></i>
+                                <h3 class="box-title">
+                                    ข้อมูลลูกค้า
+                                    @if (Model.Data_Customer.VipStatus != null)
+                                    {
+                                        if (Model.Data_Customer.VipStatus.ToLower().Contains("priority"))
+                                        {
+                                            <span class="label label-danger">@Model.Data_Customer.VipStatus</span>
+                                        }
+                                        else
+                                        { <a class="label label-warning DisplaySiriPiority">VIP</a>}
+                                    }
+                                </h3>
+                            </a>
+                            
+                        </div>
+                        <div class="box-body collapse in" id="Received-customer-detail">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">ชื่อ-สกุล</label>
+                                    <div class="controls">
+                                        @Html.DisplayFor(m => m.Data_Customer.FullName, new { @class = "disabled", @readonly = "readonly" })
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">เบอร์ติดต่อ</label>
+                                    <div class="controls">
+                                        @Html.DisplayFor(m => m.Data_Customer.FullTelephone, new { @class = "disabled", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">โครงการ</label>
+                                    <div class="controls">
+                                        @Html.DisplayFor(m => m.Data_Unit.PJ_Name, new { @class = "disabled", @readonly = "readonly" })
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">แปลง</label>
+                                    <div class="controls">
+                                        @Html.DisplayFor(m => m.Data_Unit.Unit_Code_Address, new { @class = "disabled", @readonly = "readonly" })
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">แบบบ้าน</label>
+                                    <div class="controls">
+                                        @Html.DisplayFor(m => m.Data_Unit.Unit_Model, new { @class = "disabled", @readonly = "readonly" })
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">วันที่เริ่มประกัน</label>
+                                    <div class="controls">
+                                        @Html.DisplayFor(m => m.Data_Unit.StartGuaranteeDate, new { @class = "disabled", @readonly = "readonly" })
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">วันที่หมดประกัน</label>
+                                    <div class="controls">
+                                        @Html.DisplayFor(m => m.Data_Unit.EndGuaranteeDate, new { @class = "disabled", @readonly = "readonly" })
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">วันที่ขยายประกัน</label>
+                                    <div class="controls">
+                                        @Html.DisplayFor(m => m.Data_Unit.ExtraGuaranteeDate, new { @class = "disabled", @readonly = "readonly" })
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /.box-body -->
+                </div>
+                <div class="col-md-12 col-xs-12">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <a data-toggle="collapse" data-target="#workOrder_Fixinfomation">
+                                <i class="fa fa-wrench"></i>
+                                <h3 class="box-title">ข้อมูลแจ้งซ่อม</h3>
+                            </a>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body collapse in" id="workOrder_Fixinfomation" hidden>
+
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                    <label class="control-label ">สถานะผู้แจ้ง: </label>
+                                    <div class="controls">
+                                        @Html.DropDownListFor(m => m.Data_DLL_HC_Person_Inform_Status.SelectedItemId, new SelectList(Model.Data_DLL_HC_Person_Inform_Status.Items, "Value", "Text"), new { @class = "form-control", @id = "ddlCusotmerTypeID" })
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+
+                            <div id="divCusotmerType">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label" name="Inform_CustomerName">ชื่อผู้แจ้ง: </label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(m => m.Data_Inform.Inform_CustomerName, new { @class = "form-control", @id = "txtCustomerName", @maxlength = 50 })
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label" name="Inform_CustomerTel">เบอร์ติดต่อ: </label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(m => m.Data_Inform.Inform_CustomerTel, new { @class = "form-control", @id = "txtCustomerTel", @maxlength = 50 })
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                            </div>
+
+                            <div id="divSSegment">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <label class="control-label"> วันที่นัดหมายตรวจสอบ </label>
+                                        <div class="bootstrap-datepicker">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.Data_Inform.Receive_Appointment_Date, new { @class = "form-control datepicker", style = "width:50%;", @id = "txtAPDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <label class="control-label"> เวลา </label>
+                                        <div class="bootstrap-timepicker">
+                                            <div class="input-group" style="width:50%">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.Data_Inform.Receive_Appointment_Time_From, new { @class = "form-control timepicker", @id = "txtAPTimeForm" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <label class="control-label"> ถึง </label>
+                                        <div class="bootstrap-timepicker">
+                                            <div class="input-group" style="width:50%">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.Data_Inform.Receive_Appointment_Time_To, new { @class = "form-control timepicker", @id = "txtAPTimeTO" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <label class="control-label ">สาเหตุวันนัดเกิน 1 วันของโครงการ S Segment: </label>
+                                        <div class="controls">
+                                            @Html.DropDownListFor(m => m.Data_DLL_HC_OverAppointmentDate_Reason.SelectedItemId, new SelectList(Model.Data_DLL_HC_OverAppointmentDate_Reason.Items, "Value", "Text"), new { @class = "form-control", @id = "ddlOverAPDate_ReasonID" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">หมายเหตุการแจ้ง</label>
+                                    @Html.TextBoxFor(m => m.Data_Inform.Inform_Remark, new { @class = "form-control", @id = "txtRemark", @style = "color:red", @maxlength = 255 })
+
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-2">
+                                    <br />
+                                    <input type="checkbox" class="minimal-red" id="chkAgent">
+                                    <label class="control-label text-danger">
+                                        * งานเร่งด่วน
+                                    </label>
+
+
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-2">
+                                    <br />
+                                    <input type="checkbox" class="minimal-red" id="chkChina">
+                                    <label class="control-label text-danger">
+                                        * ลูกค้าจีน
+                                    </label>
+                                </div>
+                            </div>
+                            <br>
+
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <table class="table table-bordered table-hover" id="InformTable">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center col-sm-1">
+                                                    No.
+                                                </th>
+                                                <th class="text-center col-sm-4">
+                                                    หมวดงาน
+                                                </th>
+                                                <th class="text-center">
+                                                    รายละเอียดการแจ้ง
+                                                </th>
+                                                <th class="text-center">
+                                                    หมายเหตุการแจ้ง
+                                                </th>
+                                                <th class="text-center col-sm-1">
+
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for (var i = 0; i < Model.Data_Inform_Item_List.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td align="center">
+                                                        <p type="text" id="No" name="No_@i">@(i + 1)</p>
+                                                    </td>
+                                                    <td>
+                                                        @Html.DropDownListFor(m => Model.Data_Inform_Item_List[i].InformItem_Guarantee_ID, new SelectList(Model.Data_DLL_HC_Guarantee.Items, "Value", "Text", 0), new { @class = "form-control", @id = "InformItem_Guarantee_ID" })
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextAreaFor(m => Model.Data_Inform_Item_List[i].InformItem_Detail, new { @class = "form-control", @id = "InformItem_Detail", @maxlength = 512 })
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextAreaFor(m => Model.Data_Inform_Item_List[i].InformItem_Remark, new { @class = "form-control", @id = "InformItem_Remark", @maxlength = 512 })
+                                                    </td>
+                                                    <td>
+                                                        <span class='fa fa-times addBtnRemove' id='addBtnRemove'></span>
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                        <tfoot>
+
+
+                                        <tfoot>
+                                            <tr>
+
+                                                <th class="text-right" colspan="5">
+                                                    <span class="glyphicon glyphicon-plus addBtn" id="addBtn"></span>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <button type="button" class="btn btn-primary" id="btnsentInform">ส่งคำขอบริการ</button>
+            </div>
+
+        </div>
+        <!-- /container -->
+
+
+    </div>
+    <!-- /main-inner -->
+    @* Modal Alert Siri Piority *@
+    @{Html.RenderPartial("_DisplaySiriPiority");}
+</div>
+<!-- /main -->
+
+
+<script type="text/javascript">
+    var baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+    $(document).ready(function () {
+
+        // datepicker
+        $('.datepicker').datepicker(
+            { autoclose: true,
+                format: 'dd/mm/yyyy'  });
+
+        $(".timepicker").timepicker({
+            showInputs: false,
+            showMeridian: false
+        });
+
+        $(".DisplaySiriPiority").on('click', function () {
+
+            $('#modalDisplaySiriPiority').modal('show');
+
+        });
+
+        $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+            checkboxClass: 'icheckbox_minimal-red',
+            radioClass: 'iradio_minimal-red'
+        });
+
+
+        // Default
+        $("#divCusotmerType").hide();
+        if ($("#hdProjectSSegment").val() != "1"){  $("#divSSegment").hide(); }
+
+
+        // สถานะผู้แจ้ง
+        $("#ddlCusotmerTypeID").on("change", function () {
+            if ($("#ddlCusotmerTypeID").val() == "1") {
+                $("#divCusotmerType").hide();
+            }
+            else {
+                $("#divCusotmerType").show();
+            }
+
+        });
+
+
+        $(".addBtnRemove").on('click', function () {
+            $(this).closest('tr').remove();
+
+        });
+
+        //Btn plus AddRow For AddReceiveTable
+        $('.addBtn').on('click', function () {
+            addTableRow();
+        });
+
+
+        $('#btnsentInform').on('click', function () 
+        {
+            if ($("#ddlCusotmerTypeID").val() != "1") {
+                var CustomerName = $("#txtCustomerName").val();
+                var CustomerTel = $("#txtCustomerTel").val();
+
+                if (CustomerName == "" || CustomerTel == "") {
+                    modalWaring("กรุณาระบุ ชื่อผู้แจ้ง หรือ เบอร์ติดต่อให้ครบ");
+                    return;
+                }
+            }
+
+            if ($("#hdProjectSSegment").val() == "1")
+            {
+                var APDate = $("#txtAPDate").val();
+                var APTimeForm = $("#txtAPTimeForm").val();
+                var APTimeTO = $("#txtAPTimeTO").val();
+                var ddlOverAPDate_ReasonID = $("#ddlOverAPDate_ReasonID").val();
+                var Day = new Date();
+                var ToDay = new Date(Day.getFullYear(), (Day.getMonth()), Day.getDate());
+                var TheDay = new Date(APDate.substring(6,10), APDate.substring(3,5)-1, APDate.substring(0,2));
+                var DueDay = new Date(Day.getFullYear(), (Day.getMonth()), Day.getDate());
+                DueDay.setDate(DueDay.getDate() + 1);
+
+                if(APDate == "" || APTimeForm == "" || APTimeTO == "")
+                {
+                    modalWaring("กรุณาระบุ วันที่นัดหมายตรวจสอบ");
+                    return false;
+                }else if (DueDay < TheDay && ddlOverAPDate_ReasonID == 0)
+                {
+                    modalWaring("กรุณาระบุ สาเหตุวันที่นัดหมายตรวจสอบเกิน 1 วันของโครงการ S Segment");
+                    return false;
+                }else if(ToDay > TheDay)
+                {
+                    modalWaring("กรุณาระบุ วันที่นัดหมายตรวจสอบมากกว่าหรือเท่ากับวันปัจจุบัน");
+                    return;
+                }else if((APTimeForm > APTimeTO || APTimeForm == APTimeTO))
+                {
+                    modalWaring("กรุณาระบุ เวลานัดหมายตรวจสอบสิ้นสุดมากกว่่าเวลาเริ่มต้น");
+                    return;
+                }
+
+            }
+
+            var GuaranteeID;
+            var Detail;
+            var Remark;
+            var Data = 0;
+            $("#InformTable tbody tr").each(function () {
+                GuaranteeID = $(this).find("#InformItem_Guarantee_ID").val()
+                Detail = $(this).find("#InformItem_Detail").val()
+                if ((GuaranteeID == 0 && Detail != "") || (GuaranteeID != 0 && Detail == "")) {
+                    modalWaring("กรุณาระบุ ข้อมูลหมวดงานหรือรายละเอียดการแจ้ง ให้ครบถ้วน");
+                    return;
+                }
+
+                if (GuaranteeID != 0 && Detail != "") {
+                    Data = Data + 1;
+                }
+
+
+            });
+
+            if (Data == 0) {
+                modalWaring("กรุณาระบุ กรอกข้อมูลอย่างน้อย 1 รายการ");
+                return;
+            }
+
+
+            var listItem = [];
+
+            $("#InformTable tbody tr").each(function () {
+                GuaranteeID = $(this).find("#InformItem_Guarantee_ID").val()
+                if (GuaranteeID != "0") {
+                    Detail = $(this).find("#InformItem_Detail").val()
+                    Remark = $(this).find("#InformItem_Remark").val()
+                    listItem.push(GuaranteeID + "|" + Detail + "|" + Remark);
+                }
+            });
+
+            var values = {
+                CustomerID: $("#hdCustomerID").val(),
+                CustomerName: $("#txtCustomerName").val(),
+                CustomerTypeID: $("#ddlCusotmerTypeID").val(),
+                CustomerTel: $("#txtCustomerTel").val(),
+
+                Receive_AppointmentDate: APDate ? APDate : null,
+                Receive_AppointmentTime_From: APTimeForm ? APTimeForm : null,
+                Receive_AppointmentTime_To: APTimeTO ? APTimeTO : null,
+                ddlOverAPDate_ReasonID: ddlOverAPDate_ReasonID ? ddlOverAPDate_ReasonID : null,
+
+                Remark: $("#txtRemark").val(),
+                UnitID: $("#hdUnitID").val(),
+                UnitCode: $("#hdUnitCode").val().trim(),
+                ProjectID: $("#hdProjectID").val(),
+                ProjectCode: $("#hdProjectCode").val().trim(),
+                listItem: listItem,
+                flagAgent: $("#chkAgent").is(':checked'),
+                flagChina: $("#chkChina").is(':checked'),
+                Username: "@UserDetail.CodeName"
+            }
+            //console.log(values);
+            addInfrom(values);
+
+        });
+
+        function addInfrom(values) {
+            
+            var ProjectID = $("#hdProjectID").val();
+            var UnitID = $("#hdUnitID").val();
+            pleaseWaitDialog();
+            $.ajax({
+                url: '@Url.Action("insertInform", "Inform")',
+                type: 'POST',
+                data: values,
+                traditional: true,
+                success: function (data) {
+                    pleaseWaitDialogClose();
+
+                    if (data) {
+                        window.location = '@Url.Action("InformSave","Inform")?projectID=' + ProjectID + '&unitCode=' + UnitID
+                    }
+                },
+                error: function (data) {
+
+                },
+            });
+        }
+
+        function addInfrom2(values) {
+
+            var ProjectID = $("#hdProjectID").val();
+            var UnitID = $("#hdUnitID").val();
+
+            pleaseWaitDialog();
+
+		    ajaxPost(baseUrl + '/homecare/api/v1/Receive/InWarranty', values, function (response) {
+		        if (response && response.statusCode === 201) {
+                    pleaseWaitDialogClose();
+                    window.location.href = '@Url.Action("InformSave","Inform")?projectID=' + ProjectID + '&unitCode=' + UnitID;
+		        }
+		    });
+        }
+
+        function addTableRow() {
+            var i = document.getElementById('InformTable').rows.length - 1;
+            var row = "<tr>";
+            row += "<td align='center'>";
+            row += "    <p type='text' id='No' name='No_" + i + "'>" + i + "</p>";
+            row += "</td>";
+
+
+
+
+            row += "<td>";
+            row += "<select class='form-control' data-val='true'   id='InformItem_Guarantee_ID' >";
+            var Guarantee = @Html.Raw(Json.Encode(@Model.Data_DLL_HC_Guarantee));
+            $.each(Guarantee.Items, function (key, list) {
+                row += " <option value='" + list.Value + "'>" + list.Text + "</option>'";
+            });
+            row += "</select></td>";
+            row += "<td>";
+            row += "    <textarea class='form-control' cols='20' id='InformItem_Detail' rows='2'></textarea>";
+            row += "</td>";
+            row += "<td>";
+            row += "    <textarea class='form-control' cols='20' id='InformItem_Remark' rows='2'></textarea>";
+            row += "</td>";
+            row += "<td><span class='fa fa-times addBtnRemove' id='addBtnRemove'></span></td>";
+            row += "</tr>";
+
+            $("#InformTable").append(row);
+            i++;
+
+            $(".addBtnRemove").on('click', function () {
+                $(this).closest('tr').remove();
+
+            });
+        }
+
+        // date format for post
+		function reorganizeDateFormat(date) {
+			var temp = date.split('/');
+			var newDate = new Date(`${temp[2]}-${temp[1]}-${temp[0]}`);
+			return thaiTimeInUTC(newDate);
+		}
+		function thaiTimeInUTC(date) {
+			return new Date(date.setHours(date.getHours() + date.getTimezoneOffset() / 60 + 7));
+        }
+       
+    });
+
+</script>

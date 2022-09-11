@@ -1,0 +1,42 @@
+﻿@model HomeCare_4_0.Models.TrackerViewModel
+
+
+<div class="widget widget-table action-table">
+    <div class="widget-header">
+
+        <span class="icon-th-list"></span>
+        <h3>ทั้งหมด @Model.resultData.Count รายการ</h3>
+
+    </div>
+    <!-- /widget-header -->
+    <div class="widget-content">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th class="col-xs-4 col-sm-4"> สถานะ </th>
+                    <th class="col-xs-8 col-sm-8"> รายการ </th>
+                </tr>
+            </thead>
+            <tbody>
+              @foreach (var r in Model.resultData)
+              {
+                <tr>
+                    <td>
+                        <a href="../Received/ReceivedDetail" target="_blank"><i class="icon-exclamation-sign"></i>&nbsp<span>@r.Process_DescriptionTH</span></a>
+                        <br><font color="red">คงเหลือ x วัน x ชม. x นาที[คงเหลือไปสถานะถัดไป]</font>
+                    </td>
+                    <td>
+                        <h4> @r.HC_Guarantee </h4>
+                        <br> @r.Job_No_Text
+                    </td>
+                </tr>
+              }
+
+                   
+               
+            </tbody>
+        </table>
+    </div>
+    <!-- /widget-content -->
+</div>
+<!-- /widget -->

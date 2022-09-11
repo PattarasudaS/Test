@@ -1,0 +1,492 @@
+﻿@using HomeCare_4_0.ClassLib
+@using HomeCare_4_0.Common
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<div class="main">
+    <div class="main-inner">
+
+        @*@if (@EnumConfiguration.Role.VENDOR.ToString() != @UserDetail.Role && @EnumConfiguration.Role.PMR.ToString() != @UserDetail.Role)
+        {*@
+            <section class="content" id="CalendarEvent">
+                <div class="row">
+                    <div class="col-lg-4 col-xs-12">
+                        <!-- small box -->
+                        <div class="small-box bg-aqua">
+                            <div class="inner">
+                                <h3 id="main_process_id_1">0</h3>
+                                <p>รอ HC รับเรื่อง 12 ชม</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa  fa-bell-o"></i>
+                            </div>
+                            <a href='@Url.Action("SearchInformationByStatus", "Home", new { MainProcessID = 1 })' class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-4 col-xs-12">
+                        <!-- small box -->
+                        <div class="small-box bg-green">
+                            <div class="inner">
+                                <h3 id="main_process_id_2">0</h3>
+                                <p>รอ HC เปิดใบงาน</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-file-text-o"></i>
+                            </div>
+                            <a href='@Url.Action("SearchInformationByStatus", "Home", new { MainProcessID = 2 })' class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-4 col-xs-12">
+                        <!-- small box -->
+                        <div class="small-box bg-yellow">
+                            <div class="inner">
+                                <h3 id="main_process_id_11">0</h3>
+                                <p>รออนุมัติ</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </div>
+                            <a href='@Url.Action("SearchInformationByStatus", "Home", new { MainProcessID = 11 })' class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row hidden-xs">
+                    <!-- /.col -->
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-body no-padding">
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-2 text-right text-success">
+                                        <label class="control-label" style="line-height: 34px; margin-bottom: 0px;">ระบุโครงการ :</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <select class="col-lg-12 form-control select2" id="ddlCalendarProject" data-placeholder="Click to Choose Projects...">
+                                            <option selected>Please select</option>
+                                        </select>
+                                        <br />
+                                    </div>
+                                </div>
+                                <!-- THE CALENDAR -->
+                                <div id="calendar"></div>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /. box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </section>
+        @*}*@
+    </div>
+    <!-- /main-inner -->
+</div>
+<!-- /main -->
+
+
+<link rel="stylesheet" href="~/assets/plugins/fullcalendar/fullcalendar.min.css">
+<link rel="stylesheet" href="~/assets/plugins/fullcalendar/fullcalendar.print.css" media="print">
+<!-- Theme style -->
+@*<link rel="stylesheet" href="~/assets/dist/css/AdminLTE.min.css">*@
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+     folder instead of downloading all of them to reduce the load. -->
+@*<link rel="stylesheet" href="~/assets/dist/css/skins/_all-skins.min.css">*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+<script src="~/assets/plugins/fullcalendar/fullcalendar.min.js"></script>
+<script src="~/assets/plugins/fullcalendar/bootbox.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.18/ua-parser.min.js"></script>
+<script>
+    var root = '@System.Configuration.ConfigurationManager.AppSettings["BasePath"]';
+    var baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+    $(async function () {
+
+         await ajaxGet(baseUrl + '/homecare/api/v1/User/@UserDetail.UserID/Permission', response => {
+             if (response) {
+                 if (!response.data.length) {
+                     $('#CalendarEvent').css('display', 'none');
+                 } else if (!response.data.find(a => a.permissionDescription === 'CalendarEvent')) {
+                     $('#CalendarEvent').css('display', 'none');
+                 } else {
+                     $('#CalendarEvent').css('display', 'block');
+                 }
+             }
+         });
+        /* initialize the external events
+         -----------------------------------------------------------------*/
+        function ini_events(ele) {
+            ele.each(function () {
+
+                // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+                // it doesn't need to have a start or end
+                var eventObject = {
+                    title: $.trim($(this).text()) // use the element's text as the event title
+                };
+
+                // store the Event Object in the DOM element so we can get to it later
+                $(this).data('eventObject', eventObject);
+
+                // make the event draggable using jQuery UI
+                $(this).draggable({
+                    zIndex: 1070,
+                    revert: true, // will cause the event to go back to its
+                    revertDuration: 0  //  original position after the drag
+                });
+            });
+        }
+
+        ini_events($('#external-events div.external-event'));
+
+        /* initialize the calendar
+         -----------------------------------------------------------------*/
+        //Date for the calendar events (dummy data)
+        var date = new Date();
+        var d = date.getDate(),
+            m = date.getMonth(),
+            y = date.getFullYear();
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prevYear,prev,today,next,nextYear',
+                center: 'title',
+                right: 'prevYear,prev,today,next,nextYear',
+                //right: 'month,agendaWeek,agendaDay'
+            },
+            buttonText: {
+                today: `Today`,
+                month: 'Month',
+                week: 'Week',
+                day: 'Day'
+            },
+            columnFormat: {
+                month: 'dddd',
+                week: 'ddd, D MMM'
+            },
+            aspectRatio: 2,
+            editable: true,
+            eventStartEditable: false,
+            @*droppable: true, // this allows things to be dropped onto the calendar !!!
+            drop: function (date, allDay) { // this function is called when something is dropped
+                // retrieve the dropped element's stored Event Object
+                var originalEventObject = $(this).data('eventObject');
+
+                // we need to copy it, so that multiple events don't have a reference to the same object
+                var copiedEventObject = $.extend({}, originalEventObject);
+
+                // assign it the date that was reported
+                copiedEventObject.start = date;
+                copiedEventObject.allDay = allDay;
+                copiedEventObject.backgroundColor = $(this).css("background-color");
+                copiedEventObject.borderColor = $(this).css("border-color");
+
+                // render the event on the calendar
+                // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+                $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+                // is the "remove after drop" checkbox checked?
+                if ($('#drop-remove').is(':checked')) {
+                    // if so, remove the element from the "Draggable Events" list
+                    $(this).remove();
+                }
+                alert('Drop OK!');
+            },
+            eventDrop: function (event, delta, revertFunc) {
+                var endCalendar;
+                if(event.end==null)
+                {
+                    endCalendar=event.start.format();
+                }
+                else
+                {
+                    endCalendar=event.end.format();
+                }
+
+                var requestData ={
+                    title:event.title,
+                    start: event.start.format(),
+                    end: endCalendar,
+                    CreatedBy:@UserDetail.UserID,
+                    calendarID:event.calendarID
+                };
+                var Url = '@Url.Action("UpdateCalendar", "Home")';
+                var response = CallController_Ajax(requestData, Url);
+            },*@
+            selectable: true,
+            selectHelper: true,
+            select: function(start, end, allDay) {
+                if($('#ddlCalendarProject').val() == '')
+                {
+                    modalWaring('กรุณาระบุโครงการ');
+                    return;
+                }
+                bootbox.prompt("เพิ่มตารางนัดหมาย:", function(title) {
+                    if (title !== null&&title!="") {
+                        var requestData ={
+                            title:title,
+                            start: start.format(),
+                            end: end.format(),
+                            //allDay:allDay,
+                            CreatedBy:@UserDetail.UserID,
+                            ProjectID:$('#ddlCalendarProject').val()
+                        };
+                        var Url = '@Url.Action("InsertCalendar", "Home")';
+                        //console.log(requestData);
+                        var response =CallController_Ajax(requestData, Url);
+
+                        $('#calendar').fullCalendar('renderEvent',
+                            {
+                                title: title,
+                                start: start,
+                                end: end,
+                                //allDay: allDay,
+                                calendarID: response,
+                                CreatedBy:@UserDetail.UserID,
+                            },
+                            true // make the event "stick"
+                        );
+                    }
+                });
+                $('#calendar').fullCalendar('unselect');
+            },
+            eventClick: function(calEvent, jsEvent, view) {
+                if(calEvent.CreatedBy!="@UserDetail.UserID")
+                {
+                    modalWaring('คุณไม่สามารถแก้ไขรายการได้');
+                    return;
+                }
+                //display a modal
+                var modal = `
+                    <div class="modal fade">
+			            <div class="modal-dialog">
+			                <div class="modal-content">
+				                <div class="modal-body">
+				                    <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>
+				                    <form class="no-margin">
+					                    <label>แก้ไขตารางนัดหมาย&nbsp;</label>
+                                        <div class="row">
+					                        <div class="col-md-10">
+                                                <input class="form-control" autocomplete="off" type="text" value="${calEvent.title}" />
+                                            </div>
+					                        <div class="col-md-2">
+                                                <button type="submit" class="btn btn-success btn-flat">
+                                                    <i class="ace-icon fa fa-check"></i> Save
+                                                </button>
+                                            </div>
+                                        </div>
+				                    </form>
+				                </div>
+				                <div class="modal-footer">
+				                	<button type="button" class="btn btn-danger btn-flat" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>
+				                	<button type="button" class="btn  btn-flat" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>
+				                </div>
+			                </div>
+			            </div>
+			        </div>
+                `;
+
+                var modal = $(modal).appendTo('body');
+                modal.find('form').on('submit', function(ev) {
+                    ev.preventDefault();
+                    calEvent.title = $(this).find("input[type=text]").val();
+                    $('#calendar').fullCalendar('updateEvent', calEvent);
+
+                    var requestData ={
+                        title:calEvent.title,
+                        start: calEvent.start.format(),
+                        end: calEvent.end.format(),
+                        CreatedBy:@UserDetail.UserID,
+                        calendarID:calEvent.calendarID
+                    };
+                    var Url = '@Url.Action("UpdateCalendar", "Home")';
+                    var response = CallController_Ajax(requestData, Url);
+                    modal.modal("hide");
+                });
+
+                modal.find('button[data-action=delete]').on('click', function() {
+                    var requestData ={
+                        CreatedBy:@UserDetail.UserID,
+                        calendarID:calEvent.calendarID
+                    };
+                    var Url = '@Url.Action("DeleteCalendar", "Home")';
+                    var response = CallController_Ajax(requestData, Url);
+                    $('#calendar').fullCalendar('removeEvents' , function(ev) {
+                        return (ev._id == calEvent._id);
+                    });
+                    modal.modal("hide");
+                });
+                modal.modal('show').on('hidden', function(){
+                    modal.remove();
+                });
+            },
+            eventResize: function(event, delta, revertFunc) {
+                var requestData ={
+                    title:event.title,
+                    start: event.start.format(),
+                    end: event.end.format(),
+                    CreatedBy:@UserDetail.UserID,
+                    calendarID:event.calendarID
+                };
+                var Url = '@Url.Action("UpdateCalendar", "Home")';
+                //console.log(requestData);
+                var response =CallController_Ajax(requestData, Url);
+            },
+            eventAfterAllRender: function(view) {
+                //var calendarTitle = $('.fc-center')[0].firstChild;
+                //$(calendarTitle).prepend(d + ' ');
+            },
+			eventAfterRender: function (event, element) {
+				//console.log(event);
+                $(element[0].firstChild).css('text-overflow', 'ellipsis');
+                $(element[0].firstChild).css('cursor', 'pointer');
+
+                var $p = $(element[0].parentElement);
+                var $w = $p.width();
+                var $r;
+				if (event.ReferenceType === 1) {
+					if (event.isAfterWarranty) {
+						$r = `href="${root}/Received/ReceivedRepair/${event.ReferenceID}"`;
+					} else {
+						$r = `href="${root}/Received/ReceivedDetail/${event.ReferenceID}"`;
+					}
+				} else if (event.ReferenceType === 2) {
+					if (event.isAfterWarranty) {
+						$r = `href="${root}/Worksheet/WorksheetRepair/${event.ReferenceID}"`;
+					} else {
+						$r = `href="${root}/Worksheet/WorksheetDetail/${event.ReferenceID}"`;
+					}
+                }
+
+                if ($r) {
+                    var browser = new UAParser();
+                    browser = browser.getResult();
+                    if (browser.browser.name == 'Firefox') {
+                        $w--;
+                    }
+
+                    $(element[0]).css('width', `${$w - 32}px`);
+                    $(element[0]).css('float', `left`);
+                    $(element[0]).css('margin-right', `0`);
+                    $(element[0]).css('border', `1px solid ${event.borderColor}`);
+                    $(element[0]).css('border-top-right-radius', '0');
+                    $(element[0]).css('border-bottom-right-radius', '0');
+
+                    var $a = $(`<a ${$r}><i class="fa fa-wrench" aria-hidden="true" style="position: relative; top: 1px;"></i></a>`);
+                    $a.attr('class', 'fc-day-grid-event fc-event fc-start fc-end fc-draggable');
+                    $a.attr('target', '_blank');
+                    $a.css('background', event.borderColor);
+                    $a.css('color', `white`);
+                    $a.css('text-align', `center`);
+                    $a.css('width', `20px`);
+                    $a.css('float', `right`);
+                    $a.css('margin-left', `0`);
+                    $a.css('border', `1px solid ${event.borderColor}`);
+                    $a.css('border-top-left-radius', '0');
+                    $a.css('border-bottom-left-radius', '0');
+
+                    $p.append($a);
+                }
+            }
+        });
+
+        var body = { userId: '@UserDetail.UserID', vendorId:'@ViewBag.VendorId' }
+
+        ajaxPost(`${baseUrl}/homecare/api/v1/Search/GetCountNotification`, body, response => {
+
+            if (response.data.length > 0) {
+                var count_main_process_id_1 = response.data.filter((value) => {
+                    return value.receiveStatusId == 1
+                });
+
+                var count_main_process_id_2 = response.data.filter((value) => {
+                    return value.receiveStatusId == 2
+                });
+
+                var count_main_process_id_11 = response.data.filter((value) => {
+                    return value.approveStatusId == 11
+                });
+
+                console.log(count_main_process_id_1);
+
+                $('#main_process_id_1').html(count_main_process_id_1.length);
+                $('#main_process_id_2').html(count_main_process_id_2.length);
+                $('#main_process_id_11').html(count_main_process_id_11.length);
+            }
+        });
+
+        /* ADDING EVENTS */
+        var currColor = "#3c8dbc"; //Red by default
+        //Color chooser button
+        var colorChooser = $("#color-chooser-btn");
+        $("#color-chooser > li > a").click(function (e) {
+            e.preventDefault();
+            //Save color
+            currColor = $(this).css("color");
+            //Add color effect to button
+            $('#add-new-event').css({ "background-color": currColor, "border-color": currColor });
+        });
+
+        $("#add-new-event").click(function (e) {
+            e.preventDefault();
+            //Get value and make sure it is not null
+            var val = $("#new-event").val();
+            if (val.length == 0) {
+                return;
+            }
+            //Create events
+            var event = $("<div />");
+            event.css({ "background-color": currColor, "border-color": currColor, "color": "#fff" }).addClass("external-event");
+            event.html(val);
+            $('#external-events').prepend(event);
+            //Add draggable funtionality
+            ini_events(event);
+            //Remove event from text input
+            $("#new-event").val("");
+        });
+
+        $.ajax({
+            url: "@Url.Action("GetProejctMaster", "Home")",
+            type: "POST",
+            //data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                //alert(response.responseText);
+            },
+            success: function (response) {
+                var ddlsearchProject = $("[id=ddlCalendarProject]");
+                pleaseWaitDialogClose();
+                ddlsearchProject.empty().append('<option selected="selected" value="">Please select</option>');
+                $.each(response, function (Index, Value) {
+                    ddlsearchProject.append($("<option></option>").val(Value.Value).html(Value.Text));
+                });
+            }
+        });
+
+        $('#ddlCalendarProject').change(function (e) {
+            pleaseWaitDialog();
+            var that = this
+            setTimeout(function () {
+                var requestData ={
+                    ProjectID: $(that).val(),
+                    UserID: @UserDetail.UserID,
+                };
+                var Url = '@Url.Action("GetCalendarList", "Home")';
+                var eventSources = CallController_Ajax(requestData, Url);
+                //console.log(requestData);
+
+                //alert("Hello");
+                //$('#Calendar').fullCalendar( 'removeEvents').fullCalendar('removeEventSources');  //Removes all event sources
+                // $('#calendar').fullCalendar( 'refetchEvents' );
+                $('#calendar').fullCalendar( 'removeEvents', function (e) { return true; });
+                $('#calendar').fullCalendar( 'addEventSource', eventSources);
+                $('#calendar').fullCalendar( 'refetchEvents' );
+                pleaseWaitDialogClose();
+            }, 500);
+        });
+    });
+</script>

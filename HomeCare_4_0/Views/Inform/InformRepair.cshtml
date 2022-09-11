@@ -1,0 +1,644 @@
+﻿﻿@model HomeCare_4_0.Models.TrackerViewModel
+@using HomeCare_4_0.ClassLib
+@using HomeCare_4_0.Common
+@{
+    ViewBag.Title = "InformRepair";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+<div class="main">
+    <div class="main-inner">
+        <div class="container">
+            <h2 class="page-header text text-blue text-bold" style="margin: 10px 0px 20px"> One Time Service </h2>
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="box box-default" id="Received-customer">
+                      
+                        <div class="box-header with-border">
+                            <a data-toggle="collapse" data-target="#Received-customer-detail">
+                                <i class="fa fa-user"></i>
+                                <h3 class="box-title">
+                                    ข้อมูลลูกค้า
+
+                                </h3>
+
+                            </a>
+                            <h3 class="box-title" id="customerInfo"></h3>
+                            @*<div style="float:left" id="customerInfo"></div>*@
+                        </div>
+                        <div class="box-body collapse in" id="Received-customer-detail">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">ชื่อ-สกุล</label>
+                                    <div id="CustomerName" class="controls text-primary"></div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">เบอร์ติดต่อ</label>
+                                    <div id="CustomerMobile" class="controls text-primary"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">โครงการ</label>
+                                    <div id="CustomerProject" class="controls text-primary">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">แปลง</label>
+                                    <div id="CustomerUnitCode" class="controls text-primary">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">แบบบ้าน</label>
+                                    <div id="CustomerUnitModel" class="controls text-primary">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">วันที่เริ่มประกัน</label>
+                                    <div id="CustomerStartGuaranteeDate" class="controls text-primary">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">วันที่หมดประกัน</label>
+                                    <div id="CustomerEndGuaranteeDate" class="controls text-primary">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">วันที่ขยายประกัน</label>
+                                    <div id="CustomerExtraGuaranteeDate" class="controls text-primary">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xs-12">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <a data-toggle="collapse" data-target="#workOrder_Fixinfomation">
+                                <i class="fa fa-wrench"></i>
+                                <h3 class="box-title">ข้อมูลแจ้งซ่อม</h3>
+                            </a>
+                        </div>
+                        <div class="box-body collapse in" id="workOrder_Fixinfomation" hidden>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                    <label class="control-label ">สถานะผู้แจ้ง:</label><label class="control-label" style="color:crimson">&nbsp;*</label>
+                                    <div class="controls">
+                                        <select id="DDLPersonInformStatus" class="form-control" onchange="onChangeDDLPersonStatus()"></select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                    <label class="control-label ">ประเภทงานซ่อม:</label><label class="control-label" style="color:crimson">&nbsp;*</label>
+                                    <div class="controls">
+                                        <select id="DDLRepairType" class="form-control col-xs-8" onchange="getDDLRepairGroup()"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div id="InformerInfo" style="display: none">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label" name="Inform_CustomerName">ชื่อ-นามสกุลผู้แจ้ง: </label><label class="control-label" style="color:crimson">&nbsp;*</label>
+                                        <div class="controls">
+                                            <input type="text" class="form-control" id="OptionCustomerName" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label" name="Inform_CustomerTel">เบอร์ติดต่อ: </label><label class="control-label" style="color:crimson">&nbsp;*</label>
+                                        <div class="controls">
+                                            <input type="text" class="form-control" id="OptionCustomerTel" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-2 " style="height: auto">
+                                        <br>
+                                        <div id="informSearchEmpl" style="display: none; margin-top: 10px">
+                                            <a id='itemSearchEmpl' name='itemSearchEmpl[]'>&nbsp<i class='fa fa-user fa-lg'></i></a>
+                                            <label class="control-label">&nbsp;ค้นหา ชื่อพนักงาน</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                            </div>
+                            <div id="divSSegment" style="display: none">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <label class="control-label"> วันที่นัดหมายตรวจสอบ </label>
+                                        <div class="bootstrap-datepicker">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input class="form-control datepicker" style="width:50%;" id="txtAPDate" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <label class="control-label"> เวลา </label>
+                                        <div class="bootstrap-timepicker">
+                                            <div class="input-group" style="width:50%">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <input class="form-control timepicker" id="txtAPTimeForm" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <label class="control-label"> ถึง </label>
+                                        <div class="bootstrap-timepicker">
+                                            <div class="input-group" style="width:50%">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <input class="form-control timepicker" id="txtAPTimeTo" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                        <label class="control-label ">สาเหตุวันนัดเกิน 1 วันของโครงการ S Segment: </label>
+                                        <div class="controls">
+                                            <select class="form-control" id="DDLOverAPDateReasonID" disabled></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">อีเมลติดต่อ:</label>
+                                    <input type="text" id="OptionCustomerEmail" class="controls form-control" />
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label">หมายเหตุการแจ้ง:</label>
+                                    <input type="text" class="form-control" id="informRemark">
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-2 " style="height: auto">
+                                    <br>
+                                    <div style="display: flex; margin-top: 10px">
+                                        <input type="checkbox" class="minimal-red" id="chkChina" />
+                                        <label class="control-label text-danger" style="color:crimson">&nbsp;ลูกค้าจีน</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <table class="table table-bordered table-hover" id="InformTable">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center col-sm-1">
+                                                    No.
+                                                </th>
+                                                <th class="text-center col-sm-4">
+                                                    หมวดงาน
+                                                </th>
+                                                <th class="text-center">
+                                                    รายละเอียดการแจ้ง
+                                                </th>
+                                                <th class="text-center">
+                                                    หมายเหตุการแจ้ง
+                                                </th>
+                                                <th class="text-center col-sm-1">
+
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBodyDetail">
+                                            @for (var i = 0; i < 3; i++)
+                                            {
+                                                <tr id="No_@(i+1)">
+                                                    <td align="center">
+                                                        <p type="text">@(i + 1)</p>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control" id="DDLRepairGroupRow@(i+1)"></select>
+                                                    </td>
+                                                    <td>
+                                                        <textarea class="form-control" rows="2" id="itemDetail@(i+1)"></textarea>
+                                                    </td>
+                                                    <td>
+                                                        <textarea class="form-control" rows="2" id="itemRemark@(i+1)"></textarea>
+                                                    </td>
+                                                    <td>
+                                                        <i class="fa fa-times addBtnRemove" id="addBtnRemove" onclick="removeTableRow(this)"></i>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th class="text-right" colspan="5">
+                                                    <span class="glyphicon glyphicon-plus addBtn" onclick="addTableRow()" id="addBtn"></span>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <button type="button" class="btn btn-success" id="btnsentInform" onclick="SaveInformRepair()">ส่งคำขอบริการ</button>
+            </div>
+        </div>
+    </div>
+
+    @* Modal Alert Siri Piority *@
+    @{Html.RenderPartial("_DisplaySiriPiority");}
+</div>
+@section Script
+{
+    <link href="~/Content/theme_green.css" rel="stylesheet" type="text/css" />
+    <script>
+        // จำนวนแถวในตาราง (รายการแจ้งซ่อม)
+        var baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+        var root = '@System.Configuration.ConfigurationManager.AppSettings["BasePath"]';
+        var unitId = window.location.href.split('/')[window.location.href.split('/').length - 1];
+        var rowCount = 3;
+        var ddlRepairGroup;
+        var projectId;
+        var sSegmentFlag = false;
+        var flagOverAppointment = false;
+        var unitForEmpl = '@System.Configuration.ConfigurationManager.AppSettings["UnitForEmployee"]';
+
+
+
+        // initial page
+        window.onload = async function initialize() {
+            await page.loading();
+            //console.log(unitId)
+            if (!(+unitId)) {
+                window.location.href = `${root}/`
+                return false;
+            }
+
+            // datepicker
+            $('.datepicker').datepicker({
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                startDate: new Date(),
+                todayHighlight: true,
+            }).on('changeDate', (element) => {
+                var apDate = element.date;
+                var tomorrow = new Date().setDate(new Date().getDate() + 1);
+                if (apDate > tomorrow) {
+                    $('#DDLOverAPDateReasonID').removeAttr('disabled');
+                    flagOverAppointment = true;
+                } else {
+                    $('#DDLOverAPDateReasonID').attr('disabled', true);
+                    $('#DDLOverAPDateReasonID').val(0);
+                    flagOverAppointment = false;
+                }
+            });
+            // timepicker
+            $(".timepicker").timepicker({
+                showInputs: false,
+                showMeridian: false
+            });
+            // get personInformStatus (สถานะผู้แจ้ง)
+            ajaxGet(baseUrl + '/homecare/api/v1/DropDown/InformerRole', function (response) {
+                $.each(response.data, (i, d) => {
+                    $('#DDLPersonInformStatus').append(`<option value="${d.id}" ${!d.id ? 'selected disabled' : ''}>${d.description}</option>`);
+                });
+            });
+            // get repairType (ประเภทงานซ่อม)
+            ajaxGet(baseUrl + '/homecare/api/v1/DropDown/RepairType', function (response) {
+                $.each(response.data, (i, d) => {
+                    $('#DDLRepairType').append(`<option value="${d.id}" ${!d.id ? 'selected disabled' : ''}>${d.description}</option>`);
+                });
+            });
+            // get customerInfo (ข้อมูลลูกค้า)
+            ajaxGet(baseUrl + '/homecare/api/v1/Customer/' + unitId, function (response) {
+                projectId = response.data.projectId;
+                $('#CustomerName').text(response.data.fullNameTh);
+                $('#CustomerMobile').text(response.data.mobile + (response.data.contactInformation.trim() ? ', ' + response.data.contactInformation : ''));
+                $('#CustomerProject').text(response.data.projectNameTh);
+                $('#CustomerUnitCode').text(response.data.unitCodeAddress);
+                $('#CustomerUnitModel').text(response.data.unitModel);
+                $('#CustomerStartGuaranteeDate').text(response.data.startGuaranteeDate);
+                $('#CustomerEndGuaranteeDate').text(response.data.endGuaranteeDate);
+                $('#CustomerExtraGuaranteeDate').text(response.data.extraGuaranteeDate);
+                $('.page-header').text(' One Time Service ' + response.data.unitCodeAddress);
+                if (response.data.sSegmentFlag) {
+                    sSegmentFlag = response.data.sSegmentFlag;
+                    $('#divSSegment').show();
+                }
+                // check vipStatus
+                ajaxGet(`${baseUrl}/homecare/api/v1/Customer/CheckVipStatus/${response.data.prospectId}`, (response) => {
+                    if (response.data.vipStatus)
+                    {
+                        if (response.data.vipStatus.includes('Priority'))
+                        {
+                            $('#customerInfo').append(` <span class="label label-danger tag-label">${response.data.vipStatus}</span>`);
+                        }
+                        else
+                        {
+                            $('#customerInfo').append(' <a class="label label-warning DisplaySiriPiority">VIP</a>');
+                        }
+                        $(".DisplaySiriPiority").on('click', function () {
+
+                            $('#modalDisplaySiriPiority').modal('show');
+
+                        });
+                    }
+                })
+               
+                page.loaded();
+            });
+            // get overAppointmentReason
+            ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/PostponeInvestigationAppointmentReason`, (response) => {
+                $.each(response.data, (i, d) => {
+                    $('#DDLOverAPDateReasonID').append(`<option value="${d.id}" ${!d.id ? 'selected disabled' : ''}>${d.description}</option>`);
+                });
+            });
+
+            if(unitId == unitForEmpl) //Unit for employee search.
+            {
+                $('#informSearchEmpl').show();
+            }
+
+
+
+        }
+
+
+
+        // show div informer info
+        function onChangeDDLPersonStatus() {
+            if ($('#DDLPersonInformStatus').val() !== '1') {
+                $('#InformerInfo').show();
+            } else {
+                $('#InformerInfo').hide();
+            }
+        }
+
+        // add a row for receiveItem
+        function addTableRow() {
+            rowCount++;
+            $('#tableBodyDetail').append(`<tr id="No_${rowCount}"><td align="center"><p type="text">${rowCount}</p></td><td><select class="form-control" id="DDLRepairGroupRow${rowCount}"></select></td><td><textarea class="form-control" rows="2" id="itemDetail${rowCount}"></textarea></td><td><textarea class="form-control" rows="2" id="itemRemark${rowCount}"></textarea></td><td><i class="fa fa-times addBtnRemove" id="addBtnRemove" onclick="removeTableRow(this);"></i></td></tr >`);
+            if (ddlRepairGroup) {
+                $.each(ddlRepairGroup, (i, d) => {
+                    $('#DDLRepairGroupRow' + rowCount).append(
+					    `<option value="${d.id}" ${!d.id ? 'selected disabled' : ''}>${d.description}</option>`
+				    );
+                });
+            }
+        }
+
+        // delete a row of receiveItem
+        function removeTableRow(element) {
+            rowCount--;
+            $(element).parent().parent().remove();
+            $('#tableBodyDetail tr').each((i, element) => {
+                $(element).find('td:first').find('p').text(i + 1);
+                $(element).attr('id', 'No_' + (i + 1));
+                $(element).find('select').attr('id', 'DDLRepairGroupRow' + (i + 1));
+                $(element).find('textarea').each((j, textarea) => {
+                    if (j === 0) {
+                        $(textarea).attr('id', 'itemDetail' + (i + 1));
+                    } else {
+                        $(textarea).attr('id', 'itemRemark' + (i + 1));
+                    }
+                });
+            });
+        }
+
+        function getDDLRepairGroup() {
+            // get repairGroup (หมวดงาน)
+            ajaxGet(baseUrl + '/homecare/api/v1/DropDown/RepairType/' + $('#DDLRepairType').val(), function (response) {
+                ddlRepairGroup = response.data;
+                for (var i = 1; i <= rowCount; i++) {
+                    $('#DDLRepairGroupRow' + i).empty();
+                    $.each(response.data, (j, d) => {
+                        $('#DDLRepairGroupRow' + i).append(`<option value="${d.id}" ${!d.id ? 'selected disabled' : ''}>${d.description}</option>`)
+                    });
+                }
+            });
+        }
+
+        // create receive & receiveItems
+        async function SaveInformRepair() {
+            var receiveAppointmentDate;
+            var receiveAppointmentTimeFrom;
+            var receiveAppointmentTimeTo;
+            var regexEmail =  /^(([^<>()[\]\\.,;:\s@@\"]+(\.[^<>()[\]\\.,;:\s@@\"]+)*)|(\".+\"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            var regexTel = /[0-9]+$/;
+            // data validation
+            if (!$('#DDLPersonInformStatus').val()) {
+                modalWaring('กรุณาเลือก "สถานะผู้แจ้ง"');
+                $('#DDLPersonInformStatus').focus();
+                return false;
+            }
+            if (!$('#DDLRepairType').val()) {
+                modalWaring('กรุณาเลือก "ประเภทงานซ่อม"');
+                $(`#DDLRepairType`).focus();
+                return false;
+            }
+            if ($('#DDLPersonInformStatus').val() !== '1') {
+                if (!$('#OptionCustomerName').val()) {
+                    modalWaring('กรุณากรอก "ชื่อผู้แจ้ง"');
+                    $('#OptionCustomerName').focus();
+                    return false;
+                } else if (!$('#OptionCustomerTel').val()) {
+                    modalWaring('กรุณากรอก "เบอร์ติดต่อ"');
+                    $('#OptionCustomerTel').focus();
+                    return false;
+                } else if (!regexTel.test($('#OptionCustomerTel').val())){
+                    modalWaring('กรุณากรอกเบอร์ติดต่อให้ถูกต้อง ตัวอย่าง "0812345678"');
+                    $('#OptionCustomerTel').focus();
+                    return false;
+                }
+            }
+            if ($('#OptionCustomerEmail').val()) {
+                if (!regexEmail.test($('#OptionCustomerEmail').val())) {
+                    modalWaring('กรุณากรอกอีเมลให้ถูกต้อง ตัวอย่าง"example@mail.com"');
+                    $(`#OptionCustomerEmail`).focus();
+                    return false;
+                }
+            }
+            if (sSegmentFlag) {
+                if (!$('#txtAPDate').val()) {
+                    modalWaring('กรุณาเลือก "วันที่นัดหมายตรวจสอบ"');
+                    $('#txtAPDate').focus();
+                    return false;
+                }
+                if (!$('#txtAPTimeForm').val()) {
+                    modalWaring('กรุณาเลือก "เวลาเข้าตรวจสอบ"');
+                    $('#txtAPTimeForm').focus();
+                    return false;
+                }
+                if (!$('#txtAPTimeTo').val()) {
+                    modalWaring('กรุณาเลือก "เวลาเสร็จสิ้นการตรวจสอบ"');
+                    $('#txtAPTimeTo').focus();
+                    return false;
+                }
+                if ($('#txtAPTimeForm').val() >= $('#txtAPTimeTo').val()) {
+                    modalWaring('กรุณากรอกเวลาเข้าตรวจสอบให้น้อยกว่าเวลาแล้วเสร็จ');
+                    return false;
+                }
+                if (flagOverAppointment) {
+                    if (!$('#DDLOverAPDateReasonID').val()) {
+                        modalWaring('กรุณาเลือก "สาเหตุวันนัดเกิน 1 วันของโครงการ S Segment"');
+                        return false;
+                    }
+                }
+                receiveAppointmentDate = reorganizeDateFormat($('#txtAPDate').val());
+                receiveAppointmentTimeFrom = $('#txtAPTimeForm').val();
+                receiveAppointmentTimeTo = $('#txtAPTimeTo').val();
+            } else {
+                receiveAppointmentDate = null;
+                receiveAppointmentTimeFrom = null;
+                receiveAppointmentTimeTo = null;
+            }
+            var userIDCon = '@UserDetail.Icontact_userID';
+            var userID = '@UserDetail.UserID';
+            var body = {
+                jobCode: 'RA',
+                unitId: unitId,
+                repairTypeId: $('#DDLRepairType').val(),
+                informRemark: $('#informRemark').val(),
+                informCustomerTypeId: $('#DDLPersonInformStatus').val(),
+                informCustomerName: $('#DDLPersonInformStatus').val() !== '1' ? ($('#OptionCustomerName').val().trim() ? $('#OptionCustomerName').val().trim() : null) : null,
+                informCustomerTel: $('#DDLPersonInformStatus').val() !== '1' ? ($('#OptionCustomerTel').val().trim() ? $('#OptionCustomerTel').val().trim() : null) : null,
+                informCustomerEmail: $('#OptionCustomerEmail').val().trim() ? $('#OptionCustomerEmail').val().trim() : null,
+                receiveAppointmentDate: receiveAppointmentDate,
+                receiveAppointmentTimeFrom: receiveAppointmentTimeFrom,
+                receiveAppointmentTimeTo: receiveAppointmentTimeTo,
+                appointmentPostponeReasonId: $('#DDLOverAPDateReasonID').val() || 0,
+                flagUrgent: $('#DDLRepairType').val() == 2 ? true : false,
+                flagChina: $('#chkChina').prop('checked'),
+                flagHs: false,
+                iContactUserId: userIDCon,
+                userId: userID,
+                receiveItems: []
+            }
+            var itemRepair = {};
+            for (var i = 1; i <= rowCount; i++) {
+                if (!$(`#DDLRepairGroupRow${i}`).val()) {
+                    continue;
+                } else {
+                    if (!$(`#itemDetail${i}`).val().trim()) {
+                        modalWaring('กรุณากรอก "รายละเอียดการแจ้ง"');
+                        $(`#itemDetail${i}`).focus();
+                        return false;
+                    } else {
+                        itemRepair = {
+                            lineItemNo: i,
+                            guaranteeId: $(`#DDLRepairGroupRow${i}`).val(),
+                            lineItemDetail: $(`#itemDetail${i}`).val(),
+                            lineItemRemark: $(`#itemRemark${i}`).val(),
+                            statusId: @EnumConfiguration.ReceiveStatusID.NotOperation.GetHashCode(),
+                            active: true,
+                        }
+                        body.receiveItems.push(itemRepair);
+                    }
+                }
+            }
+            if (body.receiveItems.length < 1) {
+                modalWaring('กรุณาสร้างรายการแจ้งซ่อมอย่างน้อย 1 รายการ');
+                $('#DDLRepairGroupRow1').focus();
+                return false;
+            }
+            // send data to backend
+            await page.loading();
+            ajaxPost(baseUrl + '/homecare/api/v1/Receive', body, function (response) {
+                if (response && response.statusCode === 201) {
+                    page.loaded();
+                    modalSuccess();
+                    $('#notificationModal').on('hidden.bs.modal', () => {
+                        page.loading();
+                        window.location.href = `${root}/Home/SearchInformation/${projectId}/${unitId}`;
+                    });
+                }
+            });
+        }
+        // date format for post
+        function reorganizeDateFormat(date) {
+            var temp = date.split('/');
+            var newDate = new Date(`${temp[2]}-${temp[1]}-${temp[0]}`);
+            return thaiTimeInUTC(newDate);
+        }
+        function thaiTimeInUTC(date) {
+            return new Date(date.setHours(date.getHours() + date.getTimezoneOffset() / 60 + 7));
+        }
+
+        //ค้นหา ชื่อพนักงาน
+        $("[name*='itemSearchEmpl[]']").click(function () {
+            itemSearchEmployee();
+        });
+
+        function itemSearchEmployee()
+        {
+            clearEmplSearch();
+
+            $("#modalSearchEmployee").appendTo("body").modal('show');
+            $("#tbEmployee tbody tr").remove();
+
+            $("#tbEmployee tbody").append("<tr></tr>");
+            $("#tbEmployee tbody tr").append("<td class='text-center Bold text-danger' colspan='6'>ไม่มีข้อมูล</td>");
+
+            $("#btnSearchEmpl").on("click", function ()
+            {
+                if ($("#textEmpCode").val() == "" && $("#textEmpName").val() == "")
+                {
+                    modalWaring("กรุณาระบุเงื่อนไขในการค้นหา");
+                }
+                else { SearchEmployee(); }
+            });
+
+        }
+
+        function SearchEmployee()
+        {
+            var body = {
+                EmpCode: $("#textEmpCode").val() == "" ? "" : $("#textEmpCode").val(),
+                EmpName: $("#textEmpName").val()
+            }
+
+            ajaxPost(baseUrl + '/homecare/api/v1/Search/GetSearchEmployee', body, function (response)
+            {
+                $("#tbEmployee tbody tr").remove();
+
+                if (response && response.statusCode === 200)
+                {
+                    $.each(response.data, function (key, value)
+                    {
+                        $("#tbEmployee tbody").append("<tr></tr>");
+                        $("#tbEmployee tbody tr:last").append("<td class=\"text-center\">" + value.empCode + "</td>");
+                        $("#tbEmployee tbody tr:last").append("<td class=\"text-left\"><label id='lblEmpName'>" + value.empName + "</label></td>");
+                        $("#tbEmployee tbody tr:last").append("<td class=\"text-center\"><label id='lblEmpMobile'>" + value.empMobile + "</label></td>");
+                        $("#tbEmployee tbody tr:last").append("<td class=\"text-left\"><label id='lblEmpEmail'>" + value.empEmail + "</label></td>");
+                        $("#tbEmployee tbody tr:last").append("<td class=\"text-center\"><a id='selectEmpl' name='selectEmpl[]'>เลือก</a></td>");
+                    });
+
+                    $("#tbEmployee").css("height", "300px");
+
+                    $("[name*='selectEmpl[]']").each(function (idx, elem)
+                    {
+                        $(this).click(function () {
+                            var textEmplName = $(this).closest('tr').find("#lblEmpName").text();
+                            var textEmplMobile = $(this).closest('tr').find("#lblEmpMobile").text();
+                            var textEmplEmail = $(this).closest('tr').find("#lblEmpEmail").text();
+
+                            $("#OptionCustomerName").val(textEmplName);
+                            $("#OptionCustomerTel").val(textEmplMobile);
+                            $("#OptionCustomerEmail").val(textEmplEmail);
+                            $("#modalSearchEmployee").modal('hide');
+                        });
+                    });
+                }
+                else
+                {
+                    $("#tbEmployee tbody").append("<tr></tr>");
+                    $("#tbEmployee tbody tr").append("<td class='text-center Bold text-danger' colspan='6'>ไม่มีข้อมูล</td>");
+                }
+            });
+        }
+       
+    </script>
+}

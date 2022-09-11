@@ -1,0 +1,311 @@
+﻿@model HomeCare_4_0.Models.GuaranteeViewModel
+@using HomeCare_4_0.ClassLib;
+@using HomeCare_4_0.Common;
+@{
+    ViewBag.Title = "Extended Guarantee";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+
+<div>
+    <section class="content">
+
+        <div class="row">
+            <div class="col-xs-12">
+
+                <!-- /.box -->
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">เพิ่มรายการขยายประกัน</h3>
+
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-hover" id="tbExtendGuarantee">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="5px">
+                                        No.
+                                    </th>
+                                    <th class="text-center" style="width:15%">
+                                        แปลง
+                                    </th>
+                                    <th class="text-center" style="width:25%">
+                                        รายละเอียดประกัน
+                                    </th>
+                                    <th class="text-center" style="width:10%">
+                                        จำนวนวันที่ขยาย
+                                    </th>
+                                    <th class="text-center" style="width:10%">
+                                        จำนวนเดือนที่ขยาย
+                                    </th>
+                                    <th class="text-center" style="width:10%">
+                                        จำนวนเปีที่ขยาย
+                                    </th>
+                                    <th class="text-center" style="width:25%">
+                                        สาเหตุการขอขยาย
+                                    </th>
+                                    <th class="text-center" width="15px">
+                                        แนบรูป
+                                    </th>
+                                    <th class="text-center" width="10px">
+                                        ลบ
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*<tr>
+                                        <td align="center">
+                                            <label type="text" id="lblNo">1</label>
+                                        </td>
+                                        <td>
+                                            <select id="ddlUnitCode" class="form-control"></select>
+                                        </td>
+                                        <td>
+                                            <label id="lblGuaranteeDetail"></label>
+                                        </td>
+                                        <td>
+                                            <input id="txtGuaranteeDay" value=0 type="number" class="form-control" />
+                                        </td>
+                                        <td>
+                                            <input id="txtGuaranteeMonth" value=0 type="number" class="form-control" />
+                                        </td>
+                                        <td>
+                                            <input id="txtGuaranteeYear" value=0 type="number" class="form-control" />
+                                        </td>
+                                        <td>
+                                            <input id="txtGuaranteeRemark" type="text" maxlength="512" class="form-control" />
+                                        </td>
+                                        <td class="text-center">
+                                            @*<a class="btn btn-danger btndeleted" id="btndeleted"><i class="fa fa-trash-o bigger-110"></i>Delete</a>
+                                        </td>
+                                        <td></td>
+                                    </tr>*@
+                            </tbody>
+                            <tfoot>
+
+
+                            <tfoot>
+                                <tr>
+
+                                    <th class="text-right" colspan="9">
+                                        <span class="glyphicon glyphicon-plus BtnaddGuarantee" id="BtnaddGuarantee"></span>
+                                    </th>
+                                </tr>
+                            </tfoot>
+
+                        </table>
+                        <div class="col-xs-12 text-center">
+                            <br>
+                            <button type="button" class="btn btn-primary" id="btnInsertGuarantee">ขยายประกัน</button>
+                        </div>
+                    </div>
+
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+
+        <!-- /.row -->
+    </section>
+</div>
+
+<script type="text/javascript">
+
+    addTableRow();
+
+    $(".btndeleted").on('click', function () {
+        $(this).closest('tr').remove();
+
+    });
+
+    //Btn plus AddRow For AddReceiveTable
+    $('.BtnaddGuarantee').on('click', function () {
+        addTableRow();
+    });
+
+
+
+
+
+
+    function addTableRow() {
+
+
+        var row;
+        row += '<tr>';
+        row += '<td align="center"><label type="text" id="lblNo">' + (parseInt($("#tbExtendGuarantee tbody tr").length) + 1); + '</label></td>';
+        //row += '<td><select id="ddlUnitCode" class="form-control"></select></td>';
+        row += "<td>";
+        row += "<select class='form-control ddlUnitCode'  id='ddlUnitCode' >";
+        var Guarantee = @Html.Raw(Json.Encode(@Model.Data_DLL_HC_Unit));
+        row += " <option value=''>กรุณาระบุแปลง</option>'";
+        $.each(Guarantee.Items, function (key, list) {
+            row += " <option value='" + list.Value + "'>" + list.Text + "</option>'";
+        });
+        row += "</select>";
+        row += '<td><label id="lblGuaranteeDetail"></label>';
+        row += '</td>';
+        row += '<td>';
+        row += '<input id="txtGuaranteeDay" value=0 type="number" class="form-control"/>';
+        row += '</td>';
+        row += '<td>';
+        row += '<input id="txtGuaranteeMonth" value=0 type="number" class="form-control" />';
+        row += '</td>';
+        row += '<td>';
+        row += '<input id="txtGuaranteeYear" value=0 type="number" class="form-control" />';
+        row += '</td>';
+        row += '<td>';
+        row += '<input id="txtGuaranteeRemark" type="text" maxlength="512" class="form-control" />';
+        row += '</td>';
+        if(parseInt($("#tbExtendGuarantee tbody tr").length)==0)
+        {
+            row += '<td class="text-center">';
+            row += '<td></td>';
+        }else
+        {
+            row += '<td class="text-center">';
+            row += '<td><a class="btn btn-danger btndeleted" id="btndeleted"><i class="fa fa-trash-o bigger-110"></i>Delete</a></td>';
+
+        }
+        row += '</tr>';
+
+        $("#tbExtendGuarantee tbody").append(row);
+
+
+        $(".btndeleted").on('click', function () {
+            $(this).closest('tr').remove();
+
+        });
+        $(".ddlUnitCode").change(function () {
+            pleaseWaitDialog();
+            var requestData={
+                UnitID: $(this).val()
+            };
+
+
+            var lblGuaranteeDetail = $(this).closest('tr').find("#lblGuaranteeDetail");
+
+            var Url = '@Url.Action("GetUnitDetail", "Guarantee")';
+            var response = CallController_Ajax(requestData,Url);
+
+            pleaseWaitDialogClose();
+
+            if(response.length==0)
+            {
+                lblGuaranteeDetail.text('-');
+                modalWaring("แปลงนี้ไม่สามารถทำการเพิ่มรายการขยายประกันได้");
+                return;
+            }else
+            {
+                var extraGuaranteeDate=""
+                if(response[0].ExtraGuaranteeDate=="")
+                {
+
+                }else
+                {
+                    extraGuaranteeDate=response[0].ExtraGuaranteeDate;
+                }
+                var txtDetail="วันที่เริ่มต้น: " +response[0].StartGuaranteeDate +" วันที่สิ้นสุด: "+response[0].EndGuaranteeDate +" วันที่ขยายประกัน: "+extraGuaranteeDate;
+                lblGuaranteeDetail.text(txtDetail);
+
+            }
+
+
+        });
+
+
+
+        $('#btnInsertGuarantee').on('click', function () {
+
+
+            var FlagValid=true;
+
+            var listItem = [];
+
+            $("#tbExtendGuarantee tbody tr").each(function () {
+                UnitID = $(this).find("#ddlUnitCode").val()
+                if (UnitID != "") {
+
+
+
+                    GuaranteeDay = $(this).find("#txtGuaranteeDay").val()
+                    GuaranteeMonth = $(this).find("#txtGuaranteeMonth").val()
+                    GuaranteeYear = $(this).find("#txtGuaranteeYear").val()
+                    GuaranteeRemark = $(this).find("#txtGuaranteeRemark").val()
+
+                    if((parseInt(GuaranteeDay)+parseInt(GuaranteeMonth)+parseInt(GuaranteeYear))==0 || GuaranteeRemark=="")
+                    {
+                        FlagValid=false;
+                    }
+
+                    var GuaranteeDetail={
+                        UnitID:UnitID,
+                        GuaranteeDay:GuaranteeDay,
+                        GuaranteeMonth:GuaranteeMonth,
+                        GuaranteeYear:GuaranteeYear,
+                        GuaranteeRemark:GuaranteeRemark,
+                        User: "@UserDetail.CodeName",
+                    }
+
+                    listItem.push(GuaranteeDetail);
+                }
+                else
+                {
+                    FlagValid=false;
+
+                }
+            });
+
+            var values = { objGuarantee: listItem }
+
+            if(FlagValid)
+            {
+                InsertGuarantee(values);
+            }else
+            {
+                modalWaring("กรุณากรอกข้อมูลให้ครบถ้วน");
+                return;
+            }
+
+
+        });
+
+        function InsertGuarantee(values) {
+
+
+            var ProjectID = $("#hdProjectID").val();
+            var UnitID = $("#hdUnitID").val();
+
+
+            var requestData = values;
+            var Url = '@Url.Action("InsertGuarantee", "Guarantee")';
+            var response = CallController_Ajax(requestData,Url);
+
+
+            if(response==true)
+            {
+                $("#tbExtendGuarantee").prop( 'disabled', true );
+                $("#btnInsertGuarantee").prop( 'disabled', true );
+
+                modalSuccess();
+                $("#contentModal").text("ระบบบันทึกข้อมูลเรียบร้อยแล้ว");
+
+            }else
+            {
+               
+                
+
+                modalWaring("ระบบไม่สามารถบันทึกข้อมูลได้");
+                return;
+            }
+            pleaseWaitDialogClose();
+
+        }
+    }
+
+
+
+</script>

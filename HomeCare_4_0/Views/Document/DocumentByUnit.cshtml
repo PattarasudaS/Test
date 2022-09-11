@@ -1,0 +1,287 @@
+﻿@model HomeCare_4_0.Models.HomeViewModel
+@using HomeCare_4_0.Common
+@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<!DOCTYPE html> 
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div tabindex="-1" class="modal fade" id="TrackingsearchModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;" data-backdrop="static">
+        <div class="modal-dialog grid-width-100">
+            <div class="modal-content" style="border-radius:6px;">
+                <div class="modal-header badge-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title white"> <i class="fa fa-search bigger-130"></i>Searching</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-sm-4 col-lg-2 PT text-right">
+                            <div class="controls PL_20">
+
+                                <label class="control-label PL_20 text-blue">โครงการ :</label>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-8 col-lg-8 PT text-left">
+                            <div class="controls PL_20">
+
+                                <select class="select2" style="width: 100%;" id="ProJectID">
+                                    <option value="0" selected>Please select</option>
+                                    @foreach (var item in Model.objCriteriaMaser.projectMaster)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+
+                        <div class="col-xs-12 col-sm-4 col-lg-2 PT text-right">
+                            <div class="controls PL_20">
+
+                                <label class="control-label PL_20 text-blue">ยูนิต :</label>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-8 col-lg-8 PT text-left">
+                            <div class="controls PL_20">
+
+                                <select class="select2" style="width: 100%;" id="UnitID">
+                                    <option value="" selected>Please select</option>
+
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="button" id="btnModalSearch"><i class="ace-icon fa fa-search bigger-110"></i>Search</button>
+                    <button class="btn btn-danger" type="button" id="btnModalReset"><i class="ace-icon fa fa-undo bigger-110"></i>Reset</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <section class="content">
+            @if ("CallCentre" == @UserDetail.Role)
+            {
+            <div class="row">
+               
+                <div class="col-lg-12">
+                    @Html.Partial("SearchInformation_CallCenter", Model )
+                </div>
+                
+            </div>
+            <br />
+            }
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <!-- /.box -->
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Search Information</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="tbSearchDetail" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="10%" class="text-center">No</th>
+                                        <th width="45%" class="text-center">ใบรับเรื่อง</th>
+                                        <th width="45%" class="text-center">ใบงาน</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+
+
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            @if ("CallCentre" == @UserDetail.Role)
+            {
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <span>
+                        <button id="btnAddInform" class="btn btn-default" onclick="@("window.location.href='" + @Url.Action("InformAddDetail", "Inform") + "/"+Model.unitCode+"'");">
+                                <i class="ace-icon fa fa-plus"></i>
+                                เพิ่มรายการแจ้งซ่อม
+                            </button>
+                        @*<input type="button" class="btn btn-default" value="เพิ่มรายการแจ้งซ่อม" onclick="@("window.location.href='" + @Url.Action("InformAddDetail", "Inform") + "/1414-1034'");">*@
+
+
+
+                    </span>
+
+                </div>
+            </div>
+            }
+            <!-- /.row -->
+        </section>
+    </div>
+    <div class="hr hr-16"></div>
+    @*<div class="text-center">
+            <span>
+                    <button id="btnSearch" class="btn btn-success">
+                        <i class="ace-icon fa fa-search"></i>
+                        Search
+                    </button>
+                </span>
+            <span>
+                <button id="btnExport" class="btn btn-default">
+                        <i class="ace-icon fa fa-print"></i>
+                        Export
+                    </button>
+                <a id="btnExport" class="btn btn-default">
+                    <i class="ace-icon fa fa-print"></i>
+                    Export
+                </a>
+            </span>
+        </div>*@
+
+
+
+</body>
+</html>
+<script type="text/javascript">
+    $(function () {
+
+        function init() {
+            var projectCode = @Model.projectID;
+            var unitCode =  "@Model.unitCode";
+
+            var jsonObject = {
+                "projectCode": projectCode,
+                "unitCode": unitCode
+            };
+            console.log(unitCode);
+            $.ajax({
+
+                url: "@Url.Action("GetSearchInformation", "Home")",
+                type: "POST",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+
+                },
+                success: function (response) {
+                    $("#tbSearchDetail tbody tr").remove();
+                    var ReceiveJobText = "";
+                    var countRow = 0;
+                    jQuery.each(response, function (index, item) {
+                        console.log(item.Receive_JobNo_Text + ':' + ReceiveJobText);
+                        if (item.Receive_JobNo_Text != ReceiveJobText) {
+                            countRow = countRow + 1;
+                            $("#tbSearchDetail tbody").append("<tr></tr>");
+                            $("#tbSearchDetail tbody tr:last").append("<td class=\"text-center\"><label name=\"lblNo\" id=\"lblNo\">" + (countRow) + "</label></td>");
+                            
+                            var url ='@Url.Action("ReceivedDetail", "Received")' + "/" + item.Receive_ID 
+                            $("#tbSearchDetail tbody tr:last").append("<td class=\"text-left\"><label name=\"lblreceiveStatus\" id=\"lblreceiveStatus\">" + item.Receive_Status_Text + "</label> <a href='" + url + "'><u>" + item.Receive_JobNo_Text + "</u></a></td>");
+                            if (item.Worksheet_JobNo_Text != null && item.Worksheet_Status_Text != null) {
+                                
+                                var url ='@Url.Action("Worksheetdetail", "Worksheet")' + "/" + item.Worksheet_ID
+                                console.log('A'+item.Worksheet_JobNo_Text);
+                                $("#tbSearchDetail tbody tr:last").append("<td class=\"text-left\"><label name=\"lblWorksheetStatus\" id=\"lblWorksheetStatus\">" + item.Worksheet_Status_Text + "</label> <a href='" + url + "'><u>" + item.Worksheet_JobNo_Text + "</u></a></td>");
+                            }
+                            else
+                                $("#tbSearchDetail tbody tr:last").append("<td class=\"text-left\"></td>");
+                            ReceiveJobText = item.Receive_JobNo_Text;
+                        } else {
+                            if (item.Worksheet_JobNo_Text != null && item.Worksheet_Status_Text != null) {
+                                console.log('B'+item.Worksheet_JobNo_Text);
+                                
+                                var url ='@Url.Action("Worksheetdetail", "Worksheet")' + "/" + item.Worksheet_ID
+                                $("#tbSearchDetail tbody tr:last td:last").append("<td class=\"text-left\"><label name=\"lblWorksheetStatus\" id=\"lblWorksheetStatus\">" + item.Worksheet_Status_Text +"</label> <a href='" + url + "'><u>" + item.Worksheet_JobNo_Text + "</u></a></td>");
+                            }
+                        }
+                    });
+
+                    $('#TrackingsearchModal').modal('hide');
+
+
+                }
+
+            });
+
+        }
+        init();
+        function InitOverviewDataTable() {
+            oOverviewTable = $('#tbSearchDetail').dataTable(
+            {
+                "bPaginate": false,
+                "bJQueryUI": true,  // ThemeRoller-stöd
+                "bLengthChange": false,
+                "bFilter": false,
+                "bSort": false,
+                "bInfo": false,
+                "bAutoWidth": true,
+                "bProcessing": true,
+                //"iDisplayLength": 10,
+                //columns: [
+                //{ data: 'Receive_Status_Text' },
+                //{ data: 'Receive_Job_Text' }],
+                //"sAjaxSource": '/Helpdesk/ActiveCases/noacceptancetest'
+            });
+        }
+
+        InitOverviewDataTable();
+
+        $('#btnSearch').on("click", function () {
+
+            $('#TrackingsearchModal').modal('show');
+
+        });
+        $(".select2").select2();
+
+        $('#ProJectID').change(function (e) {
+            var ddlProject = $("[id*=ProJectID]");
+            var jsonObject = {
+                "ID": ddlProject.val()
+            };
+
+            $.ajax({
+                url: "@Url.Action("GetUnitData", "Tracker")",
+                type: "POST",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+
+                },
+                success: function (response) {
+                    var Jdata = JSON.stringify(response);
+                    //obj = JSON.parse('{"data":[{"UnitID":"1","Unit_Code":"1414-1034"},{"UnitID":"2","Unit_Code":"1414-1035"}]}');
+                    obj = JSON.parse(Jdata);
+                    var ddlUnitID = $("[id*=UnitID]");
+                    ddlUnitID.empty().append('<option selected="selected" value="">Please select</option>');
+                    $.each(obj.data, function (Index, Value) {
+                        ddlUnitID.append($("<option></option>").val(Value.UnitID).html(Value.Unit_Code));
+                    });
+
+                    //$("[id*=UnitID]").trigger("chosen:updated");
+                    //ddlUnitID.chosen();
+                }
+
+            });
+
+        });
+    });
+</script>

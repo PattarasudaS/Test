@@ -1,0 +1,267 @@
+﻿
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+@section AddToHead{
+    <style type="text/css">
+        form .row > div label.required::after {
+            content: '*';
+            color: #fb5858;
+        }
+
+        @@media (min-width: 768px) {
+            .col-smcus-100 {
+                width: 100%;
+                padding-left: 7px;
+            }
+        }
+
+        @@media (min-width: 768px) {
+            .col-smcus-8 {
+                width: 70.66666667%;
+                padding-left: 7px;
+            }
+        }
+          @@media (min-width: 768px) {
+            .col-smcus-8-5 {
+                width: 74.66666667%;
+                padding-left: 7px;
+            }
+        }
+        @@media (min-width: 768px) {
+            .col-smcus-7 {
+                width: 58.66666667%;
+                padding-left: 7px;
+            }
+        }
+
+        @@media (min-width: 992px) {
+            .col-mdcus-6 {
+                width: 47%;
+                padding-left: 7px;
+            }
+        }
+
+        @@media (min-width: 992px) {
+            .col-md-pd7 {
+                padding-left: 7px;
+            }
+        }
+
+        @@media (min-width: 992px) {
+            .col-lg-20 {
+                width: 20%;
+                text-align: right;
+            }
+        }
+
+        @@media (min-width: 992px) {
+            .col-lg-18 {
+                width: 18.9%;
+                text-align: right;
+            }
+        }
+            @@media (min-width: 992px) {
+            .col-sm-55 {
+                width: 54%;
+            }
+        }
+        .ln_solid {
+            border-top: 1px solid #e5e5e5;
+            color: #ffffff;
+            background-color: #ffffff;
+            height: 1px;
+            margin: 20px 0;
+        }
+    </style>
+}
+<div class="box">
+    <div class="box-header" style="margin-top:10px;">
+        <h3 class="box-title">Search Petty Cash</h3>
+    </div>
+    <hr style="margin-top:5px;" />
+    <!-- /.box-header -->
+    <form class="form-horizontal">
+        <div class="box-body">
+
+            <div class="row">
+                <div class="form-group  col-xs-12 col-sm-5 col-lg-5">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Company Code :</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <select class="form-control select2 input-sm" id="drpCompcode" data-placeholder="Click to Choose Company Code...">
+                            <option selected>Please select</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-xs-12  col-sm-7 col-lg-7">
+                    <label class="col-xs-12 col-sm-3 col-md-3 control-label required">Document No.:</label>
+                    <div class="col-xs-12 col-smcus-8-5">
+                        <input type="text" id="remarktxt" class="form-control input-sm" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="form-group  col-xs-12 col-sm-5 col-lg-5">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">CostCenter:</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <select class="form-control select2 input-sm" id="drpCompcode" data-placeholder="Click to Choose Company Code...">
+                            <option selected>Please select</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-sm-7 col-lg-7">
+                    <label class="col-xs-12 col-sm-3 col-md-3 control-label">Request By:</label>
+                    <div class="col-sm-4 col-md-pd7 ">
+                        <input type="text" id="remarktxt" class="form-control input-sm" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group  col-xs-12 col-sm-5 col-lg-5">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Vendor:</label>
+                    <div class="col-sm-6 col-md-6 input-group" style="padding-left:3%;width:47%">
+                         <input type="text" class="form-control"/>
+                        <div class="input-group-addon" style="cursor:pointer;">
+                            <i class="fa fa-search"></i>
+                            </div>
+                        </div>
+                    @*<div class="col-xs-12 col-sm-6 col-md-6">
+                     
+                    </div>*@
+                </div>
+                <div class="form-group col-xs-12 col-sm-7 col-lg-7">
+                    <label class="col-xs-12 col-sm-3 col-md-3 control-label">Request Date:</label>
+                    <div class="col-sm-4 col-md-pd7">
+                        <input type="text" id="remarktxt" class="form-control input-sm datepicker" />
+                    </div>
+                    <label class="col-xs-12 col-sm-1 col-md-1 control-label">To:</label>
+                    <div class="col-sm-4 col-md-pd7">
+                        <input type="text" id="remarktxt" class="form-control input-sm datepicker" />
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="form-group col-xs-12 ">
+                    <div class="col-sm-2 col-lg-20">
+                        <label class="control-label ">Earmarked Fund:</label>
+                    </div>
+                    <div class="col-sm-5 col-sm-55">
+                        <input type="text" id="remarktxt" class="form-control input-sm" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row" style="margin-top:10px;">
+
+                <div class="col-md-12 col-lg-12 " style="text-align:left;">
+                    <div class="col-sm-2 col-lg-18">
+                        <label for="DocumentType " class="control-label col-lgs-3 col-mds-3" style="text-align:right;">Document Type :</label>
+                    </div>
+                    <div class="col-sm-">
+                        <label class=""><div class="icheckbox_flat-blue checked" style="position: relative;"><input type="checkbox" id="checkboxa" value="X" class="selector " checked="checked" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> APPV : อนุมัติแล้ว </label>
+                        <label class=""><div class="icheckbox_flat-blue checked" style="position: relative;"><input type="checkbox" id="checkboxr" value="X" class="selector " checked="checked" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> REJT : ไม่ได้รับอนุมัติ/ยกเลิก </label>
+                        <label class=""><div class="icheckbox_flat-blue checked" style="position: relative;"><input type="checkbox" id="checkboxi" value="X" class="selector " checked="checked" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> INIT : รออนุมัติ </label>
+                        <label class=""><div class="icheckbox_flat-blue checked" style="position: relative;"><input type="checkbox" id="checkboxp" value="X" class="selector " checked="checked" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> PEND : รอส่งอนุมัติ </label>
+                        <label class=""><div class="icheckbox_flat-blue" style="position: relative;"><input type="checkbox" id="checkboxo" value="X" class="selector " style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> OLD : เอกสารเก่า </label>
+                    </div>
+
+                </div>
+            </div>
+            <br>
+            <div class="col-xs-12 col-sm-12 " style="text-align:center;">
+                <button type="button" class="btn btn-primary" id="btninsertReceived"><i class="ace-icon fa fa-search"></i>Search</button>
+                <button type="button" id="btnPreviewWO" class="btn btn-danger"><i class="ace-icon fa fa-times" -></i>Reject</button>
+            </div>
+            <br>
+
+            <div class="ln_solid"></div>
+            <div class="row table-responsive no-padding">
+                <div class="col-md-12 col-lg-12 ">
+                    <table id="pettyitemtable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width:2%;"></th>
+                                <th style="width:auto;text-align:center;">No.</th>
+                                <th style="width:12%;text-align:center;">G/L</th>
+                                <th style="width:14%;text-align:center;">WBS.</th>
+                                <th style="width:23%;text-align:center;">Description</th>
+                                <th style="width:10%;text-align:center;">Cost Center</th>
+                                <th style="width:13%;text-align:center;">I/O</th>
+                                <th style="width:10%;text-align:center;">Amount</th>
+                                <th style="width:11%;text-align:center;">Earmarked Fund</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3">
+                                    <div class="col-md-12 col-lg-12">
+                                        <button class="btn btn-xs btn-success" id="addrow"><span class="glyphicon glyphicon-plus"></span></button>
+                                        <select id="addrowmany" class="input-sm" tabindex="-1">
+                                            <option>1</option>
+                                            <option>5</option>
+                                            <option>10</option>
+                                            <option>20</option>
+                                            <option>30</option>
+                                            <option>50</option>
+                                            <option>100</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td colspan="4" align="right">
+                                    Amount :  <span id="net">0</span>  VAT :  <span id="vat">0</span>  Total : <span id="total">0.00</span>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--panel credit limit-->
+            <!-- end panel credit limit-->
+            <!--panel workflow status-->
+            <div class="panel panel-default" id="wfstatuspanel" style="display:none;">
+                <div class="panel-heading"><h5>Work Flow Status</h5></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12 col-lg-12" id="wfresulttable">
+                            <table id="Credittable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>WF No.</th>
+                                        <th>STATUS</th>
+                                        <th>Approved Date</th>
+                                        <th>Assigned To</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultwf"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!--end panel workflow status-->
+        </div>
+    </form>
+</div>
+
+@section Script{
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker(
+          {
+              autoclose: true,
+              format: 'dd/mm/yyyy'
+          });
+            $("body").addClass("sidebar-collapse");
+        });
+    </script>
+}
+

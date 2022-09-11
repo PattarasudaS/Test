@@ -1,0 +1,523 @@
+﻿
+@{
+    ViewBag.Title = "TrackerPOByWorkSheet";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+
+<style type="text/css">
+    div.dataTables_wrapper {
+        width: auto;
+        margin: 0 auto;
+    }
+
+
+    .input-group-text {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: .375rem .75rem;
+        margin-bottom: 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 2.5;
+        color: #495057;
+        text-align: center;
+        white-space: nowrap;
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+    }
+
+    li.select2-selection__choice {
+        background-color: #6bbbc7 !important;
+    }
+
+    .row.spece-line {
+        margin-top: 8px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        box-sizing: border-box;
+        list-style: none;
+        margin: 0;
+        padding: 0 5px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        padding: 0 5px;
+    }
+
+    ul.select2-selection__rendered > span.select2-selection__clear {
+        position: absolute;
+        right: 0;
+        margin: 3px 5px;
+        cursor:pointer;
+    }
+
+    .input-group-select-left {
+        width: 20%;
+        display: inline;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        float: left;
+    }
+
+    .input-group-text-right {
+        width: 80%;
+        display: inline;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-right: 0;
+        float: right;
+    }
+</style>
+
+<!-- Search Criteria-->
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">ค้นหารายการ PO ด้วยใบงาน</h3>
+    </div>
+    <div class="content">
+        <div class="box-body">
+
+            <div class="row">
+                <div class="form-group  col-xs-12 col-md-6 col-lg-4 " style="padding-right:0px;">
+                    <label class="control-label">โครงการ :</label>
+                    <select class="col-lg-12 form-control select2 selectpicker" multiple data-max-options="2" id="searchProjectDoc" name="ProjectID" data-placeholder="-- คลิกเพื่อเลือกโครงการ --">
+                        <option value="0">0000 - โครงการทั้งหมด : ALL</option>
+                    </select>
+
+                </div>
+                <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                    <label class="control-label"> ยูนิต :</label>
+                    <div class="controls">
+                        <select id="ddlSearchUnitID" name="UnitID" class="form-control select2 selectpicker" multiple data-max-options="2" data-placeholder="-- กรุณาคลิกเพื่อยูนิต --" disabled>
+                            <!-- <option value="0000">0000 - ยูนิตทั้งหมด : ALL</option> -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group col-xs-12 col-md-6 col-lg-4">                 
+                    <label class="control-label">ประเภทใบงาน :</label>
+                    <div class="controls">
+                        <select id="workSheetType" name="workSheetType" class="form-control">
+                            <option value="">-- เลือกทั้งหมด --</option>
+                            <option value="W">งานซ่อมทั่วไป</option>
+                            <option value="WA">OneTime Service</option>
+                            <option value="WC">Yearly Service</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                    <label class="control-label">วันที่สร้าง : </label>
+                    <div class="bootstrap-datepicker">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" id="createDatefrom" name="createDatefrom" class="form-control datepicker">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                    <label class="control-label">ถึงวันที่ : </label>
+                    <div class="bootstrap-datepicker">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" id="createDateto" name="createDateto" class="form-control datepicker">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group  col-xs-12 col-sm-6 col-lg-4 ">
+                    <label class="control-label">เลขที่ใบงาน</label>
+                    <div class="form-inline">
+                        <select class="form-control  input-group-select-left" id="workType" name="workType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทระบบ --" style="width: 20%;">
+                            <option selected="">Please select</option>
+                        </select>
+                        <input type="text" class="form-control input-group-text-right" style="width: 80%;" id="workNo" name="workNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-xs-12 col-sm-6 col-lg-12 text-center">
+                    <div class="controls" style="margin-top:20px;">
+                        <button type="submit" class="btn btn-primary" id="btnSearch" style="width: 100px;">ค้นหา</button>
+                        <button type="button" class="btn btn-success" id="btnExport" style="width: 100px;">ออกรายงาน</button>
+                    </div>
+                </div>
+            </div>
+          
+
+          
+        </div>
+    </div>
+
+</div>
+
+<!-- Result-->
+<div class="box" id="search-result" style="margin-bottom: 0;" hidden>
+    <div class="box-header">
+        <h3 class="box-title" id="searchCount"></h3>
+    </div>
+    <div class="box-body">
+        <div class="col-lg-12">
+            <table id="tbSearchResult" class="display nowrap table table-striped table-bordered table-hover" cellspacing="0" style="width:100%; white-space: nowrap">
+                <thead id="searchHeaderDisplay">
+                    <tr>
+                        <th class="text-center">ลำดับ</th>
+                        <th class="text-center" style="min-width:150px;">เลขที่ใบงาน</th>
+                        <th class="text-center" style="min-width:150px;">วันที่เปิดใบงาน</th>
+                        <th class="text-center" style="min-width:150px;">สถานะใบงาน</th>
+                        <th class="text-center" style="min-width:100px;">เลขที่ใบ PO</th>
+                        <th class="text-center" style="min-width:100px;">สถานะ PO</th>
+                        <th class="text-center" style="min-width:100px;">วันที่สร้าง PO</th>
+                        <th class="text-center" style="min-width:180px;">ประเภทการส่งอนุมัติ</th>
+                        <th class="text-center" style="min-width:100px;">รหัสผู้รับเหมา</th>
+                        <th class="text-center" style="min-width:200px;">ชื่อผู้รับเหมา</th>
+                        <th class="text-center" style="min-width:150px;">ประเภทใบงาน</th>
+                        <th class="text-center" style="min-width:150px;">BillingNote</th>
+                        <th class="text-center" style="min-width:100px;">สถานะ BillingNote</th>
+                        <th class="text-center" style="min-width:150px;">เลขที่ใบ Retention</th>
+                        <th class="text-center" style="min-width:100px;">สถานะ Retention</th>
+
+                    </tr>
+                </thead>
+                <tbody id="searchResultDisplay"></tbody>
+            </table>
+        </div>
+    </div>
+   
+</div>
+
+
+@section script{
+    <script type="text/javascript">
+        const baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+        var table;
+        let ProjectList=[];
+        $(document).ready(function () {
+
+            //Initial DatePicker
+            const today = new Date().getDate();
+            const thisMonth = new Date().getMonth() + 1;
+            const thisYear = new Date().getFullYear();
+            $('.datepicker').datepicker({
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                endDate: '0d'
+            });
+        
+            $('#createDatefrom').datepicker('update', `01/${new Date().getMonth()}/${thisYear}`);
+            $('#createDateto').datepicker('update', `${today}/${thisMonth}/${thisYear}`);
+
+            initDropDownProject();
+            initWorkTypeDropdown();
+
+            $('#searchUnitID').attr('disable', true);
+            
+
+        });
+
+
+
+        $('#searchProjectDoc').on('select2:select', function (e) {
+            var data_projectID = e.params.data.id;
+            if (data_projectID == '' || data_projectID == 0) {
+                data_projectID = 0;
+                $('#ddlSearchUnitID').empty();
+                $('#ddlSearchUnitID').attr('disabled', 'disabled');
+
+            } else {
+                getSearchDDLUnitID();
+            }
+
+        });
+
+        $('#searchProjectDoc').on('select2:unselect', function (e) {
+            $('#ddlSearchUnitID').empty();
+            $('#ddlSearchUnitID').trigger('change.select2');
+            var data_projectID = $('#searchProjectDoc').val();
+            $('#searchProjectDoc').trigger('change.select2');
+
+            if (data_projectID == '' || data_projectID == 0) {
+                data_projectID = 0;
+                $('#ddlSearchUnitID').attr('disabled', 'disabled');
+            } else {
+                getSearchDDLUnitID();
+            }
+        });
+
+        $('#btnSearch').click(function () {
+            var ProjectID = $('#searchProjectDoc').val();
+            var createDatefrom = $('#createDatefrom').val();
+            if (createDatefrom == "") {
+                modalWaring("กรุณาใส่วันที่สร้างใบงาน");
+                return false;
+            }
+            var createDateto = $('#createDateto').val();
+            if (createDateto == "") {
+                modalWaring("กรุณาใส่วันที่สร้างใบงานสิ้นสุด");
+                return false;
+            }
+            var createDatefromDate = new Date(createDatefrom.substring(6, 10), createDatefrom.substring(3, 5) - 1, createDatefrom.substring(0, 2));
+            var createDatetoDate = new Date(createDateto.substring(6, 10), createDateto.substring(3, 5) - 1, createDateto.substring(0, 2));
+            var DueDay = new Date(createDatefrom.substring(6, 10), createDatefrom.substring(3, 5) - 1, createDatefrom.substring(0, 2));
+            if (createDatefromDate > createDatetoDate) {
+                modalWaring("กรุณาใส่วันที่สร้างใบงานเริ่มต้นน้อยกว่าวันที่สิ้นสุด");
+                return false;
+            }
+            var Tracker_JobType = $('#Tracker_JobType').val();
+
+            // Check if user select all project then date range must not higher than 6 month
+            if (ProjectID.length === 0) {
+                DueDay.setMonth(createDatefromDate.getMonth() + 12);
+                if (createDatetoDate > DueDay) {
+                    modalWaring('กรณีเลือกทุกโครงการ กรุณาเลือกระยะเวลาไม่เกิน 1 ปี');
+                    return false;
+                }
+            } else {
+                DueDay.setMonth(createDatefromDate.getMonth() + 12);
+                if (createDatetoDate > DueDay) {
+                    modalWaring('กรุณาเลือกระยะเวลาไม่เกิน 1 ปี');
+                    return false;
+                }
+            }
+            //page.loading();
+            searchPO();
+        });
+
+        $('#btnExport').click(function () {
+            ExportWorkSheetReport();
+        });
+        async function getSearchDDLUnitID() {
+            var ProjectIDList = "";
+            for (var m of $(searchProjectDoc).val()) {
+
+                ProjectIDList += m.trim() + ",";
+            }
+            var body = {
+                ProjectIDList: ProjectIDList ? ProjectIDList : "0,",
+            };
+
+            $("#ddlSearchUnitID").empty();
+
+            await ajaxPost(`${baseUrl}/homecare/api/v1/Tracker/GetUnitIDbyProjectsCode`, body, response => {
+                if (response.data.length > 0) {
+                    $.each(response.data, function (Index, Value) {
+                        $("#ddlSearchUnitID").append($("<option></option>").val(this.Unit_ID).html(this.Unit_Code));
+                        $("#ddlSearchUnitID").removeAttr("disabled");
+                    });
+                }
+
+            });
+
+        }
+   
+        function initDropDownProject() {
+          let option = ``;
+              $.ajax({
+                  url: "@Url.Action("GetProejctMasterByCode", "Home")",
+                  type: 'POST',
+                  contentType: 'application/json; charset=utf-8',
+                  dataType: 'json',
+                  error: function (response) {
+                     // alert(response.responseText);
+                  },
+                  success: function (response) {
+                      var ddlsearchProjectDoc = $('[id*="searchProjectDoc"]');
+                      ProjectList = response;
+                     
+                      if (response.length > 0) {
+                          $("#searchProjectDoc option").remove();
+                          $.each(response, function (Index, Value) {
+                              option += `<option value="${Value.Value}">
+                                     ${Value.Text}
+                                </option>`;
+                          });
+                          ddlsearchProjectDoc.empty().html(option);
+                      }
+                  }
+              });
+        }
+    
+        function formatDate(date) {
+            var d = date.split('/')[0];
+            var m = date.split('/')[1];
+            var y = date.split('/')[2];
+            return `${y}-${m}-${d}`
+        }
+        // Deformat Date Funciton
+        function deformatDate(date) {
+            var y = date.split('-')[0];
+            var m = date.split('-')[1];
+            var d = date.split('-')[2];
+            return `${d}/${m}/${y}`
+        }
+        async function initWorkTypeDropdown() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetWorkTypeList`, response => {
+                if (response) {
+                    var ddlWorkType = $('#workType');
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.description}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddlWorkType.empty().html(option);
+                }
+
+            });
+        }
+        function dateFormat(date) {
+            if (!date) { return '' }
+            var temp = date.trim().split('/');
+            return `${temp[2]}-${temp[1]}-${temp[0]}`
+        }
+        async function searchPO() {
+
+            let ProjectIDList = "";
+            let workNo;
+
+            $('#tbSearchResult').DataTable().destroy();
+
+            for (var m of $(searchProjectDoc).val()) {
+                ProjectIDList += m.trim() + ",";
+            }
+            let UnitIDList = "";
+            for (var m of $(ddlSearchUnitID).val()) {
+                UnitIDList += m + ",";
+            }
+
+            if ($('#workNo').val().replace(/ /g, '') !== '') {
+                workNoArr = $('#workNo').val().split(',');
+                workNo = workNoArr.map((item) => {
+                    return item.trim();
+                });
+            }
+
+            let data = {
+                ProjectList: ProjectIDList,
+                UnitIDList: UnitIDList,
+                JobCodeType: $('#workNo').val().replace(/ /g, '') === '' ? null : $('#workType').val().trim(),
+                CreatedFrom: $('#createDatefrom').val() !== '' ? dateFormat($('#createDatefrom').val()) : null,
+                CreatedTo: $('#createDateto').val() !== '' ? dateFormat($('#createDateto').val()) : null,
+                WorkNoList: $('#workNo').val().replace(/ /g, '') === '' ? null : workNo.join(),
+                WorkSheetType: $('#workSheetType').val() === '' ? null : $('#workSheetType').val()
+            }
+            let startQueryAt = new Date();
+            page.loading();
+            await ajaxPost(`${baseUrl}/homecare/api/v1/Tracker/SearchPOByWorkSheet`, data, response => {
+                let doneQueryAt = new Date();
+                $('#searchResultDisplay').empty();
+                if (response.data.length > 0)
+                    $('#searchCount').html('ทั้งหมด ' + response.data.length + ' รายการ' + ' (แสดง ' + (response.data.length <= 100 ? response.data.length : '100') + ' รายการ) <span style="color: darkgray; font-size: 11px; font-style: italic;">- ระยะเวลาในการค้นหา ' + (doneQueryAt - startQueryAt) / 1000 + ' วินาที</span><p/><span style="color: green; font-size: 12px;">* คลิกปุ่ม "ออกรายงาน" เพื่อดาวน์โหลดรายการทั้งหมด</span>');
+                else
+                    $('#searchCount').text("ไม่พบรายการ");
+                $.each(response.data.slice(0, 1000), (i, d) => {
+                    $('#searchResultDisplay').append(`
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><a href='./../Worksheet/${d.job_Code == 'W' ? 'WorksheetDetail' : 'WorksheetRepair'}/${d.worksheetID}' target="_blank">${d.worksheetDesc}</a></td>
+
+                        <td>${d.worksheetDate}</td>
+                       
+                        <td>${d.worksheet_status}</td>
+                        <td>${d.poNumber}</td>
+                        <td>${d.poStatus}</td>
+                        <td>${d.poCreated}</td>
+                        <td>${d.paymentDesc}</td>
+                       
+
+                        <td>${d.vendorId}</td>
+                        <td>${d.vendorName}</td>
+                        <td>${d.worksheetType}</td>
+                      
+                        <td>${d.billingnoteNumber}</td>
+                       
+                        <td>${d.billingnoteStatus}</td>
+                        <td>${d.retNumber}</td>
+                        <td>${d.retStatus}</td>
+                      
+                    </tr>
+                `);
+                });
+
+            });
+            // Initialize data table
+            $('#tbSearchResult').DataTable({
+                scrollX: true,
+                pageLength: 10,
+                "language": {
+                    "processing": "กำลังดึงข้อมูล...กรุณารอสักครู่",
+                    "search": "ค้นหา : ",
+                    "lengthMenu": "แสดง _MENU_ รายการ",
+                    "emptyTable": "ไม่พบข้อมูล",
+                    "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoFiltered": "",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+
+                }
+            });
+            $('.dataTables_scrollBody').css('max-height', '967px');
+            $('.select2-search__field').css({ paddingLeft: '1rem' });
+
+            $('#btnExport').show();
+            $('#form-box').show();
+            $('#search-result').show();
+            $('#tbSearchResult').DataTable().columns.adjust().draw();
+
+            await page.loaded();
+
+        }
+
+        function ExportWorkSheetReport() {
+       
+            let ProjectIDList = "";
+
+            for (var m of $(searchProjectDoc).val()) {
+                ProjectIDList += m + ",";
+            }
+            let UnitIDList = "";
+            for (var m of $(ddlSearchUnitID).val()) {
+                UnitIDList += m + ",";
+            }
+
+            if ($('#workNo').val().replace(/ /g, '') !== '') {
+                workNoArr = $('#workNo').val().split(',');
+                workNo = workNoArr.map((item) => {
+                    return item.trim();
+                });
+            }
+          
+            let _ProjectList = ProjectIDList;
+            let _UnitIDList = UnitIDList;
+            let _JobCodeType = $('#workNo').val().replace(/ /g, '') === '' ? "" : $('#workType').val().trim();
+            let _CreatedFrom = $('#createDatefrom').val() !== '' ? dateFormat($('#createDatefrom').val()) : "";
+            let _CreatedTo = $('#createDateto').val() !== '' ? dateFormat($('#createDateto').val()) : "";
+            let _WorkNoList = $('#workNo').val().replace(/ /g, '') === '' ? "" : workNo.join();
+            let _WorkSheetType = $('#workSheetType').val() === '' ? "" : $('#workSheetType').val();
+
+            let paramQuery = `ProjectList=${_ProjectList ? _ProjectList : ""}&UnitIDList=${_UnitIDList ? _UnitIDList : ""}&JobCodeType=${_JobCodeType}&CreatedFrom=${_CreatedFrom}&CreatedTo=${_CreatedTo}&WorkNoList=${_WorkNoList}&WorkSheetType=${_WorkSheetType}`;
+           window.open(`${baseUrl}/homecare/api/v1/ExportExcelSheet/ExportSearchPOReasult?${paramQuery}`, '_blank');
+        }
+
+    </script>
+}

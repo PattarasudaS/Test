@@ -1,0 +1,1080 @@
+﻿@using HomeCare_4_0.Common
+@using HomeCare_4_0.ClassLib
+
+@{
+    ViewBag.Title = "ManageLineApprove";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+
+
+<link rel="stylesheet" href="~/assets/plugins/datatables/dataTables.bootstrap-1.10.12.min.css" />
+<link rel="stylesheet" href="~/assets/plugins/datatables/responsive.bootstrap.min.css" />
+<style type="text/css">
+
+    .project-status-filter {
+        border: 0;
+        box-shadow: none;
+        position: relative;
+        bottom: 6.5px;
+        right: 11px;
+    }
+
+    .btn-group .btn {
+        min-width: 85.5px;
+    }
+
+    .btn-rounded {
+        font-family: Raleway-SemiBold;
+        font-size: 13px;
+        /*        color: rgba(58, 133, 191, 0.75);*/
+        letter-spacing: 1px;
+        line-height: 15px;
+        border: 2px solid rgba(58, 133, 191, 0.75);
+        border-radius: 40px;
+        /*        background: transparent;*/
+        transition: all 0.3s ease 0s;
+    }
+
+        .btn-rounded :hover {
+            color: #FFF;
+            background: rgba(58, 133, 191, 0.75);
+            border: 2px solid rgba(58, 133, 191, 0.75);
+        }
+
+    .input-group {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex !important;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .input-group-prepend {
+        margin-right: -1px;
+    }
+
+    prepend {
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+    .input-group-text {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: .375rem .75rem;
+        margin-bottom: 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 2.5;
+        color: #495057;
+        text-align: center;
+        white-space: nowrap;
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+    }
+
+    li.select2-selection__choice {
+        background-color: #6bbbc7 !important;
+    }
+
+    .row.spece-line {
+        margin-top: 8px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        box-sizing: border-box;
+        list-style: none;
+        margin: 0;
+        padding: 0 5px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        padding: 0 5px;
+    }
+
+    ul.select2-selection__rendered > span.select2-selection__clear {
+        position: absolute;
+        right: 0;
+        margin: 3px 5px;
+    }
+
+    .deleteButton {
+        background: transparent;
+        color: #f00;
+        display: inline-block;
+        font-size: 12px;
+        height: 20px;
+        line-height: 2px;
+        margin: 0 0 8px;
+        padding: 0;
+        text-align: center;
+        width: 20px;
+        border: none;
+    }
+
+    .btn-custom {
+        font-family: Raleway-SemiBold;
+        font-size: 13px;
+        /*        color: rgba(58, 133, 191, 0.75);*/
+        letter-spacing: 1px;
+        line-height: 15px;
+        /* border: 2px solid rgba(58, 133, 191, 0.75);*/
+        border-radius: 40px;
+        /*        background: transparent;*/
+        /*transition: all 0.3s ease 0s;*/
+    }
+
+        .btn-custom :hover {
+            color: #FFF;
+            background: rgba(58, 133, 191, 0.75);
+            /* border: 2px solid rgba(58, 133, 191, 0.75);*/
+        }
+
+    form .error {
+        color: #ff0000;
+        font-weight: 300;
+        font-style: italic;
+        font-size: 1.2rem;
+    }
+
+    @@media (min-width: 992px) {
+        .modal {
+            overflow-y: auto;
+        }
+
+        .modal-xl {
+            width: 1100px;
+        }
+    }
+
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        border-radius: 13px;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: 500 !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+
+    .fa-lg {
+        font-size: 1.5em !important;
+    }
+
+    .td-click {
+        cursor: pointer;
+    }
+
+
+    body {
+        padding-right: 0px !important;
+    }
+
+    .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+        color: #0661d0 !important;
+    }
+</style>
+
+<div class="row">
+    <div class="content">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">จัดการสายการอนุมัติใบงาน</h3>
+            </div>
+            <div class="box-body">
+                <ul class="nav nav-tabs">
+                    <li id="tab-project" class="active disabled" disabled="true"><a data-toggle="tab" href="#projectManagement">จัดการตำแหน่งสายอนุมัติ</a></li>
+                    <li id="tab-role" class="disabled"><a data-toggle="tab" href="#roleManagement">จัดการตำแหน่งงาน</a></li>
+
+                </ul>
+                <div class="tab-content">
+                    <div id="projectManagement" class="tab-pane fade in active">
+                        <div class="container-fluid" style="margin-top:40px;">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                                <label>โครงการ :</label>
+                                <select class="col-lg-12 form-control select2" id="searchProjectDoc" data-placeholder="-- กรุณาคลิกเพื่อเลือกโครงการ --">
+                                    <option selected>Please select</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-4 dvRole">
+                                <label>ตำแหน่ง :</label>
+                                <select class="col-lg-12 form-control select2 selectpicker" multiple="multiple" data-max-options="2" id="searchRole" data-placeholder="-- กรุณาคลิกเพื่อเลือกตำแหน่งสายงาน --">
+                                </select>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6 col-lg-4 dvRole" style="padding-right:35px;">
+                                <div class="row pull-right">
+                                    <label style="height: 17px"></label>
+                                    <div class="controls">
+                                        <button type="button" class="btn btn-primary btn-custom" id="btnAddRow">
+                                            <i class="fa fa-users" aria-hidden="true"></i>
+                                            เพิ่มตำแหน่ง
+                                        </button>&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-primary btn-custom" id="btnEditRow">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                            จัดการตำแหน่ง
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12 dvRole" style="margin-top:30px;">
+                                <div class="table-responsive " id="dvRole">
+                                    <table class="table  table-striped table-bordered" id="role-list" style="margin-bottom: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="min-width:250px;">Role</th>
+                                                <th class="text-center" style="min-width:200px;">CreditLimit</th>
+                                                <th class="text-center" style="min-width:200px;">Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div id="roleManagement" class="tab-pane fade">
+                        <div class="container-fluid" style="margin-top:30px;">
+                            <div class="form-group col-xs-12 col-md-6 col-lg-3" style="padding-left:30px;">
+                                <div class="row pull-left">
+                                    <label>ประเภทระบบ </label>
+                                    <select class="col-lg-12 form-control select2" id="searchHCType" name="searchHCType" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทระบบ --">
+                                        <option selected>Please select</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-6">
+                                <label>สถานะการใช้งาน</label>
+                                <div class="btn-group form-control project-status-filter">
+                                    <button name="search-status-all" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ทั้งหมด</button>
+                                    <button name="search-status-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                    <button name="search-status-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6 col-lg-3" style="padding-right:30px;">
+                                <div class="row pull-right">
+                                    <label style="height:15px;"></label>
+                                    <div class="controls ">
+                                        <button type="button" class="btn btn-warning btn-custom" id="btnBack" onclick="backTab('projectManagement','tab-role')">
+                                            <i class="fa fa-backward" aria-hidden="true"></i>
+                                            ย้อนกลับ
+                                        </button>&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-primary btn-rounded" id="btnAddRoleMaster">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                            เพิ่ม
+                                        </button>&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" form-group col-xs-12 col-md-12 col-lg-12" style="margin-top:30px;">
+                                <div class="table-responsive ">
+                                    <table class="table  table-striped table-bordered table-hover" id="role-master-list" style="margin-bottom: 0;height: 80px; overflow-y: auto;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">ลำดับ</th>
+                                                <th class="text-center">ตำแหน่ง</th>
+                                                <th class="text-center">Credit Limit</th>
+                                                <th class="text-center">สถานะการใช้งาน</th>
+                                                <th class="text-center">ประเภทระบบ</th>
+                                                <th class="text-center">แก้ไข</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--  Modal Insert Success -->
+<div class="modal fade" id="modalInsertRoleSuccess" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="z-index:2000;">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">ยืนยันการ บันทึก</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa fa-check fa-2x" aria-hidden="true" style="color: #32CD32;"></i>
+                <span id="lbTxtSuccess"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">ตกลง</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  Modal Role warning -->
+<div class="modal fade" id="modalRoleWarning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="z-index:2000;">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">แจ้งเตือน</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true" style="color:#FFCC00;"></i>
+                <span id="lbTxtWarning"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal confirm delete-->
+<div id="modalRoleDelete" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">ยืนยันการ ลบ</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formConfimDelete">
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">
+                            <i class="far fa-comment-alt fa-2x" aria-hidden="true" style="color: green;"> </i>
+                            กรุณากรอกเหตุผล
+                        </label>
+                        <textarea class="form-control" name="txtAreaMessageText"></textarea>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" style="width: 65px;" id="confirm">ยืนยัน</button>
+                <button type="button" class="btn btn-default" style="width: 65px;" data-dismiss="modal">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Add Form -->
+<div class="modal fade" id="modalEditRowForm" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div id="frmActionRow">
+            <input type="hidden" id="frmActionRowEvent" name="frmActionRowEvent" />
+            <input type="hidden" id="RoleId" name="RoleId" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">เพิ่มตำแหน่งใหม่</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding-left:15px; padding-right:15px;">
+                        <div class="form-group  col-xs-12 col-md-6 col-lg-5">
+                            <label style="height: 17px"></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="">ข้อมูลตำแหน่งงาน</span>
+
+                                </div>
+                                <input type="text" class="form-control" id="RoleDesc" name="RoleDesc" placeholder="กรอกตำแหน่งงาน" maxlength="10" />
+                                <input type="text" class="form-control allownumeric" id="CreditLimit" name="CreditLimit" placeholder="จำนวน Credit Limit" maxlength="8" />
+                            </div>
+                        </div>
+                        <div class="form-group  col-xs-12 col-md-6 col-lg-3">
+                            <label>สถานะการใช้งาน</label>
+                            <div class="btn-group form-control project-status-filter">
+                                <button name="status-visible" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                                <button name="status-disable" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                            <label>ประเภทระบบ :</label>
+                            <select class="col-lg-12 form-control select2" id="HcSystemsId" name="HcSystemsId" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภท --">
+                                <option selected>Please select</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-md-6 col-lg-12 text-center">
+                            <div class="controls">
+                                <button type="button" class="btn btn-primary btn-custom" id="btnSaveActionRow">
+                                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                    บันทึก
+                                </button>
+                                @*<button type="button" class="btn btn-warning btn-custom" id="btnClearActionRow">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                        ยกเลิก
+                                    </button>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section script {
+
+    <script type="text/javascript">
+        const baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+        let DataList = null
+        let btnStatusValue = true;
+        let btnSearchStatusValue = null;
+        let arrRoleMaster = [];
+        let table;
+        $(document).ready(async function () {
+           await page.loading();
+           await ajaxGet(baseUrl + '/homecare/api/v1/User/@UserDetail.UserID/Permission', response => {
+                if (response) {
+                    if (!response.data.length) {
+                        noPermissionAlert();
+                    } else if (!response.data.find(a => a.permissionDescription === 'ManageLineApprove')) {
+                        noPermissionAlert();
+                    } else {
+                        page.loaded();
+                    }
+                }
+            });
+            initDropDownProject();
+            initDropDownRole();
+            initDropdownHCType();
+            $(".dvRole").css("display", "none");
+
+            table = $('#role-master-list').DataTable({
+                "columnDefs": [
+                    {
+
+                        "targets": 0,
+                        "render": function (value, type, row, meta) {
+                            return `<td>${value.index+1}</td>`;
+                        },
+                        "className": "td-click "
+                    },
+                    {
+
+                        "targets": 1,
+                        "render": function (value, type, row, meta) {
+                            return `<td>${value}</td>`;
+                        },
+                        "className": "td-click "
+                    },
+                    {
+                        "targets": 2,
+                        "render": function (value, type, row, meta) {
+                            return `<td>${value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}</td>`;
+                        },
+                        "className": "text-right td-click "
+                    },
+                    {
+
+                        "targets": 3,
+                        "render": function (value, type, row, meta) {
+                            if (value === true) {
+                                return `<td> <i class="fa fa-check-circle fa-lg" aria-hidden="true" style="color:#58C89E;"  ></i></td>`;
+                            } else {
+                                return `<td> <i class="fa fa-minus-circle fa-lg" aria-hidden="true" style="color:#CE494D;"></i></td>`;
+                            }
+
+                        },
+                        "className": "text-center td-click "
+                    },
+                    {
+
+                        "targets": 4,
+                        "render": function (value, type, row, meta) {
+                            return `<td>${value}</td>`;
+
+                        },
+                        "className": "text-center td-click "
+                    },
+                    {
+
+                        "targets": 5,
+                        "render": function (value, type, row, meta) {
+                            return `<a href="#" onclick="onClickEditRoleMaster(${value.roleId})"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>`;
+                        },
+                        "className": "text-center"
+                    }
+                ],
+                "order": [[0, 'asc']],
+                "language": {
+                    "search": "ค้นหา : ",
+                    "lengthMenu": "แสดง _MENU_ รายการ",
+                    "emptyTable": "ไม่พบข้อมูล",
+                    "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoFiltered": "",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+
+                }
+
+            });
+            table.on('order.dt search.dt', function () {
+                table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }).draw();
+
+            $('#role-master-list tbody').on('click', 'tr', function (event) {
+                var data = table.row(this).data();
+                console.log(data[0].roleId);
+                onClickEditRoleMaster(data[0].roleId);
+
+            });
+            ///set init data
+            $('button[name=status-visible]').removeClass('btn-default');
+            $('button[name=status-visible]').addClass('btn-success');
+            $('button[name=status-disable]').removeClass('btn-danger');
+            $('button[name=status-disable]').addClass('btn-default');
+
+            $('button[name=status-visible]').removeClass('btn-default');
+            $('button[name=status-visible]').addClass('btn-success');
+            $('button[name=status-disable]').removeClass('btn-danger');
+            $('button[name=status-disable]').addClass('btn-default');
+            $('button[name=search-status-all]').removeClass('btn-default');
+            $('button[name=search-status-all]').addClass('btn-info');
+            $('button[name=search-status-visible]').removeClass('btn-success');
+            $('button[name=search-status-visible]').addClass('btn-default');
+            $('button[name=search-status-disable]').removeClass('btn-danger');
+            $('button[name=search-status-disable]').addClass('btn-default');
+            btnSearchStatusValue = null;
+            btnStatusValue = true;
+            $('#frmActionRow [name="HcSystemsId"]').val('1').trigger('change');
+
+            $('#searchProjectDoc').change(function (event) {
+                //console.log(event.target.value);
+                if (event.target.value) {
+                    $(".dvRole").css("display", "block");
+                } else {
+                    $(".dvRole").css("display", "none");
+                }
+                getProjectList(event.target.value);
+
+            });
+            $('#tab-project').show();
+            $('#tab-role').hide();
+            page.loaded();
+        });
+
+        $('#tab-project').click(function (event) {
+            if ($(this).hasClass('disabled')) { return false; }
+        });
+        $('#btnAddRow').click(async function () {
+                var role = $("#searchRole").val();
+                var projectId = $('#searchProjectDoc').val();
+                const roleList = await ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/GetLineApproveProgect?projectId=${projectId}`);
+                const filterRoles = roleList.data.filter(f => role.indexOf(f.roleId.toString()) > -1);
+                if (role.length == 0) {
+                    showModalLineApprveWarning('กรุณาเลือกตำแหน่ง');
+                }else if (filterRoles.length > 0) {
+                    showModalLineApprveWarning('ไม่สามารถเพิ่มตำแหน่งซ้ำกันได้');
+                } else {
+
+                    var data = {
+                        ProjectId: projectId,
+                        ProjectId: projectId,
+                        Role: role,
+                        CreateBy: '@UserDetail.CodeName'
+                    };
+                    await page.loading();
+
+                    await ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/InsertLineApproveRole`, data, response => {
+                        page.loaded();
+                        if (response) {
+                            showModalLineApprveSuccess('บันทึกสำเร็จ');
+                            var projectId = $('#searchProjectDoc').val();
+                            getProjectList(projectId);
+                            initDropDownRole();
+                        } else {
+                            showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                        }
+                    });
+                }
+            });
+
+
+        $('#btnEditRow').click(async function () {
+           $('#searchHCType').val('1').trigger('change');
+          // await initMasterRoleTable();
+            activaTab('roleManagement', 'tab-role');
+
+        });
+
+        $('#btnAddRoleMaster').click(function () {
+            resetFormRoleMaster();
+            $('#modalEditRowForm').modal({ backdrop: 'static', keyboard: false, show: true });
+        });
+
+        $('#btnClearActionRow').click(function () {
+            resetFormRoleMaster();
+        });
+
+        $('#searchHCType').change(function () {
+            initMasterRoleTable();
+        });
+        $(".allownumeric").on("keypress keyup blur", function (event) {
+            $(this).val($(this).val().replace(/[^\d].+/, ""));
+            if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+        $('#btnSaveActionRow').click(async function () {
+            let roleDesc = $('#frmActionRow [name="RoleDesc"]').val().trim();
+            let creditLimit = $('#frmActionRow [name="CreditLimit"]').val().trim();
+            let action = $('#frmActionRow [name="frmActionRowEvent"]').val();
+            let system = $('#frmActionRow [name="HcSystemsId"]').val();
+            let roleId = action === 'insert' ? 0 : $('#frmActionRow [name="RoleId"]').val().trim();
+            if (roleDesc === "" || roleDesc === null || roleDesc === undefined) {
+                showModalLineApprveWarning('กรุณาระบุตำแหน่ง');
+                return false;
+            }
+            if (creditLimit === "" || creditLimit === null || creditLimit === undefined) {
+                showModalLineApprveWarning('กรุณาระบุจำนวน Credit Limit');
+                return false;
+            }
+
+            let checkDup = arrRoleMaster.filter(e => e.roleDesc.trim() === roleDesc && e.systemId === Number(system) && e.roleId !== Number(roleId));
+            if (checkDup.length > 0) {
+                showModalLineApprveWarning('ไม่สามารถเพิ่มตำแหน่งซ้ำกันได้');
+                return false;
+            }
+            let data = {
+                LineApproveId: action === 'insert' ? 0 : $('#frmActionRow [name="RoleId"]').val(),
+                RoleDesc: $('#frmActionRow [name="RoleDesc"]').val(),
+                CreditLimit: $('#frmActionRow [name="CreditLimit"]').val(),
+                SystemTypeId: $('#frmActionRow [name="HcSystemsId"]').val(),
+                IsActive: btnStatusValue,
+                UserLogin :'@UserDetail.CodeName'
+            }
+
+            await page.loading();
+            await ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/InsertLineApproveMasterRole`, data, response => {
+                //console.log(response);
+                if (response) {
+                    if (response.data.status) {
+                        initMasterRoleTable();
+                        showModalLineApprveSuccess('บันทึกสำเร็จ');
+                        resetFormRoleMaster();
+                        initDropDownRole();
+                        page.loaded();
+                        $('#modalEditRowForm').modal('hide');
+
+                    } else {
+                        page.loaded();
+                       showModalLineApprveWarning(response.data.msg);
+
+                    }
+                } else {
+                    page.loaded();
+                    showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                }
+            });
+        });
+
+        function initDropDownProject() {
+            let option = ``;
+                $.ajax({
+                    url: "@Url.Action("GetProejctMaster", "Home")",
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    error: function (response) {
+                       // alert(response.responseText);
+                    },
+                    success: function (response) {
+                        var ddlsearchProjectDoc = $('[id*="searchProjectDoc"]');
+                        option += `<option selected="selected" value="">Please select</option>`;
+                        $.each(response, function (Index, Value) {
+                            option += `<option value="${Value.Value}">
+                                       ${Value.Text}
+                                  </option>`;
+                        });
+                        ddlsearchProjectDoc.empty().html(option);
+                    }
+                });
+        }
+
+        async function initDropDownRole() {
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetLineApploveList`, response => {
+                if (response.data.length > 0) {
+                    $("#searchRole option").remove();
+                    $.each(response.data, function (Index, Value) {
+                        $("#searchRole").append($("<option></option>").val(Value.id).html(Value.description));
+                    });
+
+                }
+            });
+
+        }
+        async function initDropdownHCType() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetHcSystemList`, response => {
+                if (response) {
+                    var ddlHCType = $('#searchHCType');
+                    var ddlHcSystemsId = $('#HcSystemsId');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddlHCType.empty().html(option);
+                    ddlHcSystemsId.empty().html(option);
+                }
+
+            });
+        }
+        async function initMasterRoleTable() {
+
+            table.rows().remove().draw();
+            arrRoleMaster = [];
+            let data = {
+                SystemId: $('#searchHCType').val(),
+                IsActive: btnSearchStatusValue
+            }
+            await page.loading();
+            await ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/GetLineApproveMasterRole`, data,response => {
+                table.rows().remove().draw();
+                if (response) {
+                    arrRoleMaster = response.data;
+                    $.each(response.data, function (index, value) {
+                        value.index = index;
+                        table.row.add([
+                            value,
+                            value.roleDesc,
+                            value.creditLimit,
+                            value.is_active,
+                            value.systemDese,
+                            value
+                        ]).draw();
+                    });
+
+                }
+                page.loaded();
+            });
+            page.loaded();
+        }
+
+        function onClickEditRoleMaster(id) {
+
+            $('#frmActionRow [name="frmActionRowEvent"]').val('edit').trigger('change');
+            $('#frmActionRow [name="titleForm"]').html('แก้ไขตำแหน่ง');
+            let row = arrRoleMaster.filter(e => e.roleId === Number(id));
+            $('#frmActionRow [name="RoleId"]').val(row[0].roleId).trigger('change');
+            $('#frmActionRow [name="RoleDesc"]').val(row[0].roleDesc).trigger('change');
+            $('#frmActionRow [name="RoleDesc"]').prop('disabled',true);
+            $('#frmActionRow [name="CreditLimit"]').val(row[0].creditLimit).trigger('change');
+            $('#frmActionRow [name="CreditLimit"]').focus();
+            $('#frmActionRow [name="HcSystemsId"]').val(row[0].systemId.toString()).trigger('change');
+            if (row[0].is_active) {
+                $('button[name=status-disable]').removeClass('btn-danger');
+                $('button[name=status-disable]').addClass('btn-default');
+                $('button[name=status-visible]').addClass('btn-success');
+                btnStatusValue = true;
+            } else {
+                $('button[name=status-visible]').removeClass('btn-success');
+                $('button[name=status-visible]').addClass('btn-default');
+                $('button[name=status-disable]').addClass('btn-danger');
+                btnStatusValue = false;
+            }
+            $('#modalEditRowForm').modal({ backdrop: 'static', keyboard: false, show: true });
+        }
+        function onClickDeleteRole(value) {
+
+            const modal = new Promise(function (resolve, reject) {
+                $('body').append(`
+                    <div id="confirm-modalDelete" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">ยืนยันการ ลบ</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="formConfirmDelete">
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">
+                                                <i class="far fa-comment-alt fa-2x" aria-hidden="true" style="color: green;"> </i>
+                                                กรุณากรอกเหตุผล
+                                            </label>
+                                            <textarea class="form-control" id="txtAreaMessageText" name="txtAreaMessageText"></textarea>
+                                            <span class="error"  id="errRemark">*Require field</span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" style="width: 65px;" disabled >ยืนยัน</button>
+                                    <button type="button" class="btn btn-default" style="width: 65px;" data-dismiss="modal">ยกเลิก</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                $('#confirm-modalDelete')
+                    .modal('show')
+                    .on('hidden.bs.modal', function () { $(this).remove() })
+                    .on('shown.bs.modal', function () {
+                       // $('#confirm-modalDelete button.btn-success').focus();
+                        $(this).find('#txtAreaMessageText').focus();
+                        $("#txtAreaMessageText").on("change keyup paste", function (e) {
+                            if (e.target.value === '') {
+                                $('#confirm-modalDelete button.btn-success').prop("disabled", true);
+                                $('#errRemark').css('display', 'block');
+                            } else {
+                                $('#confirm-modalDelete button.btn-success').prop("disabled", false);
+                                $('#errRemark').css('display', 'none');
+                            }
+                        });
+
+                    });
+                $('#confirm-modalDelete button.btn-success').on('click', async function () {
+                    $('#confirm-modalDelete').modal('hide');
+                    const txtAreaMessageText = $('#txtAreaMessageText').val();
+
+                    const data = {
+                        LineApproveProjectId: value,
+                         Remark: txtAreaMessageText,
+                        UpdateBy: '@UserDetail.CodeName'
+                    };
+                    await ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/DeleteLineApproveRole`, data, response => {
+                        page.loaded();
+                        if (response) {
+                            showModalLineApprveSuccess('ลบสำเร็จ');
+                            resolve(true);
+                        } else {
+                            showModalLineApprveWarning('เกิดข้อผิดพลาด ลบไม่สำเร็จ');
+                        }
+                    });
+                });
+            }).then(function (val) {
+                if (val) {
+                    var projectId = $('#searchProjectDoc').val();
+                    getProjectList(projectId);
+                    initDropDownRole();
+                }
+
+               // console.log(val);
+            }).catch(function (err) {
+               // console.log("user clicked cancel", err)
+            });
+
+        }
+
+        async function getProjectList(ProjectId) {
+
+            $('#role-list tbody').remove();
+            let tr = ``;
+            if (ProjectId !== null && ProjectId !== undefined) {
+                let id = Number(ProjectId);
+                await ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/GetLineApproveProgect?projectId=${id}`, response => {
+                    page.loaded();
+                    tr = `<tbody>`;
+
+                        if (response.data.length > 0) {
+                            $.each(response.data, function (Index, Value) {
+                                tr += `
+                                        <tr>
+                                        <td  class="text-center"> ${Value.role}</td>
+                                        <td  class="text-right">${Value.creditLimit.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} </td>
+                                        <td  class="text-center">
+                                            <button class="deleteButton" onclick="onClickDeleteRole(${Value.id})">
+                                                <i class="fa fa-close"></i>
+                                            </button>
+                                       </td>
+                                    </tr>`;
+
+                            });
+                            tr += `</tbody>`;
+                            $('#role-list').append(tr);
+
+                        } else {
+                            $('#role-list').append(`<tbody>
+                                        <tr>
+                                        <td colspan="3" class="text-center">ไม่พบข้อมูล</td>
+                                    </tr></tbody>`);
+                        }
+
+                });
+            }
+        }
+
+        function showModalLineApprveWarning(msg) {
+            $('#modalRoleWarning').modal('show');
+            $('#lbTxtWarning').text(msg);
+        }
+
+        function showModalLineApprveSuccess(msg) {
+            $('#modalInsertRoleSuccess').modal('show');
+            $('#lbTxtSuccess').text(msg);
+        }
+
+        function filterByVisibility(element) {
+
+            if(element.name === 'status-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=status-visible]').removeClass('btn-success');
+                    $('button[name=status-visible]').addClass('btn-default');
+                    $('button[name=status-all]').removeClass('btn-info');
+                    $('button[name=status-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnStatusValue = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnStatusValue = null;
+                }
+            } else if (element.name === 'status-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=status-disable]').removeClass('btn-danger');
+                    $('button[name=status-disable]').addClass('btn-default');
+                    $('button[name=status-all]').removeClass('btn-info');
+                    $('button[name=status-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnStatusValue = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnStatusValue = null;
+                }
+            } else if (element.name === 'search-status-all') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-status-visible]').removeClass('btn-success');
+                    $('button[name=search-status-visible]').addClass('btn-default');
+                    $('button[name=search-status-disable]').removeClass('btn-danger');
+                    $('button[name=search-status-disable]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-info');
+                    btnSearchStatusValue = null;
+                } else {
+                    $(element).removeClass('btn-info');
+                    $(element).addClass('btn-default');
+                    btnSearchStatusValue = null;
+                }
+                initMasterRoleTable();
+            } else if (element.name === 'search-status-disable') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-status-visible]').removeClass('btn-success');
+                    $('button[name=search-status-visible]').addClass('btn-default');
+                    $('button[name=search-status-all]').removeClass('btn-info');
+                    $('button[name=search-status-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnSearchStatusValue = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnSearchStatusValue = null;
+                }
+                initMasterRoleTable();
+            } else if (element.name === 'search-status-visible') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=search-status-disable]').removeClass('btn-danger');
+                    $('button[name=search-status-disable]').addClass('btn-default');
+                    $('button[name=search-status-all]').removeClass('btn-info');
+                    $('button[name=search-status-all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnSearchStatusValue = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnSearchStatusValue = null;
+                }
+                initMasterRoleTable();
+            }
+           // onSearchPaymentConfig();
+
+        }
+
+        function resetFormRoleMaster() {
+            $('#frmActionRow [name="titleForm"]').html('เพิ่มตำแหน่งใหม่');
+            $('#frmActionRow [name="frmActionRowEvent"]').val('insert').trigger('change');
+            $('#frmActionRow [name="RoleId"]').val('').trigger('change');
+            $('#frmActionRow [name="RoleDesc"]').val('').trigger('change');
+            $('#frmActionRow [name="RoleDesc"]').prop('disabled', false);
+            $('#frmActionRow [name="CreditLimit"]').val('').trigger('change');
+            $('#frmActionRow [name="HcSystemsId"]').val('1').trigger('change');
+
+            $('button[name=status-visible]').removeClass('btn-default');
+            $('button[name=status-visible]').addClass('btn-success');
+            $('button[name=status-disable]').removeClass('btn-danger');
+            $('button[name=status-disable]').addClass('btn-default');
+            btnStatusValue = true;
+
+        }
+        function activaTab(tab, actTab) {
+            $('#tab-project').attr('class', 'disabled');
+            $('#' + actTab).show();
+            $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+        }
+
+        function backTab(tab, inactTab) {
+            $('#' + inactTab).hide();
+            $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+        }
+        function noPermissionAlert() {
+            modalWaring('คุณไม่มีสิทธิในการเข้าถึงหน้านี้ ขออภัยครับ');
+            $('#warningModal').on('hidden.bs.modal', function () {
+                window.location.href = '@Url.Content("~/")';
+            });
+        }
+    </script>
+}
+
+

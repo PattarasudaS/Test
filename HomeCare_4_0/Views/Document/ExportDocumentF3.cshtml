@@ -1,0 +1,307 @@
+﻿@model HomeCare_4_0.Models.DocumentViewModel
+@using HomeCare_4_0.ClassLib
+@using HomeCare_4_0.Common
+@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<style>
+    .row:first-child {
+        margin-bottom: 1rem;
+    }
+</style>
+<!-- /.box -->
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">ค้นหาเอกสาร F3</h3>
+    </div>
+    <!-- /.box-header -->
+    @using (Html.BeginForm("ExportDocumentF3", "Document"))
+    {
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-lg-4 ">
+                    <label class="control-label">โครงการ :</label>
+                    <select class="col-lg-12 form-control select2" id="searchProjectDoc" name="DocumentF3Search.ProjectID" data-placeholder="Click to Choose Projects...">
+                        <option selected>Please select</option>
+                    </select>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-lg-4">
+                    <label class="control-label ">ยูนิต :</label>
+                    <select class="col-lg-12 form-control select2" id="searchUnitDoc" name="DocumentF3Search.UnitID" data-placeholder="Click to Choose Unit..."></select>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-lg-4">
+                    <label class="control-label">เลขที่บ้าน: </label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.DocumentF3Search.UnitAddress, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                    <label class="control-label"> วันที่โอน: </label>
+                    <div class="bootstrap-datepicker">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            @Html.TextBoxFor(m => m.DocumentF3Search.TransferDateFrom, new { @class = "form-control datepicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                    <label class="control-label"> ถึงวันที่: </label>
+                    <div class="bootstrap-datepicker">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            @Html.TextBoxFor(m => m.DocumentF3Search.TransferDateTo, new { @class = "form-control datepicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-lg-4">
+                    <label class="control-label"> Unit ID: </label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.DocumentF3Search.UnitIdList, new { @class = "form-control", @type = "string" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <br>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-lg-3">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-primary">ค้นหา</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.DocumentByUnitIdResultList != null)
+{
+    <!-- /.box -->
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">จำนวนมีทั้งหมด @Model.DocumentByUnitIdResultList.Count รายการ</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-lg-2">
+                    <button type="button" id="btnPrintDocument" class="btn btn-info"><i class="fa fa-print"></i> พิมพ์เอกสาร</button>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-sm-2" id="ViewVendorForF3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="chkPrintEN" />
+                        <label class="form-check-label" for="chkPrintEN">
+                            แบบฟอร์ม ภาษาอังกฤษ
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <br>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <table id="tbDocumentSearchDetail" class="table table-bordered table-striped table-responsive">
+                        <thead>
+                            <tr>
+                                <th width="5%" class="text-center"><input type="checkbox" id="ChkAll">&nbsp;เลือก</th>
+                                <th width="10%" class="text-center">โครงการ</th>
+                                <th width="10%" class="text-center">แปลง</th>
+                                <th width="5%" class="text-center">บ้านเลขที่</th>
+                                <th width="10%" class="text-center">วันที่โอน</th>
+                                <th width="10%" class="text-center">ชื่อ - นามสกุล</th>
+                                <th width="10%" class="text-center">วันที่พิมพ์ F3 ครั้งแรก</th>
+                                <th width="10%" class="text-center">พิมพ์โดย</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < Model.DocumentByUnitIdResultList.Count; i++)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        @Html.CheckBoxFor(m => Model.DocumentByUnitIdResultList[i].Check, new { @id = "DocumentChk" })
+                                        @Html.HiddenFor(m => Model.DocumentByUnitIdResultList[i].UnitId, new { @id = "UnitId" })
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => Model.DocumentByUnitIdResultList[i].ProjectName)
+                                    </td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(m => Model.DocumentByUnitIdResultList[i].UnitCode)
+                                    </td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(m => Model.DocumentByUnitIdResultList[i].UnitAddress)
+                                    </td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(m => Model.DocumentByUnitIdResultList[i].TransferDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => Model.DocumentByUnitIdResultList[i].ProspectName)
+                                    </td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(m => Model.DocumentByUnitIdResultList[i].PrintF3Date)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => Model.DocumentByUnitIdResultList[i].PrintF3By)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+}
+
+<script type="text/javascript">
+    document.title = 'Search Document - Home Care';
+    // Do when page loaded
+    $(document).ready(function ()
+    {
+        $('.datepicker').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        });
+        $('.select2').css('width', '100%').select2({ allowClear: true });
+        $(".select2").select2({
+            tags: true
+        });
+        $(document).one('ajaxloadstart.page', function (e) {
+            $('[class*=select2]').remove();
+        });
+
+        $('#ChkAll').click(function (event)
+        {
+            if (this.checked) {
+                $('#DocumentChk').each(function () {
+                    this.checked = true;
+                });
+            }
+            else {
+                $('#DocumentChk').each(function () {
+                    this.checked = false;
+                });
+            }
+        });
+
+        //BindProject
+        (function initProject() {
+            $.ajax({
+                url: "@Url.Action("GetProejctMaster", "Home")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                success: function (response) {
+                    var ddlsearchProjectDoc = $("[id*=searchProjectDoc]");
+                    ddlsearchProjectDoc.empty().append('<option selected="selected" value="">Please select</option>');
+                    $.each(response, function (Index, Value) {
+                        ddlsearchProjectDoc.append($("<option></option>").val(Value.Value).html(Value.Text));
+                    });
+                }
+            });
+        })();
+
+        //BindUnit
+        $('#searchProjectDoc').change(function (e) {
+            var ddlProject = $("[id*=searchProjectDoc]");
+            var jsonObject = { "ID": ddlProject.val() };
+            $.ajax({
+                url: "@Url.Action("GetUnitData", "Home")",
+                type: "POST",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                success: function (response) {
+                    var Jdata = JSON.stringify(response);
+                    obj = JSON.parse(Jdata);
+                    var ddlUnitID = $("[id*=searchUnitDoc]");
+                    ddlUnitID.empty().append('<option selected="selected" value="">Please select</option>');
+                    $.each(obj.data, function (Index, Value) {
+                        ddlUnitID.append($("<option value=" + Value.Unit_ID + ">" + Value.Unit_Code + "</option>"))
+                    });
+
+                }
+            });
+        });
+
+        $('#chkPrintEN').click(function (ele) {
+            $(this).val(ele.target.checked ? "true" : "false");
+            console.log($(this).val());
+        });
+
+        $('#btnPrintDocument').on("click", function () {
+
+            var UnitIdList = "";
+            var UnitId = [];
+
+            $('#tbDocumentSearchDetail tbody tr').each(function ()
+            {
+                if ($(this).find("#DocumentChk").is(":checked"))
+                {
+                    if (UnitIdList != "")
+                    {
+                        UnitIdList = UnitIdList + "," + $(this).find("#UnitId").val();
+                    }
+                    else
+                    {
+                        UnitIdList = $(this).find("#UnitId").val();
+                    }
+                }
+            });
+
+            if (UnitIdList != "")
+            {
+                if ($('#chkPrintEN').val() === "true")
+                {
+                    ExportCombineDocument(UnitIdList, 4, 3);
+                }
+                else
+                {
+                    ExportCombineDocument(UnitIdList, 3, 3);
+                }
+            }
+            else
+            {
+                modalWaring("กรุณาเลือกรายการ");
+            }
+        });
+
+        function ExportCombineDocument(UnitIdList, doc1)
+        {
+            pleaseWaitDialog();
+            $.ajax({
+                url: "@Url.Action("ExportCombineDocumentF3", "ExportFile")",
+                type: "POST",
+                data: '{"UnitIdList": "' + UnitIdList + '", "doc1":"' + doc1 + '", "databaseSave1":"' + 1 + '"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    pleaseWaitDialogClose();
+                },
+                success: function (response) {
+                    jQuery.each(response, function (index, item) {
+                        window.open(item, '_blank');
+                    });
+                    pleaseWaitDialogClose();
+                }
+            });
+        }
+        });
+</script>

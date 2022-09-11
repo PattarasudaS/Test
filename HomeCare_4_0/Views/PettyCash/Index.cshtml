@@ -1,0 +1,400 @@
+﻿
+@{
+    ViewBag.Title = "Create PettyCash";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+@section AddToHead{
+    <style type="text/css">
+        form .row> div label.required::after {
+            content: '*';
+            color: #fb5858;
+        }
+         @@media (min-width: 768px) {
+            .col-smcus-8 {
+                width: 70.66666667%;
+                padding-left:7px;
+            }
+        }
+        @@media (min-width: 992px) {
+            .col-mdcus-6 {
+                width : 52%;
+                padding-left: 15px;
+            }
+            .col-mdcus-2 {
+                width: 20%;
+            }
+        }
+       .ln_solid {
+        border-top: 1px solid #e5e5e5;
+        color: #ffffff;
+        background-color: #ffffff;
+        height: 1px;
+        margin: 20px 0;
+    }
+     </style>
+}
+<div class="box">
+    <div class="box-header" style="margin-top:10px;">
+        <h3 class="box-title">Create Petty Cash</h3>
+    </div>
+    <hr style="margin-top:5px;" />
+    <!-- /.box-header -->
+    <form class="form-horizontal" id="frmmain" autocomplete="on">
+        <div class="box-body">
+            <div class="row">
+                <div class="form-group  col-xs-12 col-sm-6 col-lg-5">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Company Code :</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <select class="form-control select2 input-sm" id="drpCompcode" data-placeholder="Click to Choose Company Code...">
+                            <option selected>Please select</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-xs-12  col-sm-6 col-lg-4">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Request Date :</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <input type="text" class="form-control datepicker input-sm" />
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-lg-3">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label">Business Place :</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <select class="form-control  input-sm" id="drpbusinessplace" data-placeholder="Click to Choose Busness Place...">
+                            <option selected>Please select</option>
+                            <option value="00">00: Head Quarter</option>
+                            <option value="10">10: Q Business</option>
+                            <option value="20">20: Precast Plant</option>
+                            <option value="40">40: Habito Mall </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group  col-xs-12 col-sm-6 col-lg-5">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Cost Center:</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <select class="form-control select2 input-sm" id="drpCCTR" data-placeholder="Click to Choose Cost Center...">
+                            <option selected>Please select</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required ">Posting Date:</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <input id="postingdatetxt" type="text" class="form-control datepicker input-sm" />
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-lg-3">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label">Business Area:</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <input type="text" id="batxt" class="form-control input-sm" disabled />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-xs-12 col-sm-6 col-lg-5">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Vendor:</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="input-group input-group-sm ">
+                            <input type="text" class="form-control">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-flat" data-toggle="modal" data-target="#VendorModal" ><span class="glyphicon glyphicon-search"></span></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Invoice Date:</label>
+                    <div class="col-xs-12 col-sm-6 ">
+                        <input type="text" id="invdate" class="input-sm form-control datepicker" />
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-lg-3">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Vat:</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <select id="drpvat" class="form-control input-sm">
+                             <option value="">Plase Select </option>                            
+                             <option value="VX">ไม่คิด VAT</option>
+                             <option value="Y0">คิด VAT:Y0</option>
+                             <option value="D7">คิด VAT:D7</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-xs-12 col-sm-6 col-md-5">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Pay to:</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <input type="text" id="paytotxt" class="form-control input-sm" />
+                    </div>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4">
+                    <label class="col-xs-12 col-sm-6 col-md-6 control-label required">Invoice Date:</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <input type="text" id="invoicetxt" class="form-control datepicker input-sm" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-xs-12">
+                    <label class="col-xs-12 col-sm-3 col-mdcus-2 control-label">Remark:</label>
+                    <div class="col-xs-12 col-smcus-8 col-mdcus-6">
+                        <input type="text" id="remarktxt" class="form-control input-sm" />
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default fidoc" id="fidocpanel" style="display:block;margin-top:15px;">
+                <div class="panel-heading"><h5>FI Doc</h5></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <label class="control-label col-xs-10 col-sm-2 col-sm-offset-1" style="">FI Doc. :</label>
+                        <label id="fidoclbl" class="control-label col-xs-2 col-sm-2"></label>
+                        <label class="control-label col-xs-10  col-sm-3" style="">Clearing Date :</label>
+                        <label id="clearingdatelbl" class="control-label col-xs-2  col-sm-4" style=""></label>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <label class="control-label col-xs-10 col-sm-2 col-sm-offset-1" style="">Check No :</label>
+                        <label id="checknolbl" class="control-label col-xs-2 col-sm-2" style=""></label>
+                        <label class="control-label col-xs-10 col-sm-3">House Bank :</label>
+                        <label id="housebank" class="control-label col-xs-2 col-sm-4" style=""></label>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <label class="control-label col-xs-10 col-sm-3" style="">Encash Date:</label>
+                        <label id="encashdate" class="control-label col-xs-2 col-sm-4" style=""></label>
+                    </div>
+                </div>
+            </div>
+            <div class="ln_solid"></div>
+            <div class="row table-responsive no-padding">
+                <div class="col-md-12 col-lg-12 ">
+                    <table id="pettyitemtable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width:2%;"></th>
+                                <th style="width:auto;text-align:center;">No.</th>
+                                <th style="width:12%;text-align:center;">G/L</th>
+                                <th style="width:14%;text-align:center;">WBS.</th>
+                                <th style="width:23%;text-align:center;">Description</th>
+                                <th style="width:10%;text-align:center;">Cost Center</th>
+                                <th style="width:13%;text-align:center;">I/O</th>
+                                <th style="width:10%;text-align:center;">Amount</th>
+                                <th style="width:11%;text-align:center;">Earmarked Fund</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3">
+                                    <div class="col-md-12 col-lg-12">
+                                        <button class="btn btn-xs btn-success" id="addrow"><span class="glyphicon glyphicon-plus"></span></button>
+                                        <select id="addrowmany" class="input-sm" tabindex="-1">
+                                            <option>1</option>
+                                            <option>5</option>
+                                            <option>10</option>
+                                            <option>20</option>
+                                            <option>30</option>
+                                            <option>50</option>
+                                            <option>100</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td colspan="4" align="right">
+                                    Amount :  <span id="net">0</span>  VAT :  <span id="vat">0</span>  Total : <span id="total">0.00</span>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--panel credit limit-->
+            <div class="panel panel-default" id="creditlimitpanel">
+                <div class="panel-heading"><h5>Credit Limit</h5></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <label class="control-label  col-sm-1 col-sm-offset-1" style="text-align:right;">Approve  : </label>
+                        <div class="col-md-3 ">                    
+                            <label class="control-label" style="height:19px;">
+                                <input type="radio" name="typeappr" value="on" checked /> Online
+                            </label>
+                            <label class="control-label" style="height:19px;">
+                                <input type="radio" name="typeappr" value="off" /> Manual
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 col-sm-offset-3">
+                            <label class="control-label  col-sm-3" style="text-align:right; padding-top:1.5% ">สายอนุมัติ :</label>
+                            <div class="col-sm-9">
+                                <select id="drpwkflow" name="drpwkflow" class="select2_single form-control input-sm " tabindex="-1">
+                                    <option></option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="control-label">XXXX = ค่าใช้จ่ายส่วนกลาง</label><br />
+                            <label class="control-label">XXXX <span style="color:red;">PJ</span> = ค่าใช้จ่ายโครงการ </label>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12 col-lg-12" id="CreditLimitResult">
+                            <table id="Credittable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Position</th>
+                                        <th>Email</th>
+                                        <th>Value</th>
+                                        <th>Final Approve</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultcredit"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 col-sm-offset-7">
+                            <label class="control-label"><u>หมายเหตุ</u></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 col-sm-offset-7">
+                            <label class="control-label" style="font-size:11px;"><span style="color:red;">การอนุมัติให้ตนเอง</span>  :  พนักงานทุกระดับไม่มีอำนาจลงนามอนุมัติตนเอง ต้องเสนอผู้บังคับบัญชาเป็นผู้ลงนามทุกกรณี ยกเว้นประธานอำนวยการ, กรรมการผู้จัดการใหญ่ และ ประธานผู้บริหารฯ</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 col-sm-offset-7">
+                            <label class="control-label" style="font-size:11px;">สำหรับผู้ช่วยกรรมการผู้จัดการ , ผู้ช่วยกรรมการผู้จัดการอาวุโส , รองกรรมการผู้จัดการ และ รองกรรมการผู้จัดการอาวุโส ให้อนุมัติค่าใช้จ่ายของตนเองได้ ไม่เกิน 2,000 บาท</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end panel credit limit-->
+            <!--panel workflow status-->
+            <div class="panel panel-default" id="wfstatuspanel" style="display:none;">
+                <div class="panel-heading"><h5>Work Flow Status</h5></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12 col-lg-12" id="wfresulttable">
+                            <table id="Credittable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>WF No.</th>
+                                        <th>STATUS</th>
+                                        <th>Approved Date</th>
+                                        <th>Assigned To</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultwf"></tbody>
+                            </table>
+                        </div>
+                    </div>               
+                </div>
+            </div>
+            <!--end panel workflow status-->
+            @*<div id="VendorModal" class="modal fade " tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content panel-primary">
+                        <div class="modal-header panel-heading">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">×</span>
+                            </button>Search Vendor
+                        </div>
+                        <div class="modal-body" style="font-size:12px;">
+                            <form class="form-horizontal form-label-left" id="frmserven" autocomplete="on">
+                                <div class="row">
+                                    <div class="form-group col-md-5 col-lg-5">
+                                        <label class="control-label col-md-4 col-lg-4  " style="text-align: right;">Vendor No :</label>
+                                        <div class="col-md-7 col-lg-7">
+                                            <input type="text" id="vendorno" name="venderno" class="form-control input-sm" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-7 col-lg-7">
+                                        <label class="control-label col-md-3 col-lg-3" style="text-align: right;"> Vendor Type :</label>
+                                        <div class="col-md-2  col-lg-2 radio">
+                                            <label><input type="radio" name="vendortypepop" value="V" disabled />Vendor</label>
+                                        </div>
+                                        <div class="col-md-2 col-lg-offset-0 col-lg-2 radio">
+                                            <label><input type="radio" name="vendortypepop" value="E" disabled />Employee</label>
+                                        </div>
+                                        <div class="col-md-2  col-lg-offset-0  col-lg-2 radio">
+                                            <label><input type="radio" name="vendortypepop" value="P" checked disabled />PettyCashier</label>
+                                        </div>
+                                        <div class="col-md-3  col-lg-offset-0  col-lg-3 radio">
+                                            <label><input type="radio" name="vendortypepop" value="L" style="display:none" disabled />Vendor Loan</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-5 col-lg-5">
+                                        <label class="control-label col-md-4 col-lg-4" style="text-align: right;">Name :</label>
+                                        <div class="col-md-7 col-lg-7">
+                                            <input type="text" id="vendorname" name="vendorname" class="form-control input-sm" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-7 col-lg-7">
+                                        <label class="control-label col-md-3 col-lg-3" style="text-align: right;">Name2 :</label>
+                                        <div class="col-md-6 col-lg-6">
+                                            <input type="text" id="vendorname2" name="vendorname2" class="form-control input-sm" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-5 col-lg-5">
+                                        <label class="control-label col-md-4 col-lg-4" style="text-align: right;">ID Card No. :</label>
+                                        <div class="col-md-7 col-lg-7">
+                                            <input type="text" id="vendoridcard" name="vendoridcard" class="form-control input-sm" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-7 col-lg-7">
+                                        <label class="control-label col-md-3 col-lg-3" style="text-align: right;">Tax ID :</label>
+                                        <div class="col-md-6 col-lg-6">
+                                            <input type="text" id="vendortaxid" name="vendortaxid" class="form-control input-sm" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-5 col-lg-5">
+                                        <label class="control-label col-md-4 col-lg-4" style="text-align: right;">Employee Code :</label>
+                                        <div class="col-md-7 col-lg-7">
+                                            <input type="text" id="vendorempcode" name="VendorEmpcode" class="form-control input-sm" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 col-md-offset-8 col-lg-4 col-lg-offset-8">
+                                        <button type="button" id="searchvendor" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp; Search</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <br />
+                            <br />
+                            <div class="row">
+                                <div class="col-md-12 col-lg-12" id="resultvendor" style="max-height:300px;overflow-y:auto;">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+            @Html.Partial("../Shared/_VendorModal")
+        </div>
+</form>
+</div>
+
+@section Script{
+<script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
+<script src="~/Scripts/page/Pettycash.js"></script>
+    <script>
+    $(document).ready(function (){
+        $("body").addClass("sidebar-collapse");
+        $('.datepicker').datepicker({
+                autoclose: true,
+                format: 'dd/mm/yyyy'
+            });
+        PageEvent.LoadCompany();
+        PageEvent.SetEvent();
+    });
+</script>
+}

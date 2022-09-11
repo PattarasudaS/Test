@@ -1,0 +1,874 @@
+﻿@model HomeCare_4_0.Models.GuaranteeViewModel
+@using HomeCare_4_0.ClassLib
+@using HomeCare_4_0.Common
+@{
+
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+<style type="text/css">
+    .thumbnails li img {
+        width: 350px;
+        height: 350px;
+    }
+</style>
+
+<link rel="stylesheet" href="~/Content/css/fileinput.css" type="text/css" />
+<scri src="~/Scris/fileinput.js"></scri>
+
+
+
+<div class="main">
+
+
+    <div class="main-inner">
+        <h2 class="page-header  text text-blue text-bold"><i class="fa fa-file-text-o"> </i> การอนุมัติวันที่ขยายประกัน</h2>
+
+        <input type="hidden" value="@Model.Data_Unit.Unit_Code" id="hdUnitCode">
+        <input type="hidden" value="@Model.Data_Unit.Unit_ID" id="hdUnitID">
+        <input type="hidden" id="hdApproveID" />
+
+
+
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <a data-toggle="collapse" data-target="#Guarantee_customer">
+                            <i class="fa fa-user"></i>
+                            <h3 class="box-title">ข้อมูลลูกค้า</h3>
+                        </a>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body" id="Guarantee_customer" hidden>
+                        @if (@EnumConfiguration.Role.VENDOR.ToString() != @UserDetail.Role)
+                        {
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                    <label class="control-label">ชื่อ-สกุล</label>
+                                    <div class="controls">
+                                        <div class="text-primary"> @Model.Data_Customer.FullName</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6 col-lg-4 ">
+                                    <label class="control-label">เบอร์ติดต่อ</label>
+                                    <div class="controls">
+                                        <div class="text-primary"> @Model.Data_Customer.FullTelephone</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-lg-4">
+                                <label class="control-label">โครงการ</label>
+                                <div class="controls">
+                                    <div class="text-primary"> @Model.Data_Unit.PJ_Name</div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6 col-lg-4">
+                                <label class="control-label">แปลง</label>
+                                <div class="controls">
+                                    <div class="text-primary"> @Model.Data_Unit.Unit_Code_Address</div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6 col-lg-4">
+                                <label class="control-label">แบบบ้าน</label>
+                                <div class="controls">
+                                    <div class="text-primary"> @Model.Data_Unit.Unit_Model</div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6 col-lg-4">
+                                <label class="control-label">วันที่เริ่มประกัน</label>
+                                <div class="controls">
+                                    <div class="text-primary"> @Model.Data_Unit.StartGuaranteeDate</div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6 col-lg-4">
+                                <label class="control-label">วันที่หมดประกัน</label>
+                                <div class="controls">
+                                    <div class="text-primary"> @Model.Data_Unit.EndGuaranteeDate</div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-xs-12 col-sm-6 col-lg-4">
+                                <label class="control-label">วันที่ขยายประกัน</label>
+                                <div class="controls">
+                                    <div class="text-primary"> @Model.Data_GuaranteeDetail.TIME_EXTEND_TO</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+
+
+       
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <a data-toggle="collapse" data-target="#Worksheet-Approval">
+                                <i class="fa fa-file"></i>
+                                <h3 class="box-title">ข้อมูลการอนุมัติวันที่ขยายประกัน</h3>
+                            </a>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body" id="Worksheet-Approval" hidden>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+
+                                    <label class="control-label ">รหัสใบอนุมัติ </label><div class="text-primary"><label id="lblApprove_JobNoText">@Model.Data_GuaranteeDetail.DOCUMENT_NO</label></div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label ">สถานะ </label><div class="text-primary"><label id="lblApprove_Status">@Model.Data_GuaranteeDetail.USER_ROLE - @Model.Data_GuaranteeDetail.WORKFLOW_STATUS</label></div>
+
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label ">วันที่เปิดใบอนุมัติ </label><div class="text-primary"><label id="lblApprove_CreatedDate"></label>09/02/2018</div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label ">ผู้เปิดใบอนุมัติ </label><div class="text-primary"><label id="lblApprove_CreatedBy">Test</label></div>
+
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-lg-4">
+                                    <label class="control-label ">ประวัติการอนุมัติ </label>
+
+                                    <div><a id="viewApproveHistory"><i class="fa fa-book fa-lg"></i></a></div>
+                                </div>
+                            </div>
+                            if (@UserDetail.Role != @Model.Data_GuaranteeDetail.USER_ROLE) {
+                            {
+                                <div class="row" id="divApprove">
+                                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                                        <h5><label class="control-label">การอนุมัติ</label></h5>
+                                        <button id="btnApproved" type="submit" class="btn btn-primary" value="true">อนุมัติ</button>
+                                        <button id="btnNotApproved" type="submit" class="btn btn-danger" value="false">ไม่อนุมัติ</button>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-lg-4" name="ApprovalRemark">
+                                        <h5><label class="control-label">เหตุผล</label></h5>
+                                        <input type="text" id="ApprovalRemark" name="ApprovalRemark" value="" class="form-control">
+                                    </div>
+                                </div>
+                            }
+                            <br />
+
+                        </div>
+
+                    </div>
+
+                    <!-- /.box-body -->
+                </div>
+            </div>
+        
+
+
+
+    </div>
+
+    @*Modal ดูประวัติการอนุมัติ*@
+    <div tabindex="-1" class="modal fade" id="ApproveHistoryModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+        <div class="modal-dialog" style="width:60%">
+            <div class="modal-content" style="border-radius:6px;">
+                <div class="modal-header bg-light-blue">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">ประวัติการอนุมัติ</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <form class="widget-content">
+                        <div class="row">
+                            <div class="col-lg-12" style="overflow:auto">
+
+
+                                <table class="table table-striped table-bordered table-hover " id="tbApproveHistory" style="margin: 8px 8px 0px 8px; width:100%">
+                                    <thead>
+                                        <tr class="">
+                                            <th class="text-center">
+                                                No.
+                                            </th>
+                                            <th class="text-center">
+                                                สถานะการอนุมัติ
+                                            </th>
+                                            <th class="text-center">
+                                                ผู้อนุมัติ
+                                            </th>
+                                            <th class="text-center">
+                                                ความคิดเห็น
+                                            </th>
+                                            <th class="text-center">
+                                                วันที่อนุมัติ
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center Bold text-danger" colspan="5">ไม่มีข้อมูล</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <br>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal ดูไฟล์ในส่วนแนบเอกสาร*@
+    <div tabindex="-1" class="modal fade" id="modalViewFile" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;" data-backdrop="static">
+        <div class="modal-dialog" style="width:90%">
+            <div class="modal-content" style="border-radius:6px;">
+                <div class="modal-header badge-info">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title white"> <i class="fa fa-file-o bigger-130"></i> View Attach File</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label class="header smaller lighter blue" id="lblattrachgroupName"></label>
+                            <div>
+                                <br />
+
+                            </div>
+                            <div class="text-left">
+                                <select class="image-picker show-labels" id="logo"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer text-center ">
+
+                    <a class="btn btn-primary" id="btndownload"><i class="fa fa-cloud-download bigger-110"></i>Download</a>
+                    <span id="spbtndeleted">
+                        <a class="btn btn-danger" id="btndeleted"><i class="fa fa-trash-o bigger-110"></i>Delete</a>
+                    </span>
+                    <button class="btn btn-warning" data-dismiss="modal" type="button" id="btnmodalviewClose"><i class="fa fa-close bigger-110"></i>Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal ดูและอัพโหลดรูปภาพในแต่ละ Item*@
+    <input type="hidden" id="hditemidUpload">
+    <div tabindex="-1" class="modal fade" id="modaluploadPic" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;" data-backdrop="static">
+        <div class="modal-dialog" style="width:95%">
+            <div class="modal-content" style="border-radius:6px;">
+                <div class="modal-header badge-info">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title white"> <i class="fa fa-file-o bigger-130"></i> แนบรูปภาพก่อน,รูปภาพระหว่างซ่อม,รูปภาพหลังซ่อม </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <h5 class="text-bold text-primary">รูปภาพก่อน</h5>
+                            <div>
+                                <br />
+                            </div>
+                            <div class="text-center">
+                                <input id="fileinput" name="fileuploadPic[]" type="file" class="file" data-preview-file-type="text" data-value="1">
+                            </div>
+
+                        </div>
+                        <div class="col-xs-4">
+                            <h5 class="text-bold text-primary">รูปภาพระหว่างซ่อม</h5>
+                            <div>
+                                <br />
+                            </div>
+                            <div class="text-center">
+                                <input id="fileinput" name="fileuploadPic[]" type="file" class="file" data-preview-file-type="text" data-value="2">
+                            </div>
+
+                        </div>
+                        <div class="col-xs-4">
+                            <h5 class="text-bold text-primary">รูปภาพหลังซ่อม</h5>
+                            <div>
+                                <br />
+                            </div>
+                            <div class="text-center">
+                                <input id="fileinput" name="fileuploadPic[]" type="file" class="file" data-preview-file-type="text" data-value="3">
+                            </div>
+
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div>
+                                <br />
+                            </div>
+                            <div class="text-left">
+                                <h5 class="page-header">รูปภาพก่อน</h5>
+                                <select class="image-picker show-labels" id="logoPic"></select>
+                                <span id="spbtnmodalDeletdBefore">
+                                    <a class="btn btn-danger" id="btnmodalDeletdBefore"><i class="fa fa-trash-o bigger-110"></i>Delete</a>
+                                </span>
+                                <a class="btn btn-primary" id="btnmodalExportBefore"><i class="fa fa-cloud-download bigger-110"></i>Download</a>
+
+                            </div>
+                            <br />
+                            <div class="text-left">
+                                <h5 class="page-header">รูปภาพระหว่างซ่อม</h5>
+                                <select class="image-picker show-labels" id="logoPic2"></select>
+                                <span id="spbtnmodalDeletdBetween">
+                                    <a class="btn btn-danger" id="btnmodalDeletdBetween"><i class="fa fa-trash-o bigger-110"></i>Delete</a>
+                                </span>
+                                <a class="btn btn-primary" id="btnmodalExportBetween"><i class="fa fa-cloud-download bigger-110"></i>Download</a>
+                            </div>
+                            <br />
+                            <div class="text-left">
+                                <h5 class="page-header">รูปภาพหลังซ่อม</h5>
+                                <select class="image-picker show-labels" id="logoPic3"></select>
+                                <span id="spbtnmodalDeletdPost">
+                                    <a class="btn btn-danger" id="btnmodalDeletdPost"><i class="fa fa-trash-o bigger-110"></i>Delete</a>
+                                </span>
+                                <a class="btn btn-primary" id="btnmodalExportPost"><i class="fa fa-cloud-download bigger-110"></i>Download</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer text-center ">
+                    <button class="btn btn-danger" data-dismiss="modal" type="button" id="btnmodalPicClose"><i class="fa fa-times bigger-110"></i>Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script type="text/javascript">
+
+
+
+
+    $(document).ready(function () {
+
+
+
+        $('.datepicker').datepicker(
+            {
+                autoclose: true,
+                format: 'dd/mm/yyyy'
+            });
+
+
+        function toggleIcon(event) {
+            console.log($(event.target));
+            $(this).find('.pull-right').toggleClass('icon-minus icon-plus');
+        }
+        $('.widget').on('hidden.bs.collapse', toggleIcon);
+        $('.widget').on('shown.bs.collapse', toggleIcon);
+
+
+
+
+
+       
+
+        
+
+        $("#viewApproveHistory").click(function () {
+            $("#ApproveHistoryModal").modal('show');
+
+            $.ajax({
+                url: '@Url.Action("getApproveHistory", "Worksheet")',
+                type: 'POST',
+                data: '{"ApproveID":' + $("#hdApproveID").val() + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    $("#tbApproveHistory tbody tr").remove();
+                    $.each(data, function (key, value) {
+                        $("#tbApproveHistory tbody").append("<tr></tr>");
+                        if (data.length > 0) {
+
+                            $("#tbApproveHistory tbody tr:last").append("<td class='text-center'><label id='lblNo' name='No'>" + (key + 1) + "</label></td>");
+                            $("#tbApproveHistory tbody tr:last").append("<td class='text-left'>" + value.AppvLine_Status + "</td>");
+                            $("#tbApproveHistory tbody tr:last").append("<td class='text-left'>" + value.AppvLine_Role + "</td>");
+                            $("#tbApproveHistory tbody tr:last").append("<td class='text-left'>" + value.AppvLine_Remark + "</td>");
+                            $("#tbApproveHistory tbody tr:last").append("<td class='text-left'>" + value.AppvLine_Date + "</td>");
+                        } else {
+                            $("#tbApproveHistory tbody tr:last").append("<td class='text-center Bold text-danger' colspan='5'>ไม่มีข้อมูล</td>");
+
+                        }
+
+                    });
+                },
+                error: function (data) {
+
+                },
+            });
+
+
+          
+
+        });
+
+        var viewFileEvnet;
+
+
+
+        $(".viewFile").click(function () {
+
+
+
+            viewFileEvnet=$(this);
+            viewFile(viewFileEvnet);
+
+
+            var statusID = $("#hdMainProcessID").val();
+            var ApproveStatusID = $("#hdApproveStatusID").val();
+
+            if(((statusID=13||statusID==8) && "@EnumConfiguration.Role.AdminHC.ToString()" != "@UserDetail.Permisson" ) || ("@EnumConfiguration.Role.AdminHC.ToString()" == "@UserDetail.Permisson"))
+            {
+                $("#spbtndeleted").removeAttr("hidden");
+            }else
+            {
+                $("#spbtndeleted").attr("hidden","hidden");
+            }
+            $("#modalViewFile").modal('show');
+
+        });
+
+        function viewFile(e)
+        {
+            $("#lblattrachgroupName").text("ประเภทเอกสาร: " + e.closest('tr').find("#lbldocName").text());
+
+            $.ajax({
+
+                url: '@Url.Action("getAttachmentFile", "Fileupload")',
+                type: "POST",
+
+
+                data: '{"ReferenceID": ' + $("#hdWorksheetID").val() + ',"ReferenceType": "W","Attachment_Type_ID": ' + e.closest('tr').find("#AttachmentTypeID").val() + ',"Reference_Item_ID": 0}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    alert(response.responseText);
+
+                },
+                success: function (response) {
+
+
+                    //$("#lblattrachgroupName").text();
+
+                    var path = "@System.Configuration.ConfigurationManager.AppSettings["FileServer"].ToString()";
+
+
+                    //$(".image_picker_selector li").remove();
+                    //$("#logo").append('<option value=1>My option</option>');
+                    $("#logo option").remove();
+
+                    $.each(response, function (key, file) {
+                        console.log(file);
+                        var fileicon = "@System.Configuration.ConfigurationManager.AppSettings["Iconpath"].ToString()";
+
+                        if (file.Attachment_URL.indexOf(".pdf") != -1) {
+                            fileicon = fileicon + "pdfIcon.png"
+                        } else if (file.Attachment_URL.indexOf(".doc") != -1 || file.Attachment_URL.indexOf(".docx") != -1) {
+                            fileicon = fileicon + "docIcon.png"
+                        } else if (file.Attachment_URL.indexOf(".xlsx") != -1 || file.Attachment_URL.indexOf(".xls") != -1) {
+                            fileicon = fileicon + "excelIcon.png"
+                        } else {
+                            fileicon = path + file.Attachment_URL;
+                        }
+
+                        var filePath = path + file.Attachment_URL;
+                        if (key == 0) {
+                            $('#logo').append('<option data-img-src=' + fileicon + ' value='+filePath+' data-id='+file.Attachment_ID+'>' + file.Attachment_Detail + '</option>');
+                            $("#hdDeletedAttach").val(file.Attachment_ID);
+                            //$(".image_picker_selector").append("<li><div class='thumbnail selected' style='width:200px;height:200px'><img class='image_picker_image' src='" + fileicon + "'></div><div>" + file.Attachment_Detail + "</div></li>");
+                            $("#btndownload").attr("href", filePath);
+                            $("#btndownload").attr("target", "_blank")
+                        } else {
+                            //$(".image_picker_selector").append("<li><div class='thumbnail' style='width:200px;height:200px'><img class='image_picker_image' src='" + fileicon + "'></div><div>" + file.Attachment_Detail + "</div></li>");
+                            $('#logo').append('<option data-img-src=' + fileicon + ' value='+filePath+' data-id='+file.Attachment_ID+'>' + file.Attachment_Detail + '</option>');
+                        }
+                    });
+
+                    $("#logo").imagepicker({
+                        hide_select: false,
+                        show_label: false
+                    })
+
+
+                    $("#logo").imagepicker({
+                        clicked: function () {
+                            //alert();
+                            $("#btndownload").attr("href", this.val());
+                            $("#btndownload").attr("target", "_blank")
+                            $("#hdDeletedAttach").val($(this).find(':selected').data('id'));
+                        }
+
+                    });
+                    $.each(response, function (key, file) {
+                        $('#img'+file.Attachment_ID).html("<b>Attachment Detail: </b>"+file.Attachment_Detail+'<br><b>Upload By: </b>'+file.Attachment_UpdateBy+'<br><b>Upload Date: </b>'+file.Attachment_UpdateDate);
+                    });
+
+                    //$("#imgUpoladBy").each(function () {
+
+                    //    console.log('SSSS');
+
+
+                    //});
+                }
+            });
+
+        }
+    }); 
+    function viewPicture(id,type,btn,btnDelete)
+    {
+
+        var ItemID= $("#hditemidUpload").val();
+        $.ajax({
+
+            url: '@Url.Action("getAttachmentFile", "Fileupload")',
+            type: "POST",
+
+
+            data: '{"ReferenceID": ' + $("#hdWorksheetID").val() + ',"ReferenceType": "W","Attachment_Type_ID": '+type+',"Reference_Item_ID": '+ItemID+'}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            error: function (response) {
+                alert(response.responseText);
+
+            },
+            success: function (response) {
+
+
+                //$("#lblattrachgroupName").text();
+
+                var path = "@System.Configuration.ConfigurationManager.AppSettings["FileServer"].ToString()";
+
+
+                //$(".image_picker_selector li").remove();
+                //$("logoPic").append('<option value=1>My option</option>');
+                $(id+" option").remove();
+
+                $.each(response, function (key, file) {
+                    console.log(file);
+                    var fileicon = "@System.Configuration.ConfigurationManager.AppSettings["Iconpath"].ToString()";
+
+                    if (file.Attachment_URL.indexOf(".pdf") != -1) {
+                        fileicon = fileicon + "pdfIcon.png"
+                    } else if (file.Attachment_URL.indexOf(".doc") != -1 || file.Attachment_URL.indexOf(".docx") != -1) {
+                        fileicon = fileicon + "docIcon.png"
+                    } else if (file.Attachment_URL.indexOf(".xlsx") != -1 || file.Attachment_URL.indexOf(".xls") != -1) {
+                        fileicon = fileicon + "excelIcon.png"
+                    } else {
+                        fileicon = path + file.Attachment_URL;
+                    }
+
+                    var filePath = path + file.Attachment_URL;
+                    if (key == 0) {
+                        $(id).append('<option data-img-src=' + fileicon + ' value='+key+' data-id='+file.Attachment_ID+'>' + file.Attachment_Detail + '</option>');
+                        $("#hdDeletedAttach").val(file.Attachment_ID);
+                        //$(".image_picker_selector").append("<li><div class='thumbnail selected' style='width:200px;height:200px'><img class='image_picker_image' src='" + fileicon + "'></div><div>" + file.Attachment_Detail + "</div></li>");
+                        $(btn).attr("href", filePath);
+                        $(btn).attr("target", "_blank")
+                    } else {
+                        //$(".image_picker_selector").append("<li><div class='thumbnail' style='width:200px;height:200px'><img class='image_picker_image' src='" + fileicon + "'></div><div>" + file.Attachment_Detail + "</div></li>");
+                        $(id).append('<option data-img-src=' + fileicon + ' value='+key+' data-id='+file.Attachment_ID+'>' + file.Attachment_Detail + '</option>');
+                    }
+
+
+
+
+                    //console.log($(".image_picker_selector").hasClass('.image_picker_image'));
+                });
+                $(id).imagepicker({
+                    hide_select: false,
+                    show_label: false
+                })
+                $(id).imagepicker({
+                    clicked: function () {
+                        $("#hdDeletedAttach").val($(this).find(':selected').data('id'));
+                        $(btn).attr("href", $(this).find("option[value='" + $(this).val() + "']").data('img-src'));
+                        $(btn).attr("target", "_blank")
+                    }
+
+                });
+
+                $.each(response, function (key, file) {
+                    $('#img'+file.Attachment_ID).html("<b>Upload By: </b>"+file.Attachment_UpdateBy+'<br><b>Upload Date: </b>'+file.Attachment_UpdateDate);
+                });
+
+
+            }
+        });
+    }
+
+
+
+    @*function PostNotificationHSA() {
+        var value = {
+            WorkSheet_ID:$("#hdWorksheetID").val(),
+            ReceiveJobNoText:"@Model.Data_Inform.Inform_JobNoText",
+            ProjectCode:"@Model.Data_Unit.PJ_Code",
+            UnitAddress:"@Model.Data_Unit.Unit_Address",
+            Unit_Code:"@Model.Data_Unit.Unit_Code",
+        }
+        console.log(value);
+        $.ajax({
+            url: "@Url.Action("PostNotificationHSA", "Worksheet")",
+            type: "POST",
+            data: value,
+            success: function (data) {
+            },
+            error: function (data) {
+            },
+        });
+    }*@
+
+
+
+
+
+    // End Print F1
+
+    function ExportDocumentQuotation(WorkSheet_ID) {
+        pleaseWaitDialog();
+        $.ajax({
+            url: "@Url.Action("ExportDocumentQuotation", "ExportFile")",
+            type: "POST",
+            data: '{"WorkSheetID": "' + WorkSheet_ID + '"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                pleaseWaitDialogClose();
+            },
+            success: function (response) {
+                jQuery.each(response, function (index, item) {
+                    window.open(item, '_blank');
+                });
+                pleaseWaitDialogClose();
+            }
+        });
+    }
+    // End Print F1
+
+
+
+    $("#btnsendApprove").on("click", function () {
+        //
+        if(parseFloat($("#lblFinalNetPrice").text().replace(',', ''))<=0)
+        {
+            modalWaring("ไม่สามรถส่งอนุมัติได้ เนื่องจากราคาสุทธิเท่ากับ 0 บาท");
+            return;
+        }
+        //checkBeforApprove
+        var requestData={Worksheet_ID: $("#hdWorksheetID").val()};
+
+        var Url = '@Url.Action("checkBeforApprove", "WorkSheet")';
+        //console.log(Url);
+        var response = CallController_Ajax(requestData,Url);
+        if(response!="")
+        {
+            modalWaring(response);
+            return;
+        }
+
+
+        $(this).attr("hidden");
+        if ($("#PaymentType").val() == "") {
+            modalWaring("กรุณาระบุ รายละเอียดการอนุมัติ");
+        } else {
+            var values = {
+                Worksheet_ID: $("#hdWorksheetID").val(),
+                PaymentType: $('input[name=AprrovedType]:checked').val(),
+                PaymentType_ID: $("#PaymentType").val(),
+                User: "@UserDetail.CodeName",
+                Unit_Code: $("#hdUnitCode").val(),
+                Unit_ID: $("#hdUnitID").val(),
+                ApproveType: 1
+            }
+
+            sendApprovedWorksheet(values);
+        }
+
+
+    });
+    $("#btnApproved").on("click", function () {
+        if ($("#ApprovalRemark").val() == "") {
+            modalWaring("กรุณาระบุ เหตุผลอนุมัติ");
+        } else {
+            ApproveGuarantee(true);
+            modalSuccess();
+            $("#contentModal").text("ระบบดำเนินการอนุมัติเรียบร้อยแล้ว");
+        }
+
+    });
+
+    $("#btnNotApproved").on("click", function () {
+        if ($("#ApprovalRemark").val() == "") {
+            modalWaring("กรุณาระบุ เหตุผลไม่อนุมัติ");
+        } else {
+            ApproveGuarantee(false);
+            modalSuccess();
+            $("#contentModal").text("ระบบดำเนินการไม่อนุมัติเรียบร้อยแล้ว");
+        }
+
+    });
+
+    function ApproveGuarantee(ApproveFlag)
+    {
+        $.ajax({
+
+            url: '@Url.Action("UpdateGuarantee", "Guarantee")',
+            type: "POST",
+            async: false,
+
+            data: '{"ApproveID": "@Model.Data_GuaranteeDetail.WORKFLOW_NO","JobNo": "@Model.Data_GuaranteeDetail.DOCUMENT_NO","Remark": "Test","Role": "@Model.Data_GuaranteeDetail.USER_ROLE","Status": '+ApproveFlag+',"User": "@UserDetail.Fullname"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                alert(response.responseText);
+
+            },
+            success: function (response) {
+                $("#contentModal").text("ระบบดำเนินอนุมัติเรียบร้อยแล้ว");
+                $("#divApprove").attr('hidden', 'hidden');
+            }
+        });
+    }
+    function sendApprovedWorksheet(values) {
+        pleaseWaitDialog();
+        $.ajax({
+            url: '@Url.Action("sendApprovedWorksheet", "Worksheet")',
+            type: 'POST',
+            data: values,
+            traditional: true,
+            success: function (data) {
+                if (data) {
+
+                    pleaseWaitDialogClose();
+
+                    modalSuccess();
+                    $("#contentModal").text("ระบบดำเนินการส่งอนุมัติเรียบร้อยแล้ว");
+
+
+                    //cb_Worksheet obj = new cb_Worksheet();
+                    //List<HC_SP_Get_TD_Approve_Item_Detail_Result> result = obj.getApproveitemDetail(WorksheetID);
+                }
+
+            },
+            error: function (data) {
+                pleaseWaitDialogClose();
+            },
+        });
+    }
+    function ApprovedWorksheet(approveAction,approveType) {
+        console.log(approveAction);
+        var values = {
+            Worksheet_ID: $("#hdWorksheetID").val(),
+            PaymentType: $('input[name=AprrovedType]:checked').val(),
+            PaymentType_ID: $("#PaymentType").val(),
+            Role: "@UserDetail.Role",
+            Remark: $("#ApprovalRemark").val(),
+            User: "@UserDetail.CodeName",
+            ApproveVal: approveAction,
+            Unit_Code: $("#hdUnitCode").val(),
+            Unit_ID: $("#hdUnitID").val(),
+            ApproveType:approveType
+        }
+
+        pleaseWaitDialog();
+        $.ajax({
+            url: '@Url.Action("ApprovedWorksheet", "Worksheet")',
+            type: 'POST',
+            data: values,
+            traditional: true,
+            success: function (data) {
+                pleaseWaitDialogClose();
+
+                if (data) {
+                    modalSuccess();
+                    if (approveType == 2)
+                        $("#contentModal").text("ดำเนินการอนุมัติเรียบร้อยแล้ว");
+                    else
+                    {
+
+                        $("#contentModal").text("ดำเนินการไม่อนุมัติเรียบร้อยแล้ว");
+
+                        //clear values
+                        $("#AddReceiveTable tbody tr").each(function () {
+
+                            var row = $(this);
+                            //claer Is check confirm
+                            var chkPriceConfirm = row.find("#PriceConfirm");
+                            chkPriceConfirm.prop('checked',false);
+                            chkPriceConfirm.prop( 'disabled', false );
+                            //Clear Confirm
+                            var txtPriceConfirmDate = row.find("#PriceConfirmDate");
+                            txtPriceConfirmDate.val("");
+                        });
+                    }
+
+
+
+                }
+            },
+            error: function (data) {
+                pleaseWaitDialogClose();
+            },
+        });
+    }
+    function bindingApproveDetail() {
+        $.ajax({
+            url: '@Url.Action("getApproveDetail", "Worksheet")',
+            type: 'POST',
+            data: '{"WorksheetID": ' + $("#hdWorksheetID").val() + '}',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log(data.NextRole, "@UserDetail.Role",$("#hdApproveStatusID").val());
+                if ($("#hdApproveStatusID").val() == (@EnumConfiguration.MainProcessStatus.WaitingForApproved.GetHashCode()))
+                {
+                    if ("@UserDetail.Role" != data.NextRole) {
+                        $("#divApprove").attr('hidden', 'hidden');
+                    } else {
+                        $("#divApprove").removeAttr('hidden');
+                    }
+                }
+
+                $("#hdApproveID").val(data.Approve_ID);
+                $("#lblApprove_JobNoText").text(data.Approve_JobNoText);
+                $("#lblApprove_Status").text(data.Approve_StatusText);
+                $("#lblApprove_CreatedDate").text(data.Approve_CreatedDate);
+                $("#lblApprove_CreatedBy").text(data.Approve_CreatedBy);
+
+                $('input:radio[name="AprrovedType"]').filter('[value="' + data.PaymentType + '"]').attr('checked', true);
+
+
+                bindingPaymentType(data.PaymentType, $("#hdWarrantyExpired").val())
+
+                $("#PaymentType option[value='" + data.PaymentTypeID + "']").prop('selected', true);
+
+            },
+            error: function (request, error) {
+                bindingPaymentType($('input[name=AprrovedType]:checked').val(), $("#hdWarrantyExpired").val())
+                console.log(error);
+            },
+        });
+
+    }
+</script>

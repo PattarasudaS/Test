@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @*@Styles.Render("~/Content/css")*@
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link href="../../Content/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../Content/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="../../Content/css/font-awesome.css" rel="stylesheet">
+    <link href="../../Content/css/style.css" rel="stylesheet">
+    <link href="../../Content/css/pages/dashboard.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a>
+               
+                <a class="brand" href="index.html">Home Care System </a>
+                
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /navbar-inner -->
+    </div>
+    <!-- /navbar -->
+
+
+
+    <div class="subnavbar">
+        <div class="subnavbar-inner">
+            <div class="container">
+                <ul class="mainnav">
+                    <li class="active"><a href="../Inform/InformList"><i class="icon-home"></i><span>หน้าหลัก</span> </a> </li>
+                    <li><a href="../Inform/InformAddDetail"><i class="icon-bullhorn"></i><span>แจ้งซ่อม</span> </a> </li>
+                    <li><a href="../Options/Knowlage"><i class="icon-star"></i><span>ช่วยเหลือ</span> </a> </li>
+                </ul>
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /subnavbar-inner -->
+    </div>
+
+
+    <!-- /subnavbar -->
+    <div class="main">
+        <div class="main-inner">
+            <div class="container">
+                <div class="row">
+                    <!-- content-->
+                    <div class="container body-content">
+                        @RenderBody()
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /main-inner -->
+    </div>
+    <!-- /main -->
+    <div class="extra">
+        <div class="extra-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="span3">
+                        <h4>
+                            ติดต่อเจ้าหน้าที่ IT
+                        </h4>
+                        @*<ul>
+                                <li><a href="javascript:;">พี่แอ็ด</a></li>
+                                <li><a href="javascript:;">พี่แอ็ด</a></li>
+
+                            </ul>*@
+                    </div>
+                    <!-- /span3 -->
+                    <div class="span3">
+                        <h4>
+                            ติดต่อเจ้าหน้าที่ Support
+                        </h4>
+                        @*<ul>
+                                <li><a href="javascript:;">พี่แอ็ด</a></li>
+                                <li><a href="javascript:;">พี่แอ็ด</a></li>
+
+                            </ul>*@
+                    </div>
+
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /extra-inner -->
+    </div>
+    <!-- /extra -->
+    <div class="footer">
+        <div class="footer-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="span12"> &copy; 2017 <a href="http://www.Sansiri.com/">Sansiri Home Care 4.0</a>. </div>
+                    <!-- /span12 -->
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /footer-inner -->
+    </div>
+    <!-- /footer -->
+    <!-------------------------------------------->
+    @RenderSection("scripts", required: false)
+</body>
+</html>

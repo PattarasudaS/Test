@@ -1,0 +1,21 @@
+﻿@model HomeCare_4_0.Models.TrackerViewModel
+@{
+    ViewBag.Title = "Tracker";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<div class="main">
+    <div class="main-inner">
+        <div class="container">                    
+
+            @{
+                Html.RenderPartial("_Filter",Model.SearchData);
+                Html.RenderPartial("_SearchResult", Model);
+            }                     
+
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /main-inner -->
+</div>
+<!-- /main -->

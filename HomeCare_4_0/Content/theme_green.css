@@ -1,0 +1,41 @@
+﻿.bg-blue-active {
+    background-color: forestgreen !important;
+}
+
+.main-sidebar {
+    background-color: #020 !important;
+}
+
+.sidebar-menu .treeview:hover > a, .sidebar-menu .treeview.active > a {
+    border-left-color: forestgreen !important;
+    background: #040 !important;
+}
+
+.treeview-menu {
+    background: #020 !important;
+}
+
+.nav.navbar-nav li.dropdown.user.user-menu a i.fa-sign-out {
+    color: white !important;
+}
+
+.text-blue {
+    color: forestgreen !important;
+}
+
+.text-primary {
+    color: forestgreen;
+}
+
+a i.fa, a h3 {
+    color: forestgreen;
+}
+
+.bg-light-blue {
+    background-color: forestgreen !important;
+}
+
+.modal-header.bg-light-blue > button.close {
+    color: white;
+    opacity: 1;
+}

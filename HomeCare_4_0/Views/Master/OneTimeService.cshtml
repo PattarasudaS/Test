@@ -1,0 +1,326 @@
+﻿@using HomeCare_4_0.ClassLib
+@using HomeCare_4_0.Common
+@{
+    ViewBag.Title = "One Time Service - Home Care";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+@section AddToHead {
+    <style>
+        h3.box-title {
+            font-weight: 600;
+        }
+
+        .btn-group .btn {
+            min-width: 85.5px;
+        }
+
+        .project-status-filter {
+            border: 0;
+            box-shadow: none;
+            position: relative;
+            bottom: 6.5px;
+            right: 11px;
+        }
+
+        .list-group {
+            margin: 0;
+        }
+
+        .list-group-item {
+            position: relative;
+        }
+
+            .list-group-item:hover {
+                background-color: rgba(128, 128, 128, .064);
+            }
+
+            .list-group-item.empty-item:hover {
+                background-color: transparent;
+            }
+
+        .badge {
+            background: none;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #project-nav {
+            text-align: center;
+        }
+
+        .pagination {
+            margin: 20px auto 0px auto;
+        }
+
+            .pagination li a:hover {
+                cursor: pointer;
+            }
+
+            .pagination li a {
+                min-width: 38px;
+            }
+
+        #clear-search {
+            position: absolute;
+            right: 26px;
+            top: 22px;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer;
+        }
+    </style>
+}
+<div class="box" id="form-box" style="display: none;">
+    <div class="box-header">
+        <h3 class="box-title">จัดการโครงการ - One Time Service</h3>
+    </div>
+    <div class="box-body">
+        <div class="form-group col-lg-4">
+            <label for="search-text">ค้นหาโครงการ</label>
+            <input type="text" class="form-control" id="search-text" placeholder="คำค้นหา..." onkeyup="filterProject(this)" />
+            <span id="clear-search" style="display: none;"><i class="fa fa-close"></i></span>
+        </div>
+        <div class="form-group col-lg-8">
+            <label for="search-text">สถานะ</label>
+            <div class="btn-group form-control project-status-filter">
+                <button name="visible-only" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                <button name="disable-only" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+            </div>
+        </div>
+        <div class="form-group col-lg-12">
+            <label>รายการโครงการ</label>
+            <ul class="list-group" id="project-list"></ul>
+        </div>
+    </div>
+</div>
+@section Script {
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script>
+        const apiUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+        const project = {
+            data: [],
+            raw: [],
+            rowsPerPage: 10,
+            currentPage: 1,
+            lastPageNo() {
+                return Math.ceil(this.data.length / this.rowsPerPage);
+            },
+            keyword: '',
+            showVisible: true,
+            showDisable: true
+        };
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            await page.loading();
+            await ajaxGet(apiUrl + '/homecare/api/v1/User/@UserDetail.UserID/Permission', response => {
+                if (response) {
+                    if (!response.data.length) {
+                        noPermissionAlert();
+                    } else if (!response.data.find(a => a.permissionDescription === 'EditVisibilityForOneTimeServiceButton')) {
+                        noPermissionAlert();
+                    } else {
+                        $('#form-box').show();
+                    }
+                }
+            });
+            await synchronizeProject();
+            drawProjectList();
+            page.loaded();
+            $('#search-text').focus();
+        });
+
+        function noPermissionAlert() {
+            modalWaring('คุณไม่มีสิทธิในการเข้าถึงหน้านี้ ขออภัยครับ');
+            $('#warningModal').on('hidden.bs.modal', function () {
+                window.location.href = '@Url.Content("~/")';
+            });
+        }
+
+        async function synchronizeProject() {
+            const { data } = await ajaxGet(apiUrl + '/homecare/api/v1/Project/Config');
+            project.raw = data;
+            project.data = project.raw;
+        }
+
+        function drawProjectList(page = 1) {
+            project.currentPage = page;
+            const lastRowIndex = project.currentPage * project.rowsPerPage;
+            const firstRowIndex = lastRowIndex - project.rowsPerPage;
+
+            // Project list
+            $('#project-list').empty();
+            if (project.data.length > 0) {
+                for (const p of project.data.slice(firstRowIndex, lastRowIndex)) {
+                    $('#project-list').append(`
+                        <li class="list-group-item">
+                            <span class="badge">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" class="bootstrap-toggle" ${p.isVisible === true ? 'checked' : ''} id="project-${p.projectId}" data-toggle="toggle" data-size="small" data-on="ON" data-off="OFF" onchange="updateProjectConfig(this)" />
+                                </label>
+                            </span>
+                            ${p.projectCode} - ${p.projectName} ${p.projectShortName ? ': ' + p.projectShortName : ''}
+                        </li>
+                    `);
+                }
+                $('.bootstrap-toggle').bootstrapToggle();
+                while ($('#project-list').children().length < 10) {
+                    $('#project-list').append(`<li class="list-group-item empty-item">&nbsp;</li>`);
+                }
+            } else {
+                $('#project-list').append(`<li class="list-group-item">No project found...</li>`);
+            }
+
+            // Project pagination
+            let pageList = [];
+            let count = 0;
+            if (project.lastPageNo() < 6) {
+                for (let i = 1; i <= project.lastPageNo(); i++) {
+                    const active = project.currentPage === i ? ' class="active"' : '';
+                    pageList.push(`
+                        <li${active}><a onclick="drawProjectList(${i})">${i}</a></li>
+                    `);
+                }
+            } else {
+                while (pageList.length < 5) {
+                    if (project.currentPage <= 2) {
+                        if (pageList.length < 2) {
+                            // Add page1 and page2
+                            const active = project.currentPage === count + 1 ? ' class="active"' : '';
+                            pageList.push(`
+                                <li${active}><a onclick="drawProjectList(${count + 1})">${count + 1}</a></li>
+                            `);
+                        } else {
+                            // Add page3 - last page
+                            pageList.push(`<li><a onclick="drawProjectList(${count + 1})">${count + 1}</a></li>`);
+                            pageList.push('<li class="disabled"><a>...</a></li>');
+                            pageList.push(`<li><a onclick="drawProjectList(${project.lastPageNo()})">${project.lastPageNo()}</a></li>`);
+                        }
+                    } else if (project.currentPage >= project.lastPageNo() - 2) {
+                        if (pageList.length < 2) {
+                            // Add 5th, 4th and 3rd last page
+                            pageList.push('<li><a onclick="drawProjectList(1)">1</a></li>');
+                            pageList.push('<li class="disabled"><a>...</a></li>');
+                        } else {
+                            // Add 2rd and 1st last page
+                            pageList.push(`<li ${project.currentPage === project.lastPageNo() - 2 ? 'class="active"' : ''}><a onclick="drawProjectList(${project.lastPageNo() - 2})">${project.lastPageNo() - 2}</a></li>`);
+                            pageList.push(`<li ${project.currentPage === project.lastPageNo() - 1 ? 'class="active"' : ''}><a onclick="drawProjectList(${project.lastPageNo() - 1})">${project.lastPageNo() - 1}</a></li>`);
+                            pageList.push(`<li ${project.currentPage === project.lastPageNo() ? 'class="active"' : ''}><a onclick="drawProjectList(${project.lastPageNo()})">${project.lastPageNo()}</a></li>`);
+                        }
+                    } else {
+                        pageList.push('<li><a onclick="drawProjectList(1)">1</a></li>');
+                        pageList.push('<li class="disabled"><a>...</a></li>');
+                        pageList.push(`<li class="active"><a onclick="drawProjectList(${project.currentPage})">${project.currentPage}</a></li>`);
+                        pageList.push('<li class="disabled"><a>...</a></li>');
+                        pageList.push(`<li><a onclick="drawProjectList(${project.lastPageNo()})">${project.lastPageNo()}</a></li>`);
+                    }
+                    count++;
+                }
+            }
+            let htmlPageList = '';
+            for (const p of pageList) {
+                htmlPageList += p;
+            }
+            $('#project-nav').remove();
+            $('#project-list').parent().append(`
+                <nav id="project-nav" aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li><a onclick="drawProjectList(${project.currentPage === 1 ? 1 : project.currentPage - 1})" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                        ${htmlPageList}
+                        <li><a onclick="drawProjectList(${project.currentPage === project.lastPageNo() ? project.lastPageNo() : project.currentPage + 1})" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                    </ul>
+                </nav>
+            `);
+        }
+
+        function filterByVisibility(element) {
+            if (element.name === 'visible-only') {
+                if ($(element).hasClass('btn-default')) {
+                    project.showVisible = true;
+                    project.showDisable = false;
+                    $('button[name=disable-only]').removeClass('btn-danger');
+                    $('button[name=disable-only]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    filterProject();
+                    $('#search-text').focus();
+                } else {
+                    project.showVisible = true;
+                    project.showDisable = true;
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    filterProject();
+                    $('#search-text').focus();
+                }
+            } else if (element.name === 'disable-only') {
+                if ($(element).hasClass('btn-default')) {
+                    project.showVisible = false;
+                    project.showDisable = true;
+                    $('button[name=visible-only]').removeClass('btn-success');
+                    $('button[name=visible-only]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    filterProject();
+                    $('#search-text').focus();
+                } else {
+                    project.showVisible = true;
+                    project.showDisable = true;
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    filterProject();
+                    $('#search-text').focus();
+                }
+            }
+            
+        }
+
+        function filterProject(element) {
+            if (element) {
+                if (element.value) {
+                    project.keyword = element.value.toLowerCase();
+                    $('#clear-search').show();
+                    $('#clear-search').click(function () {
+                        element.value = '';
+                        project.keyword = '';
+                        filterProject();
+                        $('#clear-search').hide();
+                        element.focus();
+                    });
+                } else {
+                    $('#clear-search').hide();
+                }
+            }
+            project.data = project.raw.filter(p => {
+                return p.isVisible === project.showVisible || !p.isVisible === project.showDisable;
+            }).filter(p => {
+                return (p.projectCode.toLowerCase().includes(project.keyword) ||
+                    p.projectName.toLowerCase().includes(project.keyword) ||
+                    p.projectShortName.toLowerCase().includes(project.keyword));
+            });
+            const page = project.currentPage > project.lastPageNo() ? 1 : project.currentPage;
+            drawProjectList(page);
+        }
+
+        function updateProjectConfig(element) {
+            const projectId = element.id.split('-')[1];
+            const isVisible = element.checked;
+            const updatedBy = '@UserDetail.CodeName';
+            ajaxPut(apiUrl + '/homecare/api/v1/Project/Config', { projectId, isVisible, updatedBy }, async response => {
+                if (response) {
+                    await synchronizeProject();
+                    modalSuccess();
+                    // set timeout for better animation
+                    setTimeout(filterProject, 512);
+                }
+            });
+        }
+    </script>
+}

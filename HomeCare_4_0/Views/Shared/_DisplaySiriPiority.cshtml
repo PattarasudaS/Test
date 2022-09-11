@@ -1,0 +1,49 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+
+</head>
+<body>
+    <div tabindex="-1" class="modal fade" id="modalDisplaySiriPiority" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;  ">
+        <div class="modal-dialog modal-dialog-centered" style="margin-top: 25vh; width: 35%">
+            <div class="modal-content" style="border-radius: 6px;">
+                <div class="modal-header bg-light-blue" style="border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">สิทธิพิเศษสำหรับลูกค้า Siri Piority</h4>
+                </div>
+                <div class="modal-body">
+                    <ol>
+                        <div id="displayPrivilege"></div>
+                    </ol>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<script type="text/javascript">
+    const apiUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+
+    $(document).ready(function () {
+        ajaxGet(apiUrl + '/homecare/api/v1/Admin/GetPrivilege', response => {
+            if (response) {
+                var Privilege = "";
+
+                for (var i = 0; i < response.data.length; i++) {
+                    Privilege += "<li>"  +  response.data[i].description_TH + "</li>";
+                }
+                document.getElementById("displayPrivilege").innerHTML = Privilege;
+            }
+        });
+    });
+
+
+
+</script>

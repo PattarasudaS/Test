@@ -1,0 +1,1284 @@
+﻿@using HomeCare_4_0.Common
+@using HomeCare_4_0.ClassLib
+@{
+    ViewBag.Title = "ManageCentralUnit";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/assets/plugins/datatables/dataTables.bootstrap-1.10.12.min.css" />
+<link rel="stylesheet" href="~/assets/plugins/datatables/responsive.bootstrap.min.css" />
+<link rel="stylesheet" href="~/assets/plugins/checkbox/checkboxstyle.css" />
+
+<style type="text/css">
+    div.dataTables_wrapper {
+        width: auto;
+        margin: 0 auto;
+    }
+
+    li.select2-selection__choice {
+        background-color: #6bbbc7 !important;
+    }
+
+    .row.spece-line {
+        margin-top: 8px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        box-sizing: border-box;
+        list-style: none;
+        margin: 0;
+        padding: 0 5px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        padding: 0 5px;
+    }
+
+    ul.select2-selection__rendered > span.select2-selection__clear {
+        position: absolute;
+        right: 0;
+        margin: 3px 5px;
+    }
+
+    .btn-group .btn {
+        min-width: 85.5px;
+    }
+
+    .project-status-filter {
+        border: 0;
+        box-shadow: none;
+        position: relative;
+        bottom: 6.5px;
+        right: 11px;
+    }
+
+    .btn-rounded {
+        font-family: Raleway-SemiBold;
+        font-size: 13px;
+        /*        color: rgba(58, 133, 191, 0.75);*/
+        letter-spacing: 1px;
+        line-height: 15px;
+        border: 2px solid rgba(58, 133, 191, 0.75);
+        border-radius: 40px;
+        /*        background: transparent;*/
+        transition: all 0.3s ease 0s;
+    }
+
+        .btn-rounded :hover {
+            color: #FFF;
+            background: rgba(58, 133, 191, 0.75);
+            border: 2px solid rgba(58, 133, 191, 0.75);
+        }
+
+    .input-field input[type='text'] {
+        /* color: #fff;*/
+        /*font-size: 1.1em;*/
+        height: 28px;
+        border-bottom: 1px solid #9e9e9e !important;
+        box-shadow: 0 1px 0 0 #fff !important;
+    }
+
+    input:not([type]).validate + label, input[type=text]:not(.browser-default).validate + label, input[type=password]:not(.browser-default).validate + label, input[type=email]:not(.browser-default).validate + label, input[type=url]:not(.browser-default).validate + label, input[type=time]:not(.browser-default).validate + label, input[type=date]:not(.browser-default).validate + label, input[type=datetime]:not(.browser-default).validate + label, input[type=datetime-local]:not(.browser-default).validate + label, input[type=tel]:not(.browser-default).validate + label, input[type=number]:not(.browser-default).validate + label, input[type=search]:not(.browser-default).validate + label, textarea.materialize-textarea.validate + label {
+        width: 100%
+    }
+
+    input:not([type]), input[type=text]:not(.browser-default), input[type=password]:not(.browser-default), input[type=email]:not(.browser-default), input[type=url]:not(.browser-default), input[type=time]:not(.browser-default), input[type=date]:not(.browser-default), input[type=datetime]:not(.browser-default), input[type=datetime-local]:not(.browser-default), input[type=tel]:not(.browser-default), input[type=number]:not(.browser-default), input[type=search]:not(.browser-default), textarea.materialize-textarea {
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid #9e9e9e;
+        border-radius: 0;
+        outline: none;
+        height: 3rem;
+        width: 100%;
+        font-size: 16px;
+        margin: 0 0 8px 0;
+        padding: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        -webkit-box-sizing: content-box;
+        box-sizing: content-box;
+        -webkit-transition: border .3s, -webkit-box-shadow .3s;
+        transition: border .3s, -webkit-box-shadow .3s;
+        transition: box-shadow .3s, border .3s;
+        transition: box-shadow .3s, border .3s, -webkit-box-shadow .3s;
+    }
+
+    .input-field label {
+        font-family: 'Sarabun', sans-serif;
+        font-size: 1em;
+        /* color: #fff;*/
+    }
+
+        .input-field label.active {
+            font-size: 1em !important;
+            color: #fff !important;
+        }
+
+    .input-field input[type='text']:focus + label {
+        /*        color: #fff !important;*/
+    }
+
+    .input-field input[type='text']:focus {
+        border-bottom: 1px solid rgb(8, 131, 224);
+        box-shadow: 0 1px 0 0 #6bbbc7 !important;
+    }
+
+    .input-field > label > span > i {
+        color: rgba(58, 133, 191, 0.75);
+        position: absolute;
+        top: -10px;
+        left: 0;
+        font-size: 1rem;
+        cursor: text;
+        -webkit-transition: color .2s ease-out, -webkit-transform .2s ease-out;
+        transition: color .2s ease-out, -webkit-transform .2s ease-out;
+        transition: transform .2s ease-out, color .2s ease-out;
+        transition: transform .2s ease-out, color .2s ease-out, -webkit-transform .2s ease-out;
+        -webkit-transform-origin: 0% 100%;
+        transform-origin: 0% 100%;
+        text-align: initial;
+        -webkit-transform: translateY(12px);
+        transform: translateY(12px);
+    }
+
+    form .error {
+        color: #ff0000;
+        font-weight: 300;
+        font-style: italic;
+        font-size: 1.2rem;
+    }
+
+    .td-click {
+        cursor: pointer;
+    }
+
+    td a {
+        color: #333;
+    }
+
+    body {
+        padding-right: 0px !important;
+    }
+    .fa-lg {
+        font-size:1.5em !important;
+    }
+</style>
+
+
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">ยูนิตกลาง และ นิติบุคคล</h3>
+    </div>
+    <div class="box-body">
+        <div class="form-row">
+            <div class="form-group col-xs-12 col-md-6 col-lg-4">
+                <label>ค้นหาโครงการ</label>
+                <div class="input-field">
+                    <i class="fas fa-search prefix grey-text"></i>
+                    <input class="validate mt-10" id="project-name" type="text" style="width:85%">
+                </div>
+            </div>
+
+            <div class="form-group col-xs-12 col-md-6 col-lg-3">
+                <label>สถานะยูนิตกลาง</label>
+                <div class="btn-group form-control project-status-filter">
+                    <button name="all" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ทั้งหมด</button>
+                    <button name="visible-only" type="button" class="btn btn-default" onclick="filterByVisibility(this)">เปิดใช้งาน</button>
+                    <button name="disable-only" type="button" class="btn btn-default" onclick="filterByVisibility(this)">ปิดใช้งาน</button>
+
+                </div>
+
+            </div>
+
+            <div class="form-group col-xs-12 col-md-6 col-lg-5">
+                <label style="height: 15px"></label>
+                <div class="controls ">
+                    <button type="button" class="btn btn-primary btn-rounded" id="btnAddCentralUnit">
+                        <i class="fa fa-home fa-fw" aria-hidden="true"></i>
+                        เพิ่มยูนิตกลาง
+                    </button>&nbsp;
+                    <button type="button" class="btn btn-primary  btn-rounded " id="btnAddProspect">
+                        <i class="fa fa-users" aria-hidden="true"></i>
+                        เพิ่มนิติบุคคล
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group col-xs-12 col-md-6 col-lg-12 mt-5 dvRole">
+            <div class="table-responsive ">
+                <table class="table  table-striped table-bordered " id="project-list" style="margin-bottom: 0;">
+                    <thead>
+                        <tr>
+                            <th class="text-left">#</th>
+                            <th class="text-center">โครงการ</th> 
+                            <th class="text-center">สถานะยูนิตกลาง</th>
+                            <th class="text-center">ยูนิตกลาง</th>
+                            <th class="text-center">นิติบุคคล</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Prospect Form -->
+<div class="modal fade" id="modalProspectForm" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form id="frmAddProspect">
+            <input type="hidden" id="frmProspectEvent" name="frmProspectEvent" />
+            <input type="hidden" id="prospectid" name="prospectid" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-users fa-fw" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">เพิ่มนิติบุคคล</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body ">
+                    <div class="row">
+                        <div class=" form-row">
+                            <div class="form-group col-md-4">
+                                <label for="title">คำนำหน้าชื่อ<span style="color: #ff0000;"> *</span></label>
+                                <select class="col-lg-12 form-control select2 input-sm" id="title" name="title" data-placeholder="-- คำนำหน้าชื่อ  --">
+                                    <option selected>Please select</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="identityCode" id="lblidentityCode">เลขประจำตัวบัตรปรชาชน<span style="color: #ff0000;"> *</span></label>
+                                <input type="text" class="form-control input-sm allownumeric" id="identityCode" name="identityCode" maxlength="13" />
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="CompanyName">ชื่อบริษัท</label>
+                                    <input type="text" class="form-control input-sm" id="CompanyName" name="CompanyName" />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="firstName">ชื่อ<span style="color: #ff0000;"> *</span></label>
+                                <input type="text" class="form-control input-sm" id="firstName" name="firstName" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="lastName">นามสกุล<span style="color: #ff0000;"> *</span></label>
+                                <input type="text" class="form-control input-sm" id="lastName" name="lastName" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="building">หมู่บ้าน/อาคาร</label>
+                                <input type="text" class="form-control input-sm" id="building" name="building" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="floor">ชั้น</label>
+                                <input type="text" class="form-control input-sm allownumeric" id="floor" name="floor" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="room">ห้อง</label>
+                                <input type="text" class="form-control input-sm" id="room" name="room" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="number">เลขที่</label>
+                                <input type="text" class="form-control input-sm" id="address_no" name="address_no" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="road">ถนน</label>
+                                <input type="text" class="form-control input-sm" id="road" name="road" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="province">จังหวัด</label>
+                                <select class="col-lg-12 form-control select2 input-sm" id="province" name="province" data-placeholder="-- กรุณาเลือกจังหวัด --">
+                                    <option selected>Please select</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for=">">เขต/อำเภอ</label>
+                                <select class="col-lg-12 form-control select2 input-sm" id="district" name="district" data-placeholder="-- กรุณาเลือกอำเภอ --">
+                                    <option selected>Please select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="subDistrict">แขวง/ตำบล</label>
+                                <select class="col-lg-12 form-control select2 input-sm" id="subDistrict" name="subDistrict" data-placeholder="-- กรุณาเลือกตำบล --">
+                                    <option selected>Please select</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="postalCode">รหัสไปรษณีย์</label>
+                                <input type="text" class="form-control input-sm allownumeric" id="PostCode" name="PostCode" maxlength="5" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="fax">แฟกซ์</label>
+                                <input type="text" class="form-control input-sm allownumeric" id="fax" name="fax" maxlength="10" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="mobile">มือถือ</label>
+                                <input type="text" class="form-control input-sm allownumeric" id="mobile" name="mobile" maxlength="10" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="phone">โทรศัพท์ (บ้าน)</label>
+                                <input type="text" class="form-control input-sm allownumeric" id="phone" name="phone" maxlength="10" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="companyPhone">โทรศัพท์ (บริษัท)</label>
+                                <input type="text" class="form-control input-sm allownumeric" id="companyPhone" name="companyPhone" maxlength="10" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="code">ต่อ</label>
+                                <input type="text" class="form-control input-sm allownumeric" id="OfficePhoneExt" name="OfficePhoneExt" maxlength="5" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control input-sm" id="email" name="email" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnSumbit-frmProspect">บันทึก</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+<!-- Modal Central Unit Form -->
+<div class="modal fade" id="modalCantralUnitForm" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="frmAddCentralUnit">
+            <input type="hidden" id="frmCentralUnitEvent" name="frmCentralUnitEvent" />
+            <input type="hidden" id="unitId" name="unitId" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row">
+                        <h4 class="modal-title pull-left"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;<span id="titleForm" name="titleForm">เพิ่มยูนิตกลาง</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>โครงการ :<span style="color: #ff0000;"> *</span></label>
+                        <select class="col-lg-12 form-control select2" id="projectId" name="projectId" data-placeholder="-- กรุณาคลิกเพื่อเลือกโครงการ --">
+                            <option selected>Please select</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>นิติบุคคล :<span style="color: #ff0000;"> *</span></label>
+                        <select class="col-lg-12 form-control select2" id="prospectId" name="prospectId" data-placeholder="-- กรุณาคลิกเพื่อเลือกนิติบุคคล --">
+                            <option selected>Please select</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">ประเภทสิ่งก่อสร้าง :<span style="color: #ff0000;"> *</span></label>
+                        <select class="col-lg-12 form-control select2" id="buildTypeId" name="buildTypeId" data-placeholder="-- กรุณาคลิกเพื่อเลือกประเภทสิ่งก่อสร้าง --">
+                            <option selected>Please select</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>กรอกเลขยูนิต<span style="color: #ff0000;"> *</span></label>
+                        <div class="input-field">
+                            <input class="validate mt-10" id="unitCode" name="unitCode" autocomplete="off" type="text" maxlength="15" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>กรอกเลขที่บ้าน</label>
+                        <div class="input-field">
+                            <input class="validate mt-10" id="address" name="address" autocomplete="off" type="text" maxlength="10" />
+                        </div>
+                    </div>
+                    <div class="form-group" id="frmStatus" name="frmStatus">
+                        <div class="checkbox checkbox-success">
+                            <input class="styled" type="checkbox" id="cbStatus" name="cbStatus" value="false">
+                            <label id="lbStatus" name="lbStatus">
+                                สถานะการใช้งาน
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnSumbit-frmCentralUnit">บันทึก</button>
+
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+<!--  Modal Insert Success -->
+<div class="modal fade" id="modalInsertSuccess" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">ยืนยันการ บันทึก</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa fa-check fa-2x" aria-hidden="true" style="color: #32CD32;"></i>
+                <span id="lbTxtSuccess"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">ตกลง</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  Modal Role warning -->
+<div class="modal fade" id="modalWarning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">แจ้งเตือน</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true" style="color:#FFCC00;"></i>
+                <span id="lbTxtWarning"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="~/assets/plugins/jQuery/validation/jquery.validate.min.js"></script>
+<script type="text/javascript" src="~/assets/plugins/datatables/jquery.dataTables-1.10.12.min.js"></script>
+<script type="text/javascript" src="~/assets/plugins/datatables/dataTables.bootstrap-1.10.12.min.js"></script>
+
+
+@section script {
+    <script type="text/javascript">
+        const sizePerPage = 10;
+        const baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+
+        let tambolList = [];
+        let amphorList = [];
+        var ddlProspect = null;
+        let btnValue = null;
+        var arrData = null;
+        var table;
+        var validatorProspect;
+        var validatorCentralUnit;
+
+
+        $(document).ready(async function () {
+           await page.loading();
+           await ajaxGet(baseUrl + '/homecare/api/v1/User/@UserDetail.UserID/Permission', response => {
+                if (response) {
+                    if (!response.data.length) {
+                        noPermissionAlert();
+                    } else if (!response.data.find(a => a.permissionDescription === 'ManageCentralUnit')) {
+                        noPermissionAlert();
+                    } else {
+                        init();
+                        page.loaded();
+                    }
+                }
+            });
+            page.loaded();
+        });
+        async function init() {
+           initDropDownProject();
+            initDropDownBuildingType();
+            initDropDownLegal();
+            initDropDownTitle();
+            initDropDownProvince();
+            initDropDownTambol();
+            initDropDownAmphor();
+            table = $('#project-list').DataTable({
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "render": function (data, type, row, meta) {
+                            return data;
+                        }
+                    },
+                    {
+                        "targets": 1,
+                        "render": function (data, type, row, meta) {
+                            return `<td class="text-left">${data}</td>`;
+                        }
+                    },
+                    {
+
+                        "targets": 2,
+                        "render": function (data, type, row, meta) {
+                            if (data === true) {
+                                return `<td class=text-center"> <i class="fa fa-check-circle fa-lg" aria-hidden="true" style="color:#58C89E;"  ></i></td>`;
+                            } else {
+                                return `<td class="text-center"> <i class="fa fa-minus-circle fa-lg" aria-hidden="true" style="color:#CE494D;"></i></td>`;
+                            }
+
+
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 3,
+                        "render": function (value, type, row, meta) {
+                            return `<a class=" td-click" id="id_${value.index}" onclick="onClickEditCentralUnit(${value.unitId});">${value.unitCode}</a>`;
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 4,
+                        "render": function (value, type, row, meta) {
+                            return `<a class="text-left td-click"  onclick="onClickEditProspect(${value.prospectId});">${value.prospectName}</a>`;
+                        }
+                    }
+                ],
+                "language": {
+                    "search": "ค้นหา : ",
+                    "lengthMenu": "แสดง _MENU_ รายการ",
+                    "emptyTable": "ไม่พบข้อมูล",
+                    "info": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoEmpty": "รายการ _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    "infoFiltered": "",
+                    "zeroRecords":"ไม่พบข้อมูล",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+
+                }
+
+            });
+
+            $('#project-name').on('change keyup paste', function (event) {
+                onSearchCentralUnit();
+
+            }).focus();
+
+            $(".allownumeric").on("keypress keyup blur", function (event) {
+                $(this).val($(this).val().replace(/[^\d].+/, ""));
+                if ((event.which < 48 || event.which > 57)) {
+                    event.preventDefault();
+                }
+            });
+
+            validatorCentralUnit = $("#frmAddCentralUnit").validate({
+                rules: {
+                    projectId: { required: true },
+                    prospectId: { required: true },
+                    buildTypeId: { required: true },
+                    unitCode: { required: true }
+                },
+                messages: {
+                    projectId: "Require field",
+                    prospectId: "Require field",
+                    buildTypeId: "Require field",
+                    unitCode: "Require field"
+                },
+                submitHandler:  function (event) {
+
+                    if ($('#frmAddCentralUnit [name="frmCentralUnitEvent"]').val() === "insert") {
+                        const data = {
+                            projectId: $('#frmAddCentralUnit [name="projectId"]').val(),
+                            unitCode: $('#frmAddCentralUnit [name="unitCode"]').val(),
+                            address: $('#frmAddCentralUnit [name="address"]').val(),
+                            buildTypeId: $('#frmAddCentralUnit [name="buildTypeId"]').val(),
+                            prospectId: $('#frmAddCentralUnit [name="prospectId"]').val(),
+                            userLogin: '@UserDetail.CodeName'
+                        }
+
+                        ajaxPost(`${baseUrl}/homecare/api/v1/Admin/InsertCentralUnit`, data, response => {
+                            if (response) {
+                                if (response.data.status) {
+                                    showModalSuccess(response.data.msg);
+                                    $('#modalCantralUnitForm').modal('hide');
+                                    clrearForm();
+                                    reload();
+                                } else {
+                                    showModalWarning(response.data.msg);
+                                }
+                            } else {
+                                showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                            }
+                        });
+
+                    }
+                    else {
+                        const data = {
+                            unitId: $('#frmAddCentralUnit [name="unitId"]').val(),
+                            unitCode: $('#frmAddCentralUnit [name="unitCode"]').val(),
+                            address: $('#frmAddCentralUnit [name="address"]').val(),
+                            buildTypeId: $('#frmAddCentralUnit [name="buildTypeId"]').val(),
+                            prospectId: $('#frmAddCentralUnit [name="prospectId"]').val(),
+                            userLogin: '@UserDetail.CodeName',
+                            isActive: $('#frmAddCentralUnit [name="cbStatus"]').val()
+                        }
+
+                        ajaxPost(`${baseUrl}/homecare/api/v1/Admin/UpdateCentralUnit`, data, response => {
+                            if (response) {
+                                if (response.data.status) {
+                                    showModalSuccess(response.data.msg);
+                                    $('#modalCantralUnitForm').modal('hide');
+                                    clrearForm();
+                                    reload();
+                                } else {
+                                    showModalWarning(response.data.msg);
+                                }
+                            } else {
+                                showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                            }
+                        });
+                    }
+
+                }
+            });
+
+
+            validatorProspect = $("#frmAddProspect").validate({
+                rules: {
+                    title: { required: true },
+                    identityCode: {
+                        required: true,
+                        minlength: 13,
+                        checkCardId:true
+                    },
+                    firstName: { required: true },
+                    lastName: { required: true },
+                    fax: {
+                        minlength: 9,
+                        maxlength: 10
+                    },
+                    mobile: {
+                        minlength: 10
+                    },
+                    phone: {
+                        minlength: 9,
+                        maxlength: 10
+                    },
+                    companyPhone: {
+                        minlength: 9,
+                        maxlength: 10
+                    },
+                    OfficePhoneExt: {
+                        maxlength: 5
+                    },
+                    email: {
+                        laxEmail:true
+                    }
+                },
+                messages: {
+                    title: "Require field",
+                    identityCode: {
+                        required: "Require field",
+                        minlength: "Require 13 digits",
+                        checkCardId:"ID Card Number invalid"
+                    },
+                    firstName: "Require field",
+                    lastName: "Require field",
+                    fax: {
+                        minlength: "Require minlength 9 digits",
+                        maxlength: "Require maxlength 10 digits"
+                    },
+                    mobile: {
+                        minlength: "Require 10 digits"
+                    },
+                    phone: {
+                        minlength: "Require minlength 9 digits",
+                        maxlength: "Require maxlength 10 digits"
+                    },
+                    companyPhone: {
+                        minlength: "Require minlength 9 digits",
+                        maxlength: "Require maxlength 10 digits"
+                    },
+                    OfficePhoneExt: {
+                        maxlength: "Require maxlength 5 digits"
+                    },
+                    email: {
+                        laxEmail: "Please enter a valid email address"
+                    }
+                },
+                submitHandler: function (event) {
+                    if ($('#frmAddProspect [name="frmProspectEvent"]').val() === "insert") {
+                        const data = {
+                            Title_id: $('#frmAddProspect [name="title"]').val(),
+                            CardId: $('#frmAddProspect [name="identityCode"]').val(),
+                            CompanyName: $('#frmAddProspect [name="CompanyName"]').val(),
+                            BuildingName: $('#frmAddProspect [name="building"]').val(),
+                            FloorNo: $('#frmAddProspect [name="floor"]').val(),
+                            RoomNo: $('#frmAddProspect [name="room"]').val(),
+                            AddressNo: $('#frmAddProspect [name="address_no"]').val(),
+                            RoadName: $('#frmAddProspect [name="road"]').val(),
+                            TambolName: $('#frmAddProspect [name="subDistrict"]').val(),
+                            AmphorName: $('#frmAddProspect [name="district"]').val(),
+                            ProvinceId: $('#frmAddProspect [name="province"]').val(),
+                            PostCode: $('#frmAddProspect [name="PostCode"]').val(),
+                            FaxNumber: $('#frmAddProspect [name="fax"]').val(),
+                            Mobile: $('#frmAddProspect [name="mobile"]').val(),
+                            Telephone: $('#frmAddProspect [name="phone"]').val(),
+                            OfficePhone: $('#frmAddProspect [name="companyPhone"]').val(),
+                            OfficePhoneExt: $('#frmAddProspect [name="OfficePhoneExt"]').val(),
+                            Email: $('#frmAddProspect [name="email"]').val(),
+                            FirstName: $('#frmAddProspect [name="firstName"]').val(),
+                            LastName: $('#frmAddProspect [name="lastName"]').val(),
+                            userLogin: '@UserDetail.CodeName'
+                        }
+                        page.loading();
+
+                        ajaxPost(`${baseUrl}/homecare/api/v1/Admin/InsertProspect`, data, response => {
+                            if (response) {
+                                if (response.data.msg =="Success.") {
+                                    page.loaded();
+                                    showModalSuccess('บันทึกสำเร็จ');
+                                    $('#modalProspectForm').modal('hide');
+                                    clrearForm();
+                                    initDropDownLegal();
+                                } else {
+                                    showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                                }
+                            } else {
+                                showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                            }
+                        });
+                    } else {
+                        const data = {
+                            Title_id: $('#frmAddProspect [name="title"]').val(),
+                            CardId: $('#frmAddProspect [name="identityCode"]').val(),
+                            Prospectid: $('#frmAddProspect [name="prospectid"]').val(),
+                            CompanyName: $('#frmAddProspect [name="CompanyName"]').val(),
+                            BuildingName: $('#frmAddProspect [name="building"]').val(),
+                            FloorNo: $('#frmAddProspect [name="floor"]').val(),
+                            RoomNo: $('#frmAddProspect [name="room"]').val(),
+                            AddressNo: $('#frmAddProspect [name="address_no"]').val(),
+                            RoadName: $('#frmAddProspect [name="road"]').val(),
+                            TambolName: $('#frmAddProspect [name="subDistrict"]').val(),
+                            AmphorName: $('#frmAddProspect [name="district"]').val(),
+                            ProvinceId: $('#frmAddProspect [name="province"]').val(),
+                            PostCode: $('#frmAddProspect [name="PostCode"]').val(),
+                            FaxNumber: $('#frmAddProspect [name="fax"]').val(),
+                            Mobile: $('#frmAddProspect [name="mobile"]').val(),
+                            Telephone: $('#frmAddProspect [name="phone"]').val(),
+                            OfficePhone: $('#frmAddProspect [name="companyPhone"]').val(),
+                            OfficePhoneExt: $('#frmAddProspect [name="OfficePhoneExt"]').val(),
+                            Email: $('#frmAddProspect [name="email"]').val(),
+                            FirstName: $('#frmAddProspect [name="firstName"]').val(),
+                            LastName: $('#frmAddProspect [name="lastName"]').val(),
+                            userLogin: '@UserDetail.CodeName'
+                        }
+
+                        ajaxPost(`${baseUrl}/homecare/api/v1/Admin/UpdateProspect`, data, response => {
+                            if (response) {
+                                if (response.data.msg == "Success.") {
+                                    showModalSuccess('บันทึกสำเร็จ');
+                                    $('#modalProspectForm').modal('hide');
+                                    clrearForm();
+                                    initDropDownLegal();
+                                    reload();
+                                } else {
+                                    showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                                }
+                            } else {
+                                showModalWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                            }
+                        });
+                    }
+
+
+                }
+
+
+            });
+
+
+            $('#btnAddCentralUnit').click(function (event) {
+                clrearForm();
+                $('#frmAddCentralUnit [name = "titleForm"]').text('เพิ่มยูนิตกลาง').trigger('change');
+                $('#frmAddCentralUnit [name="frmStatus"]').css('display', 'none');
+                $('#frmAddCentralUnit [name="frmCentralUnitEvent"]').val('insert').trigger('change');
+                $('#modalCantralUnitForm').modal({ backdrop: 'static', keyboard: false, show: true });
+            });
+
+            $('#btnAddProspect').click(function (event) {
+                clrearForm();
+                $('#frmAddProspect [name = "titleForm"]').text('เพิ่มนิติบุคคล').trigger('change');
+                $('#frmAddProspect [name="frmProspectEvent"]').val('insert').trigger('change');
+                $('#modalProspectForm').modal({ backdrop: 'static', keyboard: false, show: true });
+            });
+
+
+            $('#frmAddCentralUnit [name="cbStatus"]').click(function () {
+                $(this).val(this.checked ? "true" : "false");
+                if (this.checked) {
+                    $('#frmAddCentralUnit [name="lbStatus"]').text('เปิดการใช้งาน');
+                } else {
+                    $('#frmAddCentralUnit [name="lbStatus"]').text('ปิดการใช้งาน');
+                }
+
+            });
+
+            $('#frmAddProspect [name="province"]').change(function (event) {
+                let _amphorList = amphorList.filter(e => e.keyId.toString() === event.target.value);
+                let option = ``;
+                option += `<option selected="selected" value="">Please select</option>`;
+                $.each(_amphorList, function (Index, Value) {
+                    option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                });
+                $("#district").empty().html(option);
+                $("#subDistrict").val('').trigger('change.select2');
+                $('#frmAddProspect [name="PostCode"]').val('').trigger('change');
+            });
+
+            $('#frmAddProspect [name="district"]').change(function (event) {
+
+                let _tambolList = tambolList.filter(e => e.keyId.toString() === event.target.value);
+                let option = ``;
+                option += `<option selected="selected" value="">Please select</option>`;
+                $.each(_tambolList, function (Index, Value) {
+                    option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                });
+                $("#subDistrict").empty().html(option);
+
+                let _postCode = amphorList.filter(e => e.id.toString() === event.target.value);
+                if (_postCode.length > 0) {
+                    $('#frmAddProspect [name="PostCode"]').val(_postCode[0].code.trim()).trigger('change');
+                }
+            });
+
+            $('#frmAddProspect [name="title"]').change(function (event) {
+
+                let eventId = event.target.value;
+                if (eventId === "400" || eventId === "401") {
+                    $('label[for="identityCode"]').html('เลขที่ผู้เสียภาษี<span style="color: #ff0000;"> *</span>');
+
+                }
+                else {
+                    $('label[for="identityCode"]').html('เลขประจำตัวบัตรปรชาชน<span style="color: #ff0000;"> *</span>');
+                }
+
+            });
+
+            ////set button initial
+            $('button[name=visible-only]').removeClass('btn-success');
+            $('button[name=visible-only]').addClass('btn-default');
+            $('button[name=disable-only]').removeClass('btn-danger');
+            $('button[name=disable-only]').addClass('btn-default');
+            $('button[name=all]').removeClass('btn-default');
+            $('button[name=all]').addClass('btn-info');
+            btnValue = null;
+            page.loaded();
+        }
+        jQuery.validator.addMethod("checkCardId", function (id, element) {
+            if (id === undefined || id === null || id.length !== 13) {
+                return false;
+            }
+            for (i = 0, sum = 0; i < 12; i++)
+                sum += parseFloat(id.charAt(i)) * (13 - i); if ((11 - sum % 11) % 10 !== parseFloat(id.charAt(12)))
+                return false; return true;
+        }, "ID Card Number invalid");
+
+        jQuery.validator.addMethod("laxEmail", function(value, element) {
+         // allow any non-whitespace characters as the host part
+            const re = /^(([^<>()[\]\\.,;:\s@@\"]+(\.[^<>()[\]\\.,;:\s@@\"]+)*)|(\".+\"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return this.optional(element) || re.test( value );
+        }, 'Please enter a valid email address');
+
+        function initDropDownProject() {
+            let option = ``;
+                $.ajax({
+                    url: "@Url.Action("GetProejctMaster", "Home")",
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    error: function (response) {
+                       // alert(response.responseText);
+                    },
+                    success: function (response) {
+                        var ddlsearchProjectDoc = $('[id*="projectId"]');
+                        option += `<option selected="selected" value="">Please select</option>`;
+                        $.each(response, function (Index, Value) {
+                            option += `<option value="${Value.Value}">
+                                       ${Value.Text}
+                                  </option>`;
+                        });
+                        ddlsearchProjectDoc.empty().html(option);
+                    }
+                });
+        }
+
+        async function initDropDownLegal() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetLegalList`, response => {
+                if (response) {
+                    ddlProspect = $('[id*="prospectId"]');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+
+                    });
+                    ddlProspect.empty().html(option);
+                }
+            });
+        }
+
+        async function initDropDownBuildingType() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetBuildingTypeList`, response => {
+                if (response) {
+                    var ddlbuildType = $('[id*="buildTypeId"]');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddlbuildType.empty().html(option);
+                }
+            });
+        }
+
+        async function initDropDownTitle() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetTitleList`, response => {
+                if (response) {
+                    var ddltitle = $('[id*="title"]');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddltitle.empty().html(option);
+                }
+            });
+        }
+
+        async function initDropDownProvince() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetProvinceList`, response => {
+                if (response) {
+                    var ddlprovince = $('[id*="province"]');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddlprovince.empty().html(option);
+                }
+            });
+        }
+        async function initDropDownTambol() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetTambolList`, response => {
+                if (response) {
+                    tambolList = response.data;
+                    var ddlsubDistrict = $('[id*="subDistrict"]');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddlsubDistrict.empty().html(option);
+                }
+            });
+        }
+        async function initDropDownAmphor() {
+            let option = ``;
+            await ajaxGet(`${baseUrl}/homecare/api/v1/DropDown/GetAmphorList`, response => {
+                if (response) {
+                    amphorList = response.data;
+                    var ddldistrict = $('[id*="district"]');
+                    option += `<option selected="selected" value="">Please select</option>`;
+                    $.each(response.data, function (Index, Value) {
+                        option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                    });
+                    ddldistrict.empty().html(option);
+                }
+            });
+        }
+        function filterByVisibility(element) {
+            if (element.name === 'visible-only') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=disable-only]').removeClass('btn-danger');
+                    $('button[name=disable-only]').addClass('btn-default');
+                    $('button[name=all]').removeClass('btn-info');
+                    $('button[name=all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-success');
+                    btnValue = true;
+                } else {
+                    $(element).removeClass('btn-success');
+                    $(element).addClass('btn-default');
+                    btnValue = null;
+                }
+            } else if (element.name === 'disable-only') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=visible-only]').removeClass('btn-success');
+                    $('button[name=visible-only]').addClass('btn-default');
+                    $('button[name=all]').removeClass('btn-info');
+                    $('button[name=all]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-danger');
+                    btnValue = false;
+                } else {
+                    $(element).removeClass('btn-danger');
+                    $(element).addClass('btn-default');
+                    btnValue = null;
+                }
+            } else if (element.name === 'all') {
+                if ($(element).hasClass('btn-default')) {
+                    $('button[name=visible-only]').removeClass('btn-success');
+                    $('button[name=visible-only]').addClass('btn-default');
+                    $('button[name=disable-only]').removeClass('btn-danger');
+                    $('button[name=disable-only]').addClass('btn-default');
+                    $(element).removeClass('btn-default');
+                    $(element).addClass('btn-info');
+                    btnValue = null;
+                } else {
+                    $(element).removeClass('btn-info');
+                    $(element).addClass('btn-default');
+                    btnValue = null;
+                }
+            }
+            onSearchCentralUnit();
+
+        }
+        async function onSearchCentralUnit() {
+            table.rows().remove().draw();
+            let _projectName = $('#project-name').val().replace(/\//g, '%2F');
+            let _isActive = btnValue;
+            var data = {
+                projectName : _projectName,
+                isActive : _isActive
+            }
+            if (_projectName === '') {
+                data.projectName = null;
+            }
+
+            await ajaxPost(`${baseUrl}/homecare/api/v1/Admin/GetCentralUnitList`, data, response => {
+                console.log(response);
+                if (response) {
+                    arrData = response.data;
+                    if (response.data.length == 0) {
+                        //   tr += `<tr> <td colspan="4" class="text-center">ไม่พบข้อมูล</td></tr>`;
+                    } else {
+                        $.each(response.data, function (index, value) {
+                            value.index = index;
+                            table.row.add([
+                                ` ${index + 1}`,
+                                `${value.projectName}`,
+                                value.is_active,
+                                value,
+                                value
+                            ]).draw();
+
+                        });
+                    }
+                }
+            });
+
+        }
+
+        function loadDataGetCentralUnitList(data) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: `${baseUrl}/homecare/api/v1/Admin/GetCentralUnitList`,
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        resolve(response.data)
+                    }
+                });
+            })
+        }
+
+        function onClickEditCentralUnit(id) {
+            validatorCentralUnit.resetForm();
+            validatorCentralUnit.reset();
+            $('#frmAddCentralUnit').find(".error").removeClass("error");
+            $('#frmAddCentralUnit [name = "titleForm"]').text('แก้ไขยูนิตกลาง');
+            $('#frmAddCentralUnit [name="frmStatus"]').css('display', 'block')
+            if (arrData.length > 0) {
+                const row = arrData.filter(e => e.unitId === Number(id));
+
+                if (row.length > 0) {
+                    $('#frmAddCentralUnit [name="frmCentralUnitEvent"]').val('edit').trigger("change");
+                    $('#frmAddCentralUnit [name="unitId"]').val(row[0].unitId).trigger("change");
+                    $('#frmAddCentralUnit [name="projectId"]').val(row[0].projectId.toString()).trigger('change.select2');
+                    $('#frmAddCentralUnit [name="projectId"]').prop("disabled", true);
+                    $('#frmAddCentralUnit [name="prospectId"]').val(row[0].prospectId.toString()).trigger('change.select2');
+                    $('#frmAddCentralUnit [name="buildTypeId"]').val(row[0].buildTypeId.toString()).trigger('change.select2');
+                    $('#frmAddCentralUnit [name="unitCode"]').val(row[0].unitCode.trim()).trigger("change");
+                    $('#frmAddCentralUnit [name="address"]').val(row[0].address.trim()).trigger("change");
+                    $('#frmAddCentralUnit [name="cbStatus"]').val(row[0].is_active.toString()).trigger("change");
+                    if (row[0].is_active) {
+                        $('#frmAddCentralUnit [name="cbStatus"]').prop("checked", true);
+                        $('#frmAddCentralUnit [name="lbStatus"]').text('เปิดการใช้งาน');
+                    } else {
+                        $('#frmAddCentralUnit [name="cbStatus"]').prop("checked", false);
+                        $('#frmAddCentralUnit [name="lbStatus"]').text('ปิดการใช้งาน');
+                    }
+
+                    $('#modalCantralUnitForm').modal({ backdrop: 'static', keyboard: false, show: true });
+                    $(this).validate();
+                }
+            }
+
+        }
+        function onClickEditProspect(id) {
+
+            validatorProspect.resetForm();
+            validatorProspect.reset();
+            $('#frmAddProspect').find(".error").removeClass("error");
+            $('#frmAddProspect [name = "titleForm"]').text('แก้ไขนิติบุคคล');
+
+            if (arrData.length > 0) {
+                const row = arrData.filter(e => e.prospectId === Number(id));
+                if (row.length > 0) {
+                    $('#frmAddProspect [name="frmProspectEvent"]').val('edit');
+                    $('#frmAddProspect [name="prospectid"]').val(row[0].prospectId);
+                    $('#frmAddProspect [name="title"]').val(row[0].title_id.toString()).trigger('change.select2');
+                    $('#frmAddProspect [name="identityCode"]').val(row[0].idCard.trim()).trigger("change");
+                    $('#frmAddProspect [name="CompanyName"]').val(row[0].company).trigger("change");
+                    $('#frmAddProspect [name="firstName"]').val(row[0].firstName).trigger("change");
+                    $('#frmAddProspect [name="lastName"]').val(row[0].lastName).trigger("change");
+                    $('#frmAddProspect [name="building"]').val(row[0].building).trigger("change");
+                    $('#frmAddProspect [name="floor"]').val(row[0].floor).trigger("change");
+                    $('#frmAddProspect [name="room"]').val(row[0].room_no).trigger("change");
+                    $('#frmAddProspect [name="address_no"]').val(row[0].address_no).trigger("change");
+                    $('#frmAddProspect [name="road"]').val(row[0].street).trigger("change");
+                    let province_ID = row[0].province_ID !== null && row[0].province_ID !== undefined ? row[0].province_ID.toString() : row[0].province_ID;
+                    $('#frmAddProspect [name="province"]').val(province_ID).trigger('change.select2');
+                    let amphor = row[0].amphor !== null && row[0].amphor !== undefined ? row[0].amphor.toString() : row[0].amphor;
+                    $('#frmAddProspect [name="district"]').val(amphor).trigger("change.select2");
+                    let tambol = row[0].tambol !== null && row[0].tambol !== undefined ? row[0].tambol.toString() : row[0].tambol;
+                    $('#frmAddProspect [name="subDistrict"]').val(tambol).trigger("change.select2");
+
+                    $('#frmAddProspect [name="PostCode"]').val(row[0].postcode).trigger("change");
+                    $('#frmAddProspect [name="fax"]').val(row[0].fax).trigger("change");
+                    $('#frmAddProspect [name="mobile"]').val(row[0].mobilePhone).trigger("change");
+                    $('#frmAddProspect [name="phone"]').val(row[0].telephone).trigger("change");
+                    $('#frmAddProspect [name="companyPhone"]').val(row[0].officeTelephone).trigger("change");
+                    $('#frmAddProspect [name="OfficePhoneExt"]').val(row[0].officeTelephoneExt).trigger("change");
+                    $('#frmAddProspect [name="email"]').val(row[0].email).trigger("change");
+                    if (row[0].title_id.toString() === "400" || row[0].title_id.toString() === "401") {
+                        $('label[for="identityCode"]').text('เลขที่ผู้เสียภาษี');
+                    }
+                    else {
+                        $('label[for="identityCode"]').text('เลขประจำตัวบัตรปรชาชน');
+                    }
+                    $('#modalProspectForm').modal({ backdrop: 'static', keyboard: false, show: true });
+                    $(this).validate();
+                }
+            }
+
+        }
+
+        function clrearForm() {
+
+            validatorCentralUnit.resetForm();
+            validatorCentralUnit.reset();
+            $('#frmAddCentralUnit').find(".error").removeClass("error");
+            $('#frmAddCentralUnit [name="unitId"]').val();
+            $('#frmAddCentralUnit [name="projectId"]').val('').trigger('change.select2');
+            $('#frmAddCentralUnit [name="projectId"]').prop("disabled", false);
+            $('#frmAddCentralUnit [name="prospectId"]').val('').trigger('change.select2');
+            $('#frmAddCentralUnit [name="buildTypeId"]').val('').trigger('change.select2');
+            $('#frmAddCentralUnit [name="unitCode"]').val('');
+            $('#frmAddCentralUnit [name="address"]').val('');
+
+            //////////////////////////////////
+
+            validatorProspect.resetForm();
+            validatorProspect.reset();
+            $('#frmAddProspect').find(".error").removeClass("error");
+            $('#frmAddProspect [name="title"]').val('').trigger('change.select2');
+            $('#frmAddProspect [name="identityCode"]').val('');
+            $('#frmAddProspect [name="firstName"]').val('');
+            $('#frmAddProspect [name="lastName"]').val('');
+            $('#frmAddProspect [name="building"]').val('');
+            $('#frmAddProspect [name="floor"]').val('');
+            $('#frmAddProspect [name="room"]').val('');
+            $('#frmAddProspect [name="address_no"]').val('');
+            $('#frmAddProspect [name="road"]').val('');
+            $('#frmAddProspect [name="subDistrict"]').val('').trigger('change.select2');
+            $('#frmAddProspect [name="district"]').val('').trigger('change.select2');
+            $('#frmAddProspect [name="province"]').val('').trigger('change.select2');
+            $('#frmAddProspect [name="fax"]').val('');
+            $('#frmAddProspect [name="mobile"]').val('');
+            $('#frmAddProspect [name="phone"]').val('');
+            $('#frmAddProspect [name="companyPhone"]').val('');
+            $('#frmAddProspect [name="OfficePhoneExt"]').val('');
+            $('#frmAddProspect [name="email"]').val('');
+            $('#frmAddProspect [name="CompanyName"]').val('');
+            $('#frmAddProspect [name="PostCode"]').val('');
+
+
+        }
+        function showModalWarning(msg) {
+            $('#modalWarning').modal('show');
+            $('#lbTxtWarning').text(msg);
+        }
+        function showModalSuccess(msg) {
+            $('#modalInsertSuccess').modal('show');
+            $('#lbTxtSuccess').text(msg);
+        }
+        function reload() {
+           // page.loading();
+            onSearchCentralUnit();
+          //  page.loaded();
+        }
+        function noPermissionAlert() {
+            modalWaring('คุณไม่มีสิทธิในการเข้าถึงหน้านี้ ขออภัยครับ');
+            $('#warningModal').on('hidden.bs.modal', function () {
+                window.location.href = '@Url.Content("~/")';
+            });
+        }
+
+
+    </script>
+}

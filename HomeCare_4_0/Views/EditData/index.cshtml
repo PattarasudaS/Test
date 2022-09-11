@@ -1,0 +1,1213 @@
+﻿@using HomeCare_4_0.Common
+@using HomeCare_4_0.ClassLib
+
+@{
+    ViewBag.Title = "EditData";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/assets/plugins/datatables/dataTables.bootstrap-1.10.12.min.css" />
+<link rel="stylesheet" href="~/assets/plugins/datatables/responsive.bootstrap.min.css" />
+<style type="text/css">
+    a.dtMoveUp, a.dtMoveDown {
+        margin-right: 5px;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .project-status-filter {
+        border: 0;
+        box-shadow: none;
+        position: relative;
+        bottom: 6.5px;
+        right: 11px;
+    }
+
+    .btn-group .btn {
+        min-width: 85.5px;
+    }
+
+    .btn-rounded {
+        font-family: Raleway-SemiBold;
+        font-size: 13px;
+        /*        color: rgba(58, 133, 191, 0.75);*/
+        letter-spacing: 1px;
+        line-height: 15px;
+        border: 2px solid rgba(58, 133, 191, 0.75);
+        border-radius: 40px;
+        /*        background: transparent;*/
+        transition: all 0.3s ease 0s;
+    }
+
+        .btn-rounded :hover {
+            color: #FFF;
+            background: rgba(58, 133, 191, 0.75);
+            border: 2px solid rgba(58, 133, 191, 0.75);
+        }
+
+    .input-group {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex !important;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .input-group-prepend {
+        margin-right: -1px;
+    }
+
+    prepend {
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+    .input-group-text {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: .375rem .75rem;
+        margin-bottom: 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 2.5;
+        color: #495057;
+        text-align: center;
+        white-space: nowrap;
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+    }
+
+    li.select2-selection__choice {
+        background-color: #6bbbc7 !important;
+    }
+
+    .row.spece-line {
+        margin-top: 8px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        box-sizing: border-box;
+        list-style: none;
+        margin: 0;
+        padding: 0 5px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        padding: 0 5px;
+    }
+
+    ul.select2-selection__rendered > span.select2-selection__clear {
+        position: absolute;
+        right: 0;
+        margin: 3px 5px;
+    }
+
+    .deleteButton {
+        background: transparent;
+        color: #f00;
+        display: inline-block;
+        font-size: 12px;
+        height: 20px;
+        line-height: 2px;
+        margin: 0 0 8px;
+        padding: 0;
+        text-align: center;
+        width: 20px;
+        border: none;
+    }
+
+    .btn-custom {
+        font-family: Raleway-SemiBold;
+        font-size: 13px;
+        letter-spacing: 1px;
+        line-height: 15px;
+        border-radius: 40px;
+    }
+
+        .btn-custom :hover {
+            color: #FFF;
+            background: rgba(58, 133, 191, 0.75);
+        }
+
+    form .error {
+        color: #ff0000;
+        font-weight: 300;
+        font-style: italic;
+        font-size: 1.2rem;
+    }
+
+    @@media (min-width: 992px) {
+        .modal {
+            overflow-y: auto;
+        }
+
+        .modal-xl {
+            width: 1100px;
+        }
+    }
+
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        border-radius: 13px;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: 500 !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+
+    .fa-lg {
+        font-size: 1.5em !important;
+    }
+
+    .td-click {
+        cursor: pointer;
+    }
+
+
+    body {
+        padding-right: 0px !important;
+    }
+
+    .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+        color: #0661d0 !important;
+    }
+</style>
+
+<div class="row">
+    <div class="content">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">จัดการรายการขอแก้ไขข้อมูล</h3>
+            </div>
+            <div class="box-body">
+                <ul class="nav nav-tabs">
+                    <li id="tab-project" class="active disabled" disabled="true"><a data-toggle="tab" href="#projectManagement">รายการขอแก้ไขข้อมูล</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="projectManagement" class="tab-pane fade in active">
+                        <div class="container-fluid" style="margin-top:40px;">
+                            
+                            <div class="form-group col-xs-12 col-md-6 col-lg-12 dvRole" style="margin-top:30px;">
+                                <table class="table table-striped table-bordered text-nowrap table-sm display memberlist" id="example" style="width:100%"></table>
+                            </div>
+                            <table id="ArgumentsTable" class="table table-striped table-bordered dataTable"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--  Modal Role warning -->
+<div class="modal fade in" id="modalRoleWarning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="z-index:2000;">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog" role="document" style="width:95%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">รายละเอียดขอแก้ไขข้อมูล</h4>
+                <label id="ApproveID" hidden></label>
+                <label id="EmpApprove" hidden></label>
+                <label id="lbProjectCode" hidden></label>
+                <label id="lbSendApproveID" hidden></label>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4 id="headerDetail"></h4>
+                <h4 id="UserRequest"></h4>
+                <h5>รายละเอียดงานซ่อม(เดิม)</h5>
+                <table class="table table-striped table-bordered table-hover" id="ReceiveTable" style="margin: 2px 0px; max-width: 100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center" width="15%">
+                                ลักษณะงานหลัก
+                            </th>
+                            <th class="text-center" width="15%">
+                                ลักษณะงานรอง
+                            </th>
+                            <th class="text-center" width="20%">
+                                ลักษณะการประเมิน
+                            </th>
+                            <th class="text-center" width="15%">
+                                ตำแหน่งที่เกิด
+                            </th>
+                            <th class="text-center" width="15%">
+                                สาเหตุการเกิดปัญหา
+                            </th>
+                            <th class="text-center" width="5%">
+                                การซ่อมซ้ำ
+                            </th>
+                            <th class="text-center" width="15%">
+                                Priority
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemMainWorkType" id="ddlReceiveItemMainWorkType_old" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemSubWorkType" id="ddlReceiveItemSubWorkType_old" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemWorkDetail" id="ddlReceiveItemWorkDetail_old" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemLocation" id="ddlReceiveItemLocation_old" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemWorkIssue" id="ddlReceiveItemWorkIssue_old" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <i class="fa fa-lg fa-check" id="flagReceiveItemDuplicateFix_old" style="display: none" disabled="disabled"></i>
+                            </td>
+                            <td class="text-center">
+                                <input class="form-control" id="txtReceiveItemPriority_old" readonly="" type="text" disabled="disabled">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>รายละเอียดงานซ่อม(ใหม่)</h5>
+                <table class="table table-striped table-bordered table-hover" id="ReceiveTable" style="margin: 2px 0px; max-width: 100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center" width="15%">
+                                ลักษณะงานหลัก
+                            </th>
+                            <th class="text-center" width="15%">
+                                ลักษณะงานรอง
+                            </th>
+                            <th class="text-center" width="20%">
+                                ลักษณะการประเมิน
+                            </th>
+                            <th class="text-center" width="15%">
+                                ตำแหน่งที่เกิด
+                            </th>
+                            <th class="text-center" width="15%">
+                                สาเหตุการเกิดปัญหา
+                            </th>
+                            <th class="text-center" width="5%">
+                                การซ่อมซ้ำ
+                            </th>
+                            <th class="text-center" width="15%">
+                                Priority
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemMainWorkType" id="ddlReceiveItemMainWorkType_New" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemSubWorkType" id="ddlReceiveItemSubWorkType_New" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemWorkDetail" id="ddlReceiveItemWorkDetail_New" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemLocation" id="ddlReceiveItemLocation_New" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <select class="form-control ddlReceiveItemWorkIssue" id="ddlReceiveItemWorkIssue_New" disabled="disabled"></select>
+                            </td>
+                            <td class="text-center">
+                                <i class="fa fa-lg fa-check" id="flagReceiveItemDuplicateFix_New" style="display: none" disabled="disabled"></i>
+                            </td>
+                            <td class="text-center">
+                                <input class="form-control" id="txtReceiveItemPriority_New" readonly="" type="text" disabled="disabled">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                &nbsp;&nbsp;
+                <p><b>เหตุผล : </b><label id="lbRemarkR"></label></p>
+            </div>
+            <div class="modal-footer">
+
+                <div class="row">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6 offset-md-6">
+                        <label for="exampleInputEmail1">หมายเหตุ &nbsp;&nbsp;</label>
+                        <textarea class="form-control col-lg-3" id="remark" rows="3" style="margin-bottom:5px;float:right;width:50%"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3 offset-md-3">
+                        <label for="exampleInputEmail1" class="hidden" id="lbAlert" style="float:left;color:red">**กรุณาระบุหมายเหตุในการไม่อนุมัติ &nbsp;&nbsp;</label>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success btn-sm" data-dismiss="modal" id="btnApproveDetail">
+                    อนุมัติ
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="btnRejectDetail">ไม่อนุมัติ</button>
+            </div>
+            </div>
+    </div>
+</div>
+
+<!--  Modal Role warning -->
+<div class="modal fade in" id="modalRoleWarningVendor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="z-index:2000;">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog" role="document" style="width:40%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">รายละเอียดขอแก้ไขข้อมูล</h4>
+                <label id="ApproveID_V" hidden></label>
+                <label id="EmpApprove_V" hidden></label>
+                <label id="lbProjectCode_V" hidden></label>
+                <label id="lbSendApproveID_V" hidden></label>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label>คำขอแก้ไขข้อมูลผู้รับเหมาเลขที่ใบงาน </label> <label id="lbWorksheetNo"></label><br />
+
+                <label>จากเดิม</label>  <label id="lbVendorDetail_old"></label> เป็น <label id="lbVendorDetail_new"></label>
+
+                <p>เหตุผล : <label id="lbRemarkV"></label></p>
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6 offset-md-6">
+                        <label for="exampleInputEmail1">หมายเหตุ &nbsp;&nbsp;</label>
+                        <textarea class="form-control col-lg-3" id="remark_V" rows="3" style="margin-bottom:5px;float:right;width:50%"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3 offset-md-3">
+                        <label for="exampleInputEmail1" class="hidden" id="lbAlert_V" style="float:left;color:red">**กรุณาระบุหมายเหตุในการไม่อนุมัติ &nbsp;&nbsp;</label>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success btn-sm btnApproveVender" data-dismiss="modal">
+                    อนุมัติ
+                </button>
+                <button type="button" class="btn btn-danger btn-sm btnRejectVender">ไม่อนุมัติ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Modal Role warning -->
+<div class="modal fade in" id="modalRoleWarningF" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="z-index:2000;">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog" role="document" style="width:40%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">รายละเอียดขอแก้ไขข้อมูล</h4>
+                <label id="ApproveID_F" ></label>
+                <label id="EmpApprove_F" ></label>
+                <label id="lbProjectCode_F" ></label>
+                <label id="lbSendApproveID_F" ></label>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>โครงการ <label id="lbProjF"></label>เลขที่ใบงาน <label id="lbWorksheetNoF"></label>ต้องการยกเลิกเอกสาร <label id="lbType"></label></p>
+                <p>เหตุผล : <label id="lbRemark"></label></p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">
+                    อนุมัติ
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">ไม่อนุมัติ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalInsertRoleSuccess" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="z-index:2000;">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">ยืนยันการ บันทึก</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa fa-check fa-2x" aria-hidden="true" style="color: #32CD32;"></i>
+                <span id="lbTxtSuccess"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">ตกลง</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section script {
+
+
+    <script>
+        const baseUrl = '@System.Configuration.ConfigurationManager.AppSettings["Construction_API"]';
+        var editor;
+        var request_token = null;
+        var token = null;
+        $(document).ready(function () {
+
+           var request = $.ajax({
+                url: '@System.Configuration.ConfigurationManager.AppSettings["Home_Care_API"]/login/getTokenCode',
+                type: 'GET',
+                contentType: "application/json; charset=utf-8"
+           });
+
+            request.done(function (data) {
+                DataTableModel = function (d) {
+                    return {
+                        GridDraw: d.draw,
+                        GridStart: d.start,
+                        GridLength: d.length,
+                        GridColumns: d.columns,
+                        GridSearch: d.search,
+                        GridOrder: d.order,
+                    };
+                };
+
+                function GetFilterGrid() {
+                    return {
+                        ProjectId: $('#searchProjectDoc').val() != '' ? $('#searchProjectDoc').val() : 0,
+                        UserApprove: "@UserDetail.Email"
+                    }
+                }
+
+                GridTable = $('#example').removeAttr('width').DataTable({
+                    dom: "Bfrtip",
+                    responsive: true,
+                    "ajax": {
+                        url: `${baseUrl}/homecare/api/v1/LineApprove/GetDetailEditData`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + data.response);
+                            token = data.response;
+                        },
+                        data: function (d) {
+                            var model = $.extend({}, GetFilterGrid(), DataTableModel(d));
+                            return model;
+                        },
+                    },
+                    "columnDefs": [{
+                        "targets": -1,
+                        "data": null,
+                        "defaultContent": "<button>Click!</button>"
+                    }],
+                    "columns": [
+                        {
+                            "title": "ID", "ID": "empCode", "visible": false,
+                            "render": function (data, type, row) {
+                                return row.id;
+                            },
+                        },
+                        {
+                            "title": "สถานะ",
+
+                            "render": function (data, type, row) {
+                                var txt = "";
+                                txt += "<span class='label label-primary'>New</span>";
+                                return txt;
+                            },
+                        },
+                        {
+                            "title": "เลขที่",
+
+                            "render": function (data, type, row) {
+                                return row.ReceiveJobNo;
+                            },
+                        },
+                        {
+                            "title": "ประเภทการแก้ไข",
+
+                            "render": function (data, type, row) {
+                                return row.EditType;
+                            },
+                        },
+                        {
+                            "title": "ผู้ทำรายการ",
+
+                            "render": function (data, type, row) {
+                                return row.RequestBy;
+                            },
+                        },
+                        {
+                            title: 'Action',
+                            render: function (data, type, full, meta) {
+                                var txt = "";
+                                if (data.EditType == "แก้ไขรายละเอียดงานซ่อม") {
+                                    txt += "<button type='button' class='btn btn-primary btnDetail'>Detail</button> &nbsp;";
+                                } else if (data.EditType == "ยกเลิกเอกสารF") {
+                                    txt += "<button type='button' class='btn btn-primary btnDetailF'>Detail</button> &nbsp;";
+                                }
+                                else {
+                                    txt += "<button type='button' class='btn btn-primary btnDetailVendor'>Detail</button> &nbsp;";
+                                }
+                                return txt;
+
+                            }
+
+                        }
+
+                    ],
+                    'drawCallback': function (settings) {
+
+                    }
+                });
+
+            });
+
+
+
+             $(document).on("click", "#btnRejectDetail", function () {
+            if ($("#remark").val() == '') {
+                    $("#lbAlert").removeClass('hidden');
+                    return
+                } else {
+                    ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/UpdateRejectFlag?id=${$("#lbSendApproveID").text()}`, async response => {
+                        if (response.data.status == true) {
+                            var data = {
+                                id: $("#ApproveID").text(),
+                                SendEditData_id: $("#lbSendApproveID").text(),
+                                status: 'Reject',
+                                EmpApproveCode: $("#EmpApprove").text(),
+                                ProjectCode: $("#lbProjectCode").text(),
+                                Remark: $("#remark").val(),
+                                CreateBy: '@UserDetail.CodeName'
+                            };
+
+                            ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/ApproveEditData`, data, response => {
+                                if (response.data.status == true) {
+                                    showModalLineApprveSuccess('บันทึกสำเร็จ');
+                                    $('#example').DataTable().ajax.reload();
+                                    $('#modalRoleWarning').modal('hide');
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+
+        $(document).on("click", ".btnDetail", function () {
+            var data_row = GridTable.row($(this).closest('tr')).data();
+            ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/GetHistoryEditDataFlow?id=${data_row.id}`, async response => {
+                if (response.data.length > 0) {
+                    $("#ApproveID").text(response.data[0].receiveItemModalId);
+                    $("#EmpApprove").text(response.data[0].EMPCODE);
+                    $("#lbProjectCode").text(response.data[0].ProjectCode);
+                    $("#lbSendApproveID").text(response.data[0].sendApproveID);
+
+                    $("#headerDetail").text('โครงการ ' + response.data[0].ProjectCode + ' เลขที่ใบแจ้งซ้อม ' + response.data[0].ReceiveJobNo + ' ขอ' + response.data[0].EditType);
+                    $("#UserRequest").text('ผู้ทำรายการ :' + response.data[0].CreateBy);
+                    $("#lbRemarkR").text(response.data[0].Remark);
+                    //Get the count of columns.
+                    var val_old = JSON.parse(response.data[0].Detail_old);
+                    var val_new = JSON.parse(response.data[0].Detail_new);
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/MainWorkType`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var ddlMainWorkType_old = $('[id*="ddlReceiveItemMainWorkType_old"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            ddlMainWorkType_old.empty().html(option);
+                            $("#ddlReceiveItemMainWorkType_old").val(val_old[0].mainJobDetails).trigger('change');
+                        }
+                    });
+
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/SubWorkType/${val_old[0].mainJobDetails}`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var ddlSubWorkType_old = $('[id*="ddlReceiveItemSubWorkType_old"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            ddlSubWorkType_old.empty().html(option);
+                            $("#ddlReceiveItemSubWorkType_old").val(val_old[0].SecondaryWork).trigger('change');
+                        }
+                    });
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/Detail/${val_old[0].SecondaryWork}`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var ddlItemWorkDetail_old = $('[id*="ddlReceiveItemWorkDetail_old"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            ddlItemWorkDetail_old.empty().html(option);
+                            $("#ddlReceiveItemWorkDetail_old").val(val_old[0].appraisalCharacteristics).trigger('change');
+                        }
+                    });
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/Location/${val_old[0].mainJobDetails}`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var ddlItemLocation_old = $('[id*="ddlReceiveItemLocation_old"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            ddlItemLocation_old.empty().html(option);
+                            $("#ddlReceiveItemLocation_old").val(val_old[0].location).trigger('change');
+                        }
+                    });
+
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/Issue`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var ddlWorkIssue_old = $('[id*="ddlReceiveItemWorkIssue_old"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            ddlWorkIssue_old.empty().html(option);
+                            $("#ddlReceiveItemWorkIssue_old").val(val_old[0].causeOfProblem).trigger('change');
+                        }
+                    });
+
+                    $("#flagReceiveItemDuplicateFix_old").val(val_old[0].duplicateFixid);
+                    $("#txtReceiveItemPriority_old").val(val_old[0].ReceiveItemPriority);
+
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/MainWorkType`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var object = $('[id*="ddlReceiveItemMainWorkType_New"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            object.empty().html(option);
+                            $("#ddlReceiveItemMainWorkType_New").val(val_new[0].mainJobDetails).trigger('change');
+                        }
+                    });
+
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/SubWorkType/${val_new[0].mainJobDetails}`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var object = $('[id*="ddlReceiveItemSubWorkType_New"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            object.empty().html(option);
+                            $("#ddlReceiveItemSubWorkType_New").val(val_new[0].SecondaryWork).trigger('change');
+                        }
+                    });
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/Detail/${val_new[0].SecondaryWork}`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var object = $('[id*="ddlReceiveItemWorkDetail_New"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            object.empty().html(option);
+                            $("#ddlReceiveItemWorkDetail_New").val(val_new[0].appraisalCharacteristics).trigger('change');
+                        }
+                    });
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/Location/${val_new[0].mainJobDetails}`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var object = $('[id*="ddlReceiveItemLocation_New"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            object.empty().html(option);
+                            $("#ddlReceiveItemLocation_New").val(val_new[0].location).trigger('change');
+                        }
+                    });
+
+
+                    $.ajax({
+                        url: `${baseUrl}/homecare/api/v1/DropDown/Work/Issue`,
+                        type: 'GET',
+                        'beforeSend': function (request) {
+                            request.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (response) {
+                        },
+                        success: function (response) {
+                            var object = $('[id*="ddlReceiveItemWorkIssue_New"]');
+                            let option = ``;
+                            $.each(response.data, function (Index, Value) {
+                                option += `<option value="${Value.id}">
+                                       ${Value.description}
+                                  </option>`;
+                            });
+                            object.empty().html(option);
+                            $("#ddlReceiveItemWorkIssue_New").val(val_new[0].causeOfProblem).trigger('change');
+                        }
+                    });
+
+                    $("#flagReceiveItemDuplicateFix_New").val(val_new[0].duplicateFixid);
+                    $("#txtReceiveItemPriority_New").val(val_new[0].ReceiveItemPriority);
+
+                } else {
+
+                }
+            });
+
+            $("#modalRoleWarning").modal("show");
+        });
+
+
+        $(document).on("click", "#btnApproveDetail", function () {
+            var data = {
+                id: $("#ApproveID").text(),
+                SendEditData_id: $("#lbSendApproveID").text(),
+                status: 'Approve',
+                EmpApproveCode: $("#EmpApprove").text(),
+                ProjectCode: $("#lbProjectCode").text(),
+                Remark: $("#remark").text(),
+                CreateBy : '@UserDetail.CodeName'
+             };
+
+            ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/ApproveEditData`, data, response => {
+            if (response) {
+                showModalLineApprveSuccess('บันทึกสำเร็จ');
+                $('#example').DataTable().ajax.reload();
+                ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/GetHistoryEditDataFlow?id=${$("#lbSendApproveID").text()}`, async result => {
+                    if (result.data.length == 0) {
+                        ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/UpdateCompleteFlag?id=${$("#lbSendApproveID").text()}`, async response => {
+                            if (response.data.status == true) {
+                                $('#example').DataTable().ajax.reload();
+                                var id = $("#lbSendApproveID").text();
+                                ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/GetUpdateData?id=${id}`, async result_update => {
+                                    if (result_update.data.length != 0) {
+                                            var val_New = JSON.parse(result_update.data[0].Detail_new);
+                                             var body = {
+                                                 SpecL1ID: val_New[0].mainJobDetails,
+                                                 SpecL2ID: val_New[0].SecondaryWork,
+                                                 SpecL3ID: val_New[0].appraisalCharacteristics,
+                                                 LocationID: val_New[0].location,
+                                                 CauseID: val_New[0].causeOfProblem,
+                                                 DuplicateFixid: val_New[0].duplicateFixid,
+                                                 ID: val_New[0].id
+                                             }
+
+                                             $.ajax({
+                                             url: '@Url.Action("updateConfigReceiveItemModal", "Received")',
+                                                            type: "POST",
+                                                            data: JSON.stringify(body),
+                                                            contentType: "application/json; charset=utf-8",
+                                                            dataType: "json",
+                                                            error: function (response) {
+                                                            modalWaring('มีบางอย่างผิดพลาดกรุณาดำเนินการใหม่ในภายหลัง');
+                                                            $('#modalReceivedDetailItems').modal('hide');
+
+                                                        },
+                                                        success: function (response) {
+
+                                                        }
+                                             });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                } else {
+                    showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                }
+            });
+        });
+
+        $(document).on("click", ".btnDetailF", function () {
+            var data_row = GridTable.row($(this).closest('tr')).data();
+            ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/GetHistoryEditDataFlow?id=${data_row.id}`, async response => {
+                $("#ApproveID_F").text(data_row.receiveItemModalId);
+                $("#EmpApprove_F").text(data_row.EMPCODE);
+                $("#lbProjectCode_F").text(data_row.ProjectCode);
+                $("#lbSendApproveID_F").text(data_row.sendApproveID);
+                $("#lbType").text(data_row.Detail_old);
+                $("#lbWorksheetNoF").text(data_row.ReceiveJobNo);
+                $("#lbProjF").text(data_row.ProjectCode);
+                $("#lbRemark").text(data_row.Remark);
+
+                });
+
+            $("#modalRoleWarningF").modal("show");
+
+        });
+
+        $(document).on("click", ".btnDetailVendor", function () {
+            var data_row = GridTable.row($(this).closest('tr')).data();
+            ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/GetHistoryEditDataFlow?id=${data_row.id}`, async response => {
+                if (response.data.length > 0) {
+                    $("#ApproveID_V").text(response.data[0].receiveItemModalId);
+                    $("#EmpApprove_V").text(response.data[0].EMPCODE);
+                    $("#lbProjectCode_V").text(response.data[0].ProjectCode);
+                    $("#lbSendApproveID_V").text(response.data[0].sendApproveID);
+                    $("#lbRemarkV").text(response.data[0].Remark);
+                    var val_old = JSON.parse(response.data[0].Detail_old);
+                    var val_new = JSON.parse(response.data[0].Detail_new);
+                    $("#lbProjectDetail").text(response.data[0].ProjectCode);
+                    $("#lbWorksheetNo").text(response.data[0].ReceiveJobNo);
+                    $("#lbVendorDetail_old").text(val_old[0].vendorName);
+                    $("#lbVendorDetail_new").text(val_new[0].vendorName);
+                }
+            });
+            $("#modalRoleWarningVendor").modal("show");
+
+        });
+
+        $(document).on("click", ".btnApproveVender", function () {
+            var data = {
+                id: $("#ApproveID_V").text(),
+                SendEditData_id: $("#lbSendApproveID_V").text(),
+                status: 'Approve',
+                EmpApproveCode: $("#EmpApprove_V").text(),
+                ProjectCode: $("#lbProjectCode_V").text(),
+                Remark: $("#remark_V").text(),
+                CreateBy : '@UserDetail.CodeName'
+             };
+
+            ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/ApproveEditData`, data, response => {
+            if (response) {
+                showModalLineApprveSuccess('บันทึกสำเร็จ');
+                $("#modalRoleWarningVendor").modal("hide");
+                ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/GetHistoryEditDataFlow?id=${$("#lbSendApproveID_V").text()}`, async result => {
+                    if (result.data.length == 0) {
+                        $('#example').DataTable().ajax.reload();
+                        ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/UpdateCompleteFlag?id=${$("#lbSendApproveID_V").text()}`, async response => {
+                            if (response.data.status == true) {
+                                $('#example').DataTable().ajax.reload();
+                                var id = $("#lbSendApproveID_V").text();
+                                ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/GetUpdateData?id=${id}`, async result_update => {
+                                    $('#example').DataTable().ajax.reload();
+                                    if (result_update.data.length != 0) {
+                                            var val_New = JSON.parse(result_update.data[0].Detail_new);
+                                        var bodyW = {
+                                                id: result_update.data[0].receiveItemModalId,
+                                                 Vendor_ID: val_New[0].vendorCode,
+                                                 Vendor_Name: val_New[0].vendorName,
+				                                updatedBy: '@UserDetail.CodeName'
+			                            }
+
+                                        var response = await ajaxPut(`${baseUrl}/homecare/api/v1/LineApprove/UpdateVendor`, bodyW);
+			                                if (!response) {
+                                                success = false
+                                                $('#example').DataTable().ajax.reload();
+                                            }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                } else {
+                    showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                }
+            });
+        });
+
+        $(document).on("click", ".btnRejectVender", function () {
+            if ($("#remark_V").val() == '') {
+                $("#lbAlert_V").removeClass('hidden');
+                return
+            } else {
+                ajaxGet(`${baseUrl}/homecare/api/v1/LineApprove/UpdateRejectFlag?id=${$("#lbSendApproveID_V").text()}`, async response => {
+                    if (response.data.status == true) {
+                        showModalLineApprveSuccess('บันทึกสำเร็จ');
+                        $("#modalRoleWarningVendor").modal("hide");
+                        $('#example').DataTable().ajax.reload();
+                         var data = {
+                            id: $("#ApproveID_V").text(),
+                            SendEditData_id: $("#lbSendApproveID_V").text(),
+                            status: 'Reject',
+                            EmpApproveCode: $("#EmpApprove").text(),
+                            ProjectCode: $("#lbProjectCode").text(),
+                            Remark: $("#remark").val(),
+                            CreateBy : '@UserDetail.CodeName'
+                         };
+
+                        ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/ApproveEditData`, data, response => {
+                            if (response.data.status == true) {
+                                $('#example').DataTable().ajax.reload();
+                                //showModalLineApprveSuccess('บันทึกสำเร็จ');
+                                //$('#example').DataTable().ajax.reload();
+                                //$('#modalRoleWarningVendor').modal('hide');
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        function showModalLineApprveWarning(msg) {
+            $('#modalRoleWarning').modal('show');
+            $('#lbTxtWarning').text(msg);
+        }
+
+        function showModalLineApprveSuccess(msg) {
+            $('#modalInsertRoleSuccess').modal('show');
+            $('#lbTxtSuccess').text(msg);
+        }
+
+        $('#btnTest').on('click', function () {
+        var myRows = [];
+
+        $('table tbody tr').each(function () {
+            var obj = {}
+            if ($(this).find("td:eq(0)").text() != "ไม่มีข้อมูล") {
+                obj["No"] = $(this).find("td:eq(0)").text();
+                obj["Email"] = $(this).find("td:eq(1)").text();
+                obj["EmpCode"] = $(this).find("td:eq(2)").text();
+                obj["Id"] = $(this).find("td:eq(3)").text();
+                myRows.push(obj)
+            }
+        });
+
+
+        var data = {
+            ProjectId: $('#searchProjectDoc').val(),
+            CreateBy : '@UserDetail.CodeName',
+            detail : myRows
+        };
+
+        ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/InsertLineApproveEditData`, data, response => {
+
+                if (response) {
+                    showModalLineApprveSuccess('บันทึกสำเร็จ');
+                    var projectId = $('#searchProjectDoc').val();
+                    getProjectList(projectId);
+                    initDropDownRole();
+                } else {
+                    showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                }
+            });
+        });
+
+        function openModalDetail() {
+            $('#modalDetail').modal('show');
+            //$('#lbTxtWarning').text(msg);
+        }
+
+
+        function addrow() {
+
+        var counter = 1;
+        var e = document.getElementById("searchRole");
+        var tname = e.options[e.selectedIndex].text;
+        $('#example').dataTable().fnAddData([
+            counter,
+            tname,
+            $("#searchRole").val(),
+            0
+        ]);
+
+         var myRows = [];
+
+        $('table tbody tr').each(function () {
+            var obj = {}
+            if ($(this).find("td:eq(0)").text() != "ไม่มีข้อมูล") {
+                obj["No"] = parseInt($(this).find("td:eq(0)").text());
+                obj["Email"] = $(this).find("td:eq(1)").text();
+                obj["EmpCode"] = $(this).find("td:eq(2)").text();
+                obj["Id"] = 0;//parseInt($(this).find("td:eq(3)").text()) > 0 ? parseInt($(this).find("td:eq(3)").text()) : 0;
+                myRows.push(obj)
+            }
+        });
+
+        function showModalLineApprveSuccess(msg) {
+            $('#modalInsertRoleSuccess').modal('show');
+            $('#lbTxtSuccess').text(msg);
+        }
+
+        var data = {
+            ProjectId: $('#searchProjectDoc').val(),
+            CreateBy : '@UserDetail.CodeName',
+            detail : myRows
+        };
+
+        ajaxPost(`${baseUrl}/homecare/api/v1/LineApprove/InsertLineApproveEditData`, data, response => {
+
+            if (response) {
+                $("#here").load(window.location.href + " #here");
+                    showModalLineApprveSuccess('บันทึกสำเร็จ');
+                } else {
+                    showModalLineApprveWarning('เกิดข้อผิดพลาด บันทึกไม่สำเร็จ');
+                }
+            });
+        }
+        function initDropDownProject() {
+            let option = ``;
+                $.ajax({
+                    url: "@Url.Action("GetProejctMaster", "Home")",
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    error: function (response) {
+                    },
+                    success: function (response) {
+                        var ddlsearchProjectDoc = $('[id*="searchProjectDoc"]');
+                        option += `<option selected="selected" value="">Please select</option>`;
+                        $.each(response, function (Index, Value) {
+                            option += `<option value="${Value.Value}">
+                                       ${Value.Text}
+                                  </option>`;
+                        });
+                        ddlsearchProjectDoc.empty().html(option);
+                    }
+                });
+        }
+        function initDropDownUser() {
+            ajaxGet(`${baseUrl}/homecare/api/v1/User/GetUserEmail`, response => {
+                if (response.data.length > 0) {
+                    times = response.data;
+                    $.each(response.data, function (Index, Value) {
+                        $(".searchRole").append($("<option></option>").val(Value.id).html(Value.TNAME + '/' + Value.UEMAIL));
+                    });
+
+                }
+            });
+
+        }
+
+        });
+
+    </script>
+}
+
+

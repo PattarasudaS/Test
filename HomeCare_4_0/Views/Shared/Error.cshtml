@@ -1,0 +1,24 @@
+﻿@*@model System.Web.Mvc.HandleErrorInfo*@
+@model HomeCare_4_0.Models.ErrorViewModel
+@{
+    ViewBag.Title = "Error";
+}
+<div class="main">
+    <div class="main-inner">
+        <div class="container">
+            <h1 class="text-danger">Error.@Model.code</h1>
+            @if (@Model.message_1 != null) {
+                <h2 class="text-danger">Error.@Model.message_1</h2>
+            }
+            @if (@Model.message_2 != null)
+            {
+                <h2 class="text-danger">Error.@Model.message_2</h2>
+            }           
+            <h1 class="text-danger">Error.@Model.HandleError.Exception.Message</h1>
+            <h2 class="text-danger">An error occurred while processing your request.</h2>
+
+            @Html.ActionLink("Back", @Model.HandleError.ActionName, @Model.HandleError.ControllerName)
+
+        </div>
+    </div>
+</div>
